@@ -1,0 +1,21 @@
+id	area	title	url	application	checked_at	ingestion
+A01	agents	Building effective agents	https://www.anthropic.com/research/building-effective-agents	Distinguir flujos programados de decisiones del modelo	2026-11-05	metadata_only
+A02	context	Effective context engineering for AI agents	https://www.anthropic.com/research/effective-context-engineering-for-ai-agents	Seleccionar contexto útil con presupuesto	2026-11-05	metadata_only
+A03	tools	Writing effective tools for agents	https://www.anthropic.com/research/writing-tools-for-agents	Herramientas específicas y respuestas acotadas	2026-11-05	metadata_only
+A04	memory	Effective harnesses for long-running agents	https://www.anthropic.com/research/effective-harnesses-for-long-running-agents	Progreso verificable y continuidad entre sesiones	2026-11-05	metadata_only
+A05	mcp	Code execution with MCP	https://www.anthropic.com/research/code-execution-with-mcp	Procesar resultados cerca de las herramientas	2026-11-05	metadata_only
+A06	evaluation	Demystifying evals for AI agents	https://www.anthropic.com/research/demystifying-evals-for-ai-agents	Medir resultados y trayectorias de tareas	2026-11-05	metadata_only
+A07	architecture	Scaling Managed Agents: Decoupling the brain from the hands	https://www.anthropic.com/research/managed-agents	Separar sesión, bucle de agente y entorno de ejecución	2026-11-05	metadata_only
+A08	coding	Harness design for long-running application development	https://www.anthropic.com/research/harness-design-long-running-apps	Separar generación y evaluación con criterios comprobables	2026-11-05	metadata_only
+P01	python	The Python Tutorial	https://docs.python.org/3/tutorial/	Corpus inicial de lenguaje y ejemplos	2026-11-05	metadata_only
+P02	python	ast: Abstract syntax trees	https://docs.python.org/3/library/ast.html	Analizar estructura de programas Python	2026-11-05	metadata_only
+P03	python	subprocess: Subprocess management	https://docs.python.org/3/library/subprocess.html	Diseñar un contrato de ejecución externa	2026-11-05	metadata_only
+P04	python	sqlite3: DB-API interface	https://docs.python.org/3/library/sqlite3.html	Inspirar persistencia de tareas y evidencias	2026-11-05	metadata_only
+P05	python	json: JSON encoder and decoder	https://docs.python.org/3/library/json.html	Intercambio estructurado con límites de tamaño	2026-11-05	metadata_only
+P06	python	pathlib: Object-oriented filesystem paths	https://docs.python.org/3/library/pathlib.html	Distinguir manipulación de rutas y acceso al disco	2026-11-05	metadata_only
+P07	python	History and License	https://docs.python.org/3/license.html	Conservar atribución y revisar términos antes de copiar	2026-11-05	metadata_only
+R01	rust	A no_std Rust Environment	https://doc.rust-lang.org/embedded-book/intro/no-std.html	Núcleo portable separado de servicios del sistema	2026-11-05	metadata_only
+G01	gpu	wgpu API documentation	https://docs.rs/wgpu/latest/wgpu/	Evaluar cómputo GPU y features no_std por backend	2026-11-05	metadata_only
+G02	gpu	Burn Book: Backend	https://burn.dev/books/burn/basic-workflow/backend.html	Evaluar un backend Rust sobre WGPU	2026-11-05	metadata_only
+S01	isolation	Windows 11 application isolation	https://learn.microsoft.com/en-us/windows/security/book/application-security-application-isolation	Evaluar aislamiento del ejecutor en Windows	2026-11-05	metadata_only
+M01	model	Qwen2.5-Coder-7B-Instruct model card	https://huggingface.co/Qwen/Qwen2.5-Coder-7B-Instruct	Candidato de referencia; requiere comparar calidad, formato y memoria	2026-11-05	metadata_only

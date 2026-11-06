@@ -1,0 +1,16 @@
+[workspace]
+members = ["crates/boddy-core", "crates/boddy-cli"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.81"
+publish = false
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[profile.release]
+lto = "thin"
+strip = true

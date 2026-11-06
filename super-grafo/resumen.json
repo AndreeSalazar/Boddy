@@ -1,0 +1,41 @@
+{
+  "analisis_ms": 2,
+  "archivos_indexados": 32,
+  "archivos_leidos": 8,
+  "cabeceras_exportadas": null,
+  "carpeta": "\\\\?\\C:\\Users\\Salazar\\Documents\\Boddy",
+  "ciclos": {
+    "archivos": 0,
+    "dependen_de_un_if": 0,
+    "total": 0
+  },
+  "compile_commands": null,
+  "dependencias": 7,
+  "diagnosticos_gcc": 0,
+  "diagnosticos_marcados": {
+    "archivos": 0,
+    "sarif_del_proyecto": [],
+    "total": 0
+  },
+  "fallo_conectado": {
+    "archivos_que_fallan": 0,
+    "causas": 0,
+    "se_pueden_romper": 0
+  },
+  "guardianes": null,
+  "megabytes": 0.0,
+  "recortado": false,
+  "reutilizados_de_la_cache": 0,
+  "revisiones_gcc": {
+    "archivos": 0,
+    "pendientes": 0
+  },
+  "siguiente": "fallos, ciclos o senales para ver lo peor; camino/peso/archivo para bajar a un archivo",
+  "sospechas": {
+    "Elegancia": 3,
+    "Rendimiento": 0,
+    "Seguridad": 0,
+    "a_proposito": 0
+  },
+  "version": 1
+}
