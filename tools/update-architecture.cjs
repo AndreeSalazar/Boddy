@@ -19,7 +19,7 @@ const descriptions = {
  'boddy-desktop':'Acciones manuales de escritorio registradas y auditadas',
  'boddy-neural':'MLP no_std de siguiente caracter y gradientes CPU de referencia',
  'boddy-wgpu':'Entrenamiento MLP con shaders propios WGPU y tipos GPU privados',
- 'boddy-lab':'Entrenamiento reanudable, registro de modelos, control no entrenado y generacion Tiny CPU'
+ 'boddy-lab':'Tiny propio: entrenamiento, evaluacion, registro y checkpoints JSON compactos con pesos binarios compartidos'
 };
 const result = cp.spawnSync('cargo', ['metadata','--offline','--no-deps','--format-version','1'], {cwd:root,encoding:'utf8'});
 if(result.status !== 0) throw Error(result.stderr);

@@ -34,7 +34,7 @@ Catalogo documental local. Estado: implemented. Dependencias: ninguna.
 Acciones manuales de escritorio registradas y auditadas. Estado: implemented. Dependencias: boddy-reader.
 
 ## crates/boddy-lab
-Entrenamiento reanudable, registro de modelos, control no entrenado y generacion Tiny CPU. Estado: implemented. Dependencias: boddy-neural, boddy-reader, boddy-wgpu.
+Tiny propio: entrenamiento, evaluacion, registro y checkpoints JSON compactos con pesos binarios compartidos. Estado: implemented. Dependencias: boddy-neural, boddy-reader, boddy-wgpu.
 
 ## crates/boddy-neural
 MLP no_std de siguiente caracter y gradientes CPU de referencia. Estado: implemented. Dependencias: ninguna.

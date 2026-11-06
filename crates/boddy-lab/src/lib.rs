@@ -173,19 +173,7 @@ pub fn train_from(root: &Path, steps: u64, parent: Option<&str>) -> Result<Value
         .transpose()?;
     let text = sample(&weights)?;
     let corpus_hash = format!("{:x}", Sha256::digest(CORPUS.as_bytes()));
-    let checkpoint = json!({"schema":2,"model":"Boddy Tiny 1.0","architecture":"one_hot_tanh_softmax_mlp","context":CONFIG.context,"vocab":CONFIG.vocab,"hidden":CONFIG.hidden,"tokenizer":"newline=0; printable ASCII 32..126=1..95","seed":1337,"pretrained_weights":null,"teacher_model":null,"weights":weights,"sampler_state":rng.0,"completed_steps":total_steps,"parent_id":parent,"corpus_sha256":corpus_hash,"training_protocol":"tiny-sgd-v1"});
-    // Roundtrip obligatorio: el checkpoint debe producir exactamente la misma muestra.
-    let checkpoint_bytes = serde_json::to_vec(&checkpoint).map_err(|e| e.to_string())?;
-    let loaded: Value = serde_json::from_slice(&checkpoint_bytes).map_err(|e| e.to_string())?;
-    let restored: Vec<f32> = loaded["weights"]
-        .as_array()
-        .ok_or("Pesos ausentes")?
-        .iter()
-        .map(|v| v.as_f64().map(|v| v as f32).ok_or("Peso invalido"))
-        .collect::<Result<_, _>>()?;
-    if sample(&restored)? != text {
-        return Err("Checkpoint no reproduce la muestra".into());
-    }
+    let checkpoint = json!({"schema":3,"model":"Boddy Tiny 1.0","architecture":"one_hot_tanh_softmax_mlp","context":CONFIG.context,"vocab":CONFIG.vocab,"hidden":CONFIG.hidden,"tokenizer":"newline=0; printable ASCII 32..126=1..95","seed":1337,"pretrained_weights":null,"teacher_model":null,"sampler_state":rng.0,"completed_steps":total_steps,"parent_id":parent,"corpus_sha256":corpus_hash,"training_protocol":"tiny-sgd-v1"});
     let id = format!(
         "tiny-{}",
         SystemTime::now()
@@ -210,17 +198,14 @@ pub fn train_from(root: &Path, steps: u64, parent: Option<&str>) -> Result<Value
     });
     report["validation_improved"] = json!(after_valid < before_valid);
     report["external_control"] = control(&initial, &weights)?;
-    write_new(&dir.join("checkpoint.json"), &checkpoint_bytes)?;
-    let disk: Value =
-        serde_json::from_slice(&fs::read(dir.join("checkpoint.json")).map_err(|e| e.to_string())?)
-            .map_err(|e| e.to_string())?;
-    if disk != loaded {
-        return Err("Checkpoint en disco no coincide".into());
+    report["storage"] = checkpoints::store(root, &id, checkpoint, &weights)?;
+    if sample(&checkpoints::load(root, &id, false)?.weights)? != text {
+        return Err("Checkpoint no reproduce la muestra".into());
     }
     write_new(&dir.join("sample.txt"), text.as_bytes())?;
     write_new(
         &dir.join("metrics.json"),
-        &serde_json::to_vec_pretty(&report).map_err(|e| e.to_string())?,
+        &serde_json::to_vec(&report).map_err(|e| e.to_string())?,
     )?;
     Ok(report)
 }

@@ -127,7 +127,7 @@
     {
       "id": "boddy-lab",
       "path": "crates/boddy-lab",
-      "purpose": "Entrenamiento reanudable, registro de modelos, control no entrenado y generacion Tiny CPU",
+      "purpose": "Tiny propio: entrenamiento, evaluacion, registro y checkpoints JSON compactos con pesos binarios compartidos",
       "status": "implemented",
       "no_std": false,
       "dependencies": [

@@ -50,13 +50,31 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -STA -File .\window\Boddy.ps1
 ```
 
 El host guarda `data/lab/tiny-<id>/checkpoint.json`, `metrics.json` y `sample.txt`;
-están ignorados por Git. Checkpoint contiene configuración, tokenizer, semilla y
-todos los pesos; se comprueba su serialización, se relee el archivo y se exige
-que los pesos restaurados reproduzcan la muestra. Checkpoint v2 guarda estado
-del muestreador, pasos acumulados, hash de corpus y protocolo SGD para continuar.
+están ignorados por Git. El formato propio v3 usa JSON compacto para configuración,
+tokenizer, semilla, estado de muestreo y referencia a los pesos. Los números se
+guardan en `data/lab/blobs/<sha256>.f32le`: f32 little endian, 27.776 valores,
+111.104 bytes. Versiones con pesos idénticos comparten ese archivo; se verifica
+su tamaño, SHA256 y valores finitos antes de cargarlo. No se cuantiza ni redondea.
+Se exige restauración bit a bit y la misma muestra tras leer del disco.
+Los v2 antiguos conservan su estado completo y siguen cargando desde JSON.
 Los v1 antiguos permiten continuar desde pesos, reiniciando el muestreador a 42;
 se marca `weights_only_legacy` y se deja desconocido el total acumulado. No se
 fabrica su historial. Reanudar exige mismo corpus y arquitectura compatibles.
+
+En la prueba v3, el manifiesto JSON de un modelo de 600 pasos ocupó **576 bytes**,
+los pesos **111.104 bytes** y métricas **2.830 bytes**. El checkpoint de la segunda
+trayectoria 300 + 300 reutilizó los mismos pesos que 600 pasos seguidos: cero
+bytes nuevos de pesos en esa escritura. Son tamaños de contenido, sin
+asignación adicional del sistema de archivos. Evidencia:
+`evals/tiny-storage-v3-rtx3060.json`. La ventana muestra estos tamaños.
+La referencia v2 con exactamente los mismos bits de pesos ocupaba 576.096 bytes
+de JSON; JSON v3 + binario suman 111.680 bytes (aproximadamente 80,6 % menos).
+La comparación excluye métricas y muestra en ambos formatos.
+
+Para copiar un modelo v3 hay que conservar su JSON y el blob referido, además de
+las métricas si se quiere listar en la biblioteca. Los originales v1/v2 no se
+borran ni convierten automáticamente. No hay limpieza automática de versiones.
+Guardar versiones con pesos distintos sí consume espacio adicional.
 
 En **Conversar**, el selector permite Qwen para chat o un Tiny guardado para
 continuación experimental ASCII. Tiny usa solo los últimos ocho caracteres;
@@ -76,7 +94,14 @@ Comandos adicionales (JSON por entrada estándar):
 
 Carga acotada: hasta 64 modelos entre 512 entradas, checkpoint máximo 2 MiB y
 métricas 64 KiB. Se rechazan rutas externas/enlaces, versiones o formas
-incompatibles y pesos no finitos. La lista informa inválidos y truncamiento.
+incompatibles y pesos no finitos. Los blobs Tiny deben medir exactamente 111.104
+bytes. La lista informa inválidos y truncamiento.
+
+El JSON describe el modelo; los pesos contienen los valores aprendidos. Reducir
+el JSON no aumenta la capacidad ni elimina la memoria necesaria para la red.
+Tiny ya es independiente de Qwen en entrenamiento y generación; Qwen sigue siendo
+otra opción de chat. Autoaprendizaje general sin supervisión no está implementado:
+este laboratorio aprende del corpus explícito y requiere evaluar los cambios.
 
 La pantalla muestra pérdida de entrenamiento/validación, GPU real, tiempo,
 tokens objetivo procesados, contexto por lote, pesos y buffers. Los 239.904 bytes
