@@ -4,12 +4,12 @@ $script:wbCallback = $null
 $script:wbLastResult = $null
 $wbTimer = New-Object Windows.Forms.Timer
 $wbTimer.Interval = 80
-function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone) {
+function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [ValidateSet('pc','entrenar')][string]$Command='pc') {
     if ($script:wbProcess) { $wbMessage.Text='Hay una accion de escritorio en curso.'; return }
     try {
         $info = New-Object Diagnostics.ProcessStartInfo
         $info.FileName = $binary
-        $info.Arguments = 'pc'
+        $info.Arguments = $Command
         $info.WorkingDirectory = $projectRoot
         $info.UseShellExecute = $false
         $info.CreateNoWindow = $true
@@ -28,6 +28,7 @@ function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone) {
         $script:wbProcess.StandardInput.Close()
         $script:wbCallback = $OnDone
         $script:wbStarted = [DateTime]::UtcNow
+        $script:wbTimeout = if ($Command -eq 'entrenar') { 180 } else { 15 }
         $wbMessage.Text='Consultando: ' + $Request.action
         $wbTimer.Start()
     } catch {
@@ -37,7 +38,7 @@ function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone) {
 }
 $wbTimer.Add_Tick({
     if (-not $script:wbProcess) { return }
-    if (([DateTime]::UtcNow-$script:wbStarted).TotalSeconds -gt 15) {
+    if (([DateTime]::UtcNow-$script:wbStarted).TotalSeconds -gt $script:wbTimeout) {
         if (-not $script:wbProcess.HasExited) { $script:wbProcess.Kill() }
         $wbMessage.Text='La accion excedio su tiempo de espera.'
         $script:wbProcess.Dispose(); $script:wbProcess=$null; $wbTimer.Stop(); return

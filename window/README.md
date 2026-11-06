@@ -1,6 +1,6 @@
 # Boddy 1.0 — chat local
 
-La ventana ofrece Conversar, Programar, Mi PC y Evidencia. Programar muestra
+La ventana ofrece Conversar, Programar, Mi PC, Evidencia y Laboratorio. Programar muestra
 fuentes y fragmentos y permite investigar la selección. Mi PC abre herramientas
 registradas por acción manual; Evidencia recupera las tareas guardadas.
 [Controles y alcance](../docs/ESCRITORIO.md).
@@ -55,4 +55,8 @@ Primera preparación en otra instalación:
 
 Descarga unos 4,7 GB de pesos más el motor y verifica SHA256 según
 `models.lock.json`. Se conservan fuera de Git. Los pesos no se entrenaron en este
-proyecto. WGPU sigue siendo una integración futura independiente; Vulkan no es WGPU.
+proyecto. El laboratorio independiente entrena Boddy Tiny desde cero mediante
+WGPU: elegir pasos y pulsar Entrenar en GPU. Muestra pérdida, tokens procesados,
+buffers, GPU y muestra de texto; guarda pesos en data/lab. Cada ejecución empieza
+desde cero. Puede abrirse directamente con Boddy.ps1 sin iniciar el servidor Qwen.
+[Arquitectura, comprobaciones y límites](../docs/MODELO-PROPIO.md).

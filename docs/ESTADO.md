@@ -7,7 +7,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 - Chat Windows sencillo: historial reciente, Enter para enviar, Shift+Enter para
   nueva línea, nuevo chat y cancelación de la espera.
-- Catorce crates con dependencias acíclicas. Contratos, misión, política y controlador
+- Diecisiete crates con dependencias acíclicas. Contratos, misión, política y controlador
   siguen siendo no_std; host, inferencia y ventana permanecen separados.
 - Adaptador Rust boddy-inference a un motor local externo, solo 127.0.0.1:17861.
 - Qwen2.5-Coder-7B-Instruct Q4_K_M, 4683073536 bytes. SHA256 verificado contra
@@ -19,7 +19,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 - Autenticación local interna generada automáticamente; no es una clave de proveedor.
   Los pesos, motor, credencial y logs están en carpetas ignoradas por Git.
 - Catálogo de veinte referencias documentales; todavía son metadatos, sin corpus.
-- SUPER GRAFO: mapa, notas, posiciones y 23 nodos con estados explícitos.
+- SUPER GRAFO: mapa, notas, posiciones y 25 nodos con estados explícitos.
 - Contadores visibles de entrada, salida, caché y acumulados, velocidad, recorte
   e instantánea de VRAM del dispositivo al responder. Conteo previo por tokenizer
   del motor, con eliminación de pares antiguos para respetar el presupuesto.
@@ -33,16 +33,27 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   por el host y permite una corrección. Guarda todos los intentos y rechazos.
   Se excluyen cabeceras de función como evidencia de comportamiento y se detecta
   un caso léxico acotado de permisos afirmados contra inicializadores false.
-- Ventana con Conversar, Programar, Mi PC y Evidencia. Explorador acotado de
+- Ventana con Conversar, Programar, Mi PC, Evidencia y Laboratorio. Explorador acotado de
   fuentes (incluye window como texto), fragmentos y apertura manual en editor.
   Acciones fijas para Explorer, SUPER GRAFO y Administrador de tareas, con log local.
   Vista de tareas guardadas y consulta manual de GPU, independiente del modelo.
+- Boddy Tiny 1.0: MLP propia de 27.776 parámetros, ocho caracteres de contexto,
+  capa tanh de 32 unidades y 96 salidas ASCII. Inicialización aleatoria; sin pesos
+  Qwen ni profesor externo. Corpus educativo propio versionado, SGD por WGPU y
+  referencia CPU no_std. Laboratorio muestra métricas y guarda checkpoints.
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 31 pruebas aprobadas.
+- cargo test --workspace --offline: 36 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
+- cargo check -p boddy-neural --target wasm32-unknown-unknown --offline: aprobado.
+- Entrenamiento real Tiny en RTX 3060 por WGPU/Vulkan: 300 pasos redujeron pérdida
+  de entrenamiento 4,5659 -> 2,5693 y validación 4,5703 -> 2,5811. Desde el botón
+  de ventana, 1.000 pasos: 1,8081 y 2,1641. Error máximo absoluto de gradientes
+  CPU/GPU 7,45e-9; pérdida 4,77e-7; SGD 7,45e-9. Muestra restaurada reproducible.
+  239.904 bytes de buffers declarados; no es VRAM total ni pico. Datos y
+  validación pequeños/relacionados: no demuestran capacidad de asistente.
 - Comprobación del evento del botón de la ventana con generación real: respondió
   «¡Hola!» a la petición de saludo en español.
 - Dos turnos por el cliente Rust: respondió «Entendido.» y recuperó correctamente
@@ -68,9 +79,11 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 ## Límites y pendientes
 
-Boddy 1.0 nombra la aplicación, no un modelo entrenado desde cero. La inferencia
-actual usa llama.cpp/Vulkan, no WGPU. Falta motor propio, corpus versionado,
-embeddings, ejecución Python, sandbox del SO y sesiones completas reanudables.
+Boddy 1.0 nombra la aplicación. Su laboratorio Boddy Tiny sí entrena desde cero;
+el chat sigue usando Qwen por llama.cpp/Vulkan. Tiny no sustituye al asistente,
+no reanuda entrenamientos y no aprende conversaciones. Falta inferencia propia
+de un asistente general, corpus documental, embeddings, ejecución Python,
+sandbox del SO y sesiones completas reanudables. Ver MODELO-PROPIO.md.
 Existe un primer investigador de lectura, sin planes abiertos ni ejecución.
 El chat genera texto: la casilla de mapa aporta cifras del proyecto
 desde el host, sin leer fuentes completas ni ejecutar propuestas del modelo.

@@ -4,6 +4,10 @@ Asistente personal de Eddi Salazar. Chat local sencillo, Rust modular y núcleo
 no_std. Modelo base: Qwen2.5-Coder-7B-Instruct Q4_K_M; motor externo llama.cpp
 b12110, con Vulkan en la RTX 3060. No son pesos entrenados por este proyecto.
 
+**Laboratorio** añade Boddy Tiny 1.0: una red de 27.776 parámetros entrenada desde
+cero en la RTX 3060 por WGPU, con pesos propios, corpus versionado, contadores y
+checkpoints. Es un experimento educativo de caracteres. [Cómo entrenarlo](docs/MODELO-PROPIO.md).
+
 ## Abrir el chat
 
 Doble clic en `window/Boddy.vbs`, o:
@@ -26,13 +30,14 @@ Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargad
 
 ## Arquitectura
 
-Catorce crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
-inferencia local, telemetría, lector, agente, escritorio, aplicación, CLI y lanzador gráfico.
+Diecisiete crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+inferencia local, telemetría, lector, agente, escritorio, aplicación, CLI, lanzador
+gráfico, red neuronal de referencia, adaptador WGPU y laboratorio.
 Las primeras cuatro permanecen no_std.
 El host usa serde_json; GPU y ventana no entran en el núcleo.
 
-Esta versión usa Vulkan mediante un proceso externo. El backend propio WGPU,
-el sandbox del SO y la ejecución operativa de tareas siguen pendientes.
+El chat usa Vulkan mediante un proceso externo; el laboratorio usa WGPU propio.
+El sandbox del SO y la ejecución operativa de tareas siguen pendientes.
 Los tokens son unidades internas de texto del modelo; el cómputo es local,
 sin clave ni pago a un proveedor por token.
 

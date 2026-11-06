@@ -1,4 +1,4 @@
-param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
+param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [switch]$LabSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -256,10 +256,23 @@ $prompt.Add_KeyDown({
 $newChat.Add_Click({ $script:history.Clear(); $script:totalInput=0L; $script:totalOutput=0L; $script:totalCached=0L; $tokenStats.Text='Nuevo chat: acumulados reiniciados.'; $transcript.Clear(); Add-ChatText 'Boddy' 'Nuevo chat. Que quieres construir?'; $prompt.Focus() })
 $form.Add_FormClosed({ $timer.Stop(); $timer.Dispose(); if ($script:active) { if (-not $script:active.HasExited) { $script:active.Kill() }; $script:active.Dispose() } })
 . (Join-Path $PSScriptRoot 'components\Workbench.ps1')
-if ($WorkbenchSmokeTest) {
+. (Join-Path $PSScriptRoot 'components\Laboratory.ps1')
+if ($LabSmokeTest) {
+    $form.Opacity=0; $form.Show()
+    $tabs.SelectedTab=$labPage
+    [Windows.Forms.Application]::DoEvents()
+    $labSteps.SelectedItem='1000'; $labTrain.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(190)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if($labOutput.Text -notmatch 'Checkpoint recargado: True' -or $labOutput.Text -notmatch 'NVIDIA GeForce RTX 3060') {throw ('Fallo laboratorio: '+$wbMessage.Text+' | '+$labOutput.Text)}
+    if($script:wbLastResult.loss.train_after -ge $script:wbLastResult.loss.train_before){throw 'No bajo la perdida de entrenamiento.'}
+    if($script:history.Count -ne 0){throw 'El laboratorio altero el chat.'}
+    'Laboratorio GPU desde ventana: '+$script:wbLastResult.id
+    $form.Close(); $form.Dispose()
+} elseif ($WorkbenchSmokeTest) {
     $form.Opacity=0; $form.Show()
     [Windows.Forms.Application]::DoEvents()
-    if($tabs.TabPages.Count -ne 4){throw 'Faltan espacios de trabajo.'}
+    if($tabs.TabPages.Count -ne 5){throw 'Faltan espacios de trabajo.'}
     if($gpuStats.Bottom -gt $chatPage.ClientSize.Height -or $inputPanel.Bottom -gt $chatPage.ClientSize.Height){throw 'Controles de chat fuera del area visible.'}
     $tabs.SelectedTab=$programPage
     $reloadSources.PerformClick()
@@ -286,7 +299,7 @@ if ($WorkbenchSmokeTest) {
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
     if(-not $script:wbLastResult.gpu){throw 'No se recibio el estado de recursos.'}
-    'Workbench: cuatro pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
+    'Workbench: cinco pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
     $form.Close(); $form.Dispose()
 } elseif ($ResearchSmokeTest) {
     $form.Opacity=0
