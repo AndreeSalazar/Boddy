@@ -16,7 +16,10 @@ const descriptions = {
  'boddy-telemetry':'Muestra de VRAM y uso de GPU, independiente del modelo',
  'boddy-reader':'Lectura de fuentes acotada y evidencia con SHA256',
  'boddy-agent':'Investigador con busqueda de componentes y una correccion de citas verificada',
- 'boddy-desktop':'Acciones manuales de escritorio registradas y auditadas'
+ 'boddy-desktop':'Acciones manuales de escritorio registradas y auditadas',
+ 'boddy-neural':'MLP no_std de siguiente caracter y gradientes CPU de referencia',
+ 'boddy-wgpu':'Entrenamiento MLP con shaders propios WGPU y tipos GPU privados',
+ 'boddy-lab':'Experimento desde cero, paridad CPU/GPU, metricas y checkpoints propios'
 };
 const result = cp.spawnSync('cargo', ['metadata','--offline','--no-deps','--format-version','1'], {cwd:root,encoding:'utf8'});
 if(result.status !== 0) throw Error(result.stderr);
@@ -32,7 +35,6 @@ for(const id of future) {
  if(!fs.existsSync(file)) fs.writeFileSync(file,`# ${id} — pendiente\n\nFrontera independiente reservada. Sin implementacion conectada todavia.\nAntes de integrarla: definir entradas, salidas, permisos, presupuesto y prueba\nde aceptacion. Ver docs/MODULARIDAD.md y docs/PLAN.md.\n`);
  nodes.push({id,path:folder,purpose:'Frontera de '+id,status:'planned',dependencies:[]});
 }
-nodes.push({id:'wgpu',path:'gpu/wgpu',purpose:'Adaptador GPU sin filtrar tipos al nucleo',status:'planned',dependencies:[]});
 const byId = new Map(nodes.map(n=>[n.id,n]));
 function level(id, stack=[]) {
  if(stack.includes(id)) throw Error('Ciclo: '+[...stack,id].join(' -> '));

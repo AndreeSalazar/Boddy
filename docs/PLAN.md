@@ -4,6 +4,10 @@ Actualización Boddy 1.0: existe un adaptador de chat a un motor externo local
 (llama.cpp/Vulkan) y una interfaz Windows. No sustituye la entrega de inferencia
 propia WGPU ni el ejecutor aislado. Ver `window/README.md` y `docs/ESTADO.md`.
 
+Prioridad elegida por el dueño: aprender entrenamiento desde cero. Implementado
+un laboratorio MLP con pesos propios, corpus pequeño, WGPU y referencia CPU.
+No completa la entrega del asistente general. Ver MODELO-PROPIO.md.
+
 6 de noviembre: disponible el primer investigador de lectura con núcleo, selección
 de fuentes, citas verificadas y registro de tarea. Es un subconjunto de la entrega
 4; planes abiertos, reanudación y ejecución siguen pendientes. Ver AGENTE-LECTURA.md.
@@ -26,10 +30,10 @@ ejecución simultánea de varios agentes.
 
 ## Siguiente paso concreto
 
-Construir un corpus pequeño de documentación Python fijado a una versión, con
-referencias y consultas léxicas. Elegir diez preguntas con respuestas contrastables
-antes de medir recuperación. Después comparar candidatos de modelo y compatibilidad
-WGPU con un contexto pequeño; no descargar varios modelos a ciegas.
+Para el modelo propio: ampliar corpus y validación independiente sobre la línea
+base Tiny, después probar Unicode y embeddings con las mismas mediciones.
+Documentación Python recuperable sigue siendo un objetivo distinto: corpus fijado
+a una versión, referencias y diez preguntas contrastables antes de medir recuperación.
 
 ## Cómo medir la IA cuando exista
 

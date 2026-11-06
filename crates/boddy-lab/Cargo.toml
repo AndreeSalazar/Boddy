@@ -1,0 +1,16 @@
+[package]
+name = "boddy-lab"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+boddy-neural = { path = "../boddy-neural" }
+boddy-wgpu = { path = "../../gpu/wgpu" }
+boddy-reader = { path = "../boddy-reader" }
+serde_json = "1"
+sha2 = "0.10"

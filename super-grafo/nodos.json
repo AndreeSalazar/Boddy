@@ -97,6 +97,7 @@
         "boddy-core",
         "boddy-desktop",
         "boddy-inference",
+        "boddy-lab",
         "boddy-reader",
         "boddy-supergrafo",
         "boddy-telemetry"
@@ -120,6 +121,39 @@
       "no_std": false,
       "dependencies": [
         "boddy-reader"
+      ],
+      "layer": 1
+    },
+    {
+      "id": "boddy-lab",
+      "path": "crates/boddy-lab",
+      "purpose": "Experimento desde cero, paridad CPU/GPU, metricas y checkpoints propios",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [
+        "boddy-neural",
+        "boddy-reader",
+        "boddy-wgpu"
+      ],
+      "layer": 2
+    },
+    {
+      "id": "boddy-neural",
+      "path": "crates/boddy-neural",
+      "purpose": "MLP no_std de siguiente caracter y gradientes CPU de referencia",
+      "status": "implemented",
+      "no_std": true,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "boddy-wgpu",
+      "path": "gpu/wgpu",
+      "purpose": "Entrenamiento MLP con shaders propios WGPU y tipos GPU privados",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [
+        "boddy-neural"
       ],
       "layer": 1
     },
@@ -214,14 +248,6 @@
       "id": "evaluation",
       "path": "modules/evaluation",
       "purpose": "Frontera de evaluation",
-      "status": "planned",
-      "dependencies": [],
-      "layer": 6
-    },
-    {
-      "id": "wgpu",
-      "path": "gpu/wgpu",
-      "purpose": "Adaptador GPU sin filtrar tipos al nucleo",
       "status": "planned",
       "dependencies": [],
       "layer": 6

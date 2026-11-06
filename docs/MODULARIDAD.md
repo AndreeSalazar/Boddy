@@ -12,7 +12,7 @@ Las crates actuales comparten proceso y no constituyen sandboxes independientes.
 | boddy-core | Estados, evidencia y cupos, no_std | contracts, mission, policy |
 | boddy-catalog | Metadatos documentales | Ninguna |
 | boddy-supergrafo | Proceso externo y consultas acotadas | Ninguna |
-| boddy-app | Casos de uso y comandos | core, catalog, supergrafo |
+| boddy-app | Casos de uso y comandos | core, catalog, supergrafo, inference, telemetry, reader, agent, desktop, lab |
 | boddy-cli | Entrada/salida de terminal | app |
 | boddy-inference | Cliente del modelo local, sin herramientas | serde_json; motor externo por loopback |
 | boddy-telemetry | Muestra de VRAM y uso del dispositivo | serde_json; nvidia-smi externo |
@@ -20,10 +20,12 @@ Las crates actuales comparten proceso y no constituyen sandboxes independientes.
 | boddy-desktop | Aperturas manuales registradas del escritorio | reader; procesos locales sin shell |
 | boddy-agent | Investigación de lectura y registro de tareas | core, inference, reader, supergrafo |
 | window | Cuadro de comandos Windows | CLI por proceso |
-| gpu/wgpu | Backend GPU pendiente | Contrato futuro con host |
+| boddy-neural | MLP, gradientes y referencia CPU no_std | libm; alloc del consumidor |
+| gpu/wgpu (boddy-wgpu) | Forward, gradientes y SGD GPU | neural; WGPU privado |
+| boddy-lab | Experimento, corpus y checkpoints | neural, wgpu, reader |
 
-Existe un primer adaptador de inferencia a llama.cpp; no una implementación propia
-de redes neuronales o WGPU. Módulos futuros separados: inferencia propia, tokenizer, ingestión, recuperación,
+Existe un adaptador de inferencia a llama.cpp y una MLP propia educativa con WGPU,
+separada del chat. Módulos futuros del asistente general: inferencia propia, tokenizer, ingestión, recuperación,
 sesiones persistentes, ejecución aislada, verificación y evaluaciones del agente.
 Se distinguen en el registro de nodos como pendientes, sin crates vacías que
 prometan funcionalidad. Su implementación deberá fijar entradas, salidas, efectos,

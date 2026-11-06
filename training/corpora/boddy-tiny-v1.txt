@@ -1,0 +1,50 @@
+boddy aprende con ejemplos pequenos.
+boddy lee un texto y predice el siguiente caracter.
+el modelo empieza con pesos al azar.
+la red tiene una capa oculta y una salida.
+entrenar significa ajustar los pesos con ejemplos.
+el gradiente indica como cambia la perdida.
+la gpu calcula los valores de la red.
+rust organiza los datos y guarda los resultados.
+cada modulo tiene una responsabilidad clara.
+el grafo muestra las dependencias entre modulos.
+primero observamos y despues medimos el cambio.
+una prueba compara el calculo de cpu con gpu.
+la memoria guarda los pesos y los datos del lote.
+un lote pequeno usa pocos recursos.
+boddy aprende a predecir letras de este texto.
+el contexto contiene ocho caracteres anteriores.
+la salida asigna una probabilidad a cada caracter.
+la perdida baja cuando mejora la prediccion.
+guardar un modelo permite cargar sus pesos despues.
+el experimento registra la semilla y el corpus.
+no hay un profesor externo en este entrenamiento.
+no usamos pesos de otro modelo en este ejemplo.
+los datos son frases escritas para este laboratorio.
+el resultado es educativo y necesita evaluacion.
+boddy organiza sus modulos con un mapa claro.
+la cpu verifica el resultado de la gpu.
+una capa transforma el contexto en valores ocultos.
+otra capa calcula la salida de la red.
+cada paso ajusta un poco los pesos del modelo.
+el entrenamiento repite ejemplos de un texto pequeno.
+podemos medir la perdida antes y despues.
+tambien reservamos texto para la validacion.
+aprender estas frases no demuestra razonamiento general.
+el modelo pequeno sirve para estudiar redes neuronales.
+rust mantiene el nucleo separado de la ventana.
+la ventana muestra los resultados del laboratorio.
+el grafo documenta la arquitectura y sus limites.
+boddy puede crecer cuando las pruebas muestran mejoras.
+la gpu procesa un lote de caracteres por paso.
+un archivo conserva los pesos y la configuracion.
+validar permite detectar errores del entrenamiento.
+medir recursos permite comparar experimentos.
+la precision se comprueba con ejemplos separados.
+una semilla fija hace reproducible el inicio.
+un modelo propio necesita datos y pruebas propias.
+los pesos nuevos empiezan sin conocimiento aprendido.
+el laboratorio muestra lo que aprende esta red pequena.
+el siguiente experimento debe comparar sus resultados.
+el contexto corto limita lo que puede recordar.
+boddy registra evidencia de cada entrenamiento.

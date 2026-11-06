@@ -1,0 +1,15 @@
+[package]
+name = "boddy-wgpu"
+version.workspace = true
+edition.workspace = true
+rust-version = "1.87"
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+boddy-neural = { path = "../../crates/boddy-neural" }
+wgpu = { version = "30.0.1", default-features = false, features = ["std", "vulkan", "wgsl", "parking_lot"] }
+pollster = "0.4"
+bytemuck = { version = "1", features = ["derive"] }

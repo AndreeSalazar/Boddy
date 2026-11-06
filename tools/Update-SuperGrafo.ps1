@@ -57,7 +57,8 @@ no son defectos confirmados. Las comprobaciones de Rust están en `docs/ESTADO.m
 ## Lo que sigue
 
 Estado vigente en docs/ESTADO.md y window/README.md. El chat local usa un motor
-externo; WGPU propio, corpus versionado, ejecutor aislado y ciclo del agente siguen pendientes.
+externo. El laboratorio Tiny entrena una MLP propia por WGPU con corpus versionado;
+no sustituye al chat. Ejecutor aislado y agente general siguen pendientes.
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.
 '@
 $map = $map.Replace('{{FILES}}', [string]$summary.archivos_indexados)

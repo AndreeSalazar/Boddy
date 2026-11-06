@@ -46,6 +46,24 @@ fn demo() -> Result<(), String> {
 
 pub fn run(args: &[String]) -> Result<(), String> {
     match args {
+        [command] if command == "entrenar" => {
+            let mut input = String::new();
+            io::stdin()
+                .take(1025)
+                .read_to_string(&mut input)
+                .map_err(|e| e.to_string())?;
+            if input.len() > 1024 {
+                return Err("Peticion de laboratorio demasiado grande".into());
+            }
+            let request: serde_json::Value =
+                serde_json::from_str(&input).map_err(|e| e.to_string())?;
+            let result = boddy_lab::train(
+                root(),
+                request["steps"].as_u64().ok_or("Falta steps entero")?,
+            )?;
+            println!("{result}");
+            Ok(())
+        }
         [command] if command == "pc" => {
             let mut input = String::new();
             io::stdin()
@@ -127,7 +145,7 @@ pub fn run(args: &[String]) -> Result<(), String> {
             Ok(())
         }
         [] => {
-            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat con presupuesto de tokens y metricas; ejecucion autonoma y sandbox pendientes.");
+            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  entrenar (JSON por stdin: steps entero 1..2000)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny desde cero; ejecucion autonoma y sandbox pendientes.");
             Ok(())
         }
         [command] if command == "proposito" => {

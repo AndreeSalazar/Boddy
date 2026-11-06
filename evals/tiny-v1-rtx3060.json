@@ -1,0 +1,97 @@
+{
+  "backend": "WGPU/Vulkan",
+  "batch_tokens": 256,
+  "checkpoint_path": "data/lab/tiny-1793948791474969200/checkpoint.json",
+  "checkpoint_roundtrip": true,
+  "context_tokens": 8,
+  "corpus_bytes": 2403,
+  "corpus_sha256": "c0baddb32cb56f6c66f0631c76dcf67ecb62298f15c0a61cf8f2bea545e63ead",
+  "curve": [
+    {
+      "step": 0,
+      "train_loss": 4.565915107727051
+    },
+    {
+      "step": 100,
+      "train_loss": 2.9919180870056152
+    },
+    {
+      "step": 200,
+      "train_loss": 2.780886173248291
+    },
+    {
+      "step": 300,
+      "train_loss": 2.56927752494812
+    },
+    {
+      "step": 400,
+      "train_loss": 2.4005916118621826
+    },
+    {
+      "step": 500,
+      "train_loss": 2.25177001953125
+    },
+    {
+      "step": 600,
+      "train_loss": 2.156989336013794
+    },
+    {
+      "step": 700,
+      "train_loss": 2.0302274227142334
+    },
+    {
+      "step": 800,
+      "train_loss": 1.9485442638397217
+    },
+    {
+      "step": 900,
+      "train_loss": 1.8610165119171143
+    },
+    {
+      "step": 1000,
+      "train_loss": 1.8081185817718506
+    }
+  ],
+  "device": "NVIDIA GeForce RTX 3060",
+  "elapsed_ms": 1229,
+  "id": "tiny-1793948791474969200",
+  "learning_rate": 0.2,
+  "limitations": [
+    "ASCII solamente",
+    "Contexto de ocho caracteres",
+    "Corpus pequeno y validacion relacionada: no mide capacidades generales",
+    "Sin aprendizaje automatico de conversaciones"
+  ],
+  "loss": {
+    "train_after": 1.8081185817718506,
+    "train_before": 4.565915107727051,
+    "validation_after": 2.1640682220458984,
+    "validation_before": 4.570323467254639
+  },
+  "memory_note": "Buffers declarados; excluye driver, compilador, staging y otros procesos. No es VRAM total ni pico.",
+  "metrics_path": "data/lab/tiny-1793948791474969200/metrics.json",
+  "model": "Boddy Tiny 1.0",
+  "parameters": 27776,
+  "parity": {
+    "gradient_max_abs": 7.450580596923828e-9,
+    "loss_max_abs": 4.76837158203125e-7,
+    "sgd_max_abs": 7.450580596923828e-9
+  },
+  "provenance": {
+    "initialization": "seeded_random",
+    "pretrained_weights": null,
+    "teacher_model": null
+  },
+  "purpose": "Experimento educativo de siguiente caracter; no es asistente general",
+  "sample": "  boddy a aqteso xJarespz damo es didpte ra ;el.\nla melos.\nel cos y yrabarida oe ertesterentente ca las dedila ereuenililamos.\non ewteduP. ca\"aun larada ula cos ill.\nla can cpde to fodereCirca des ramegia. na.\nn..\nla cabto .\nentruno mel coduio se racastoc lbior ai",
+  "sample_backend": "CPU reference",
+  "schema": 1,
+  "seed": 1337,
+  "steps": 1000,
+  "tensor_buffer_bytes": 239904,
+  "train_characters": 1897,
+  "training_target_tokens": 32000,
+  "validation_characters": 506,
+  "vocab_tokens": 96,
+  "weight_f32_bytes": 111104
+}

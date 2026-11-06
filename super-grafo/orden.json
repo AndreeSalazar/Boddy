@@ -92,6 +92,14 @@
     "crates/boddy-desktop": [
       340,
       145
+    ],
+    "crates/boddy-lab": [
+      680,
+      145
+    ],
+    "crates/boddy-neural": [
+      0,
+      1015
     ]
   },
   "desplegadas": [

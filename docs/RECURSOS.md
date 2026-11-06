@@ -52,7 +52,8 @@ distintas. Ahorrar VRAM mediante descarga a RAM puede aumentar la latencia por
 transferencias. Con 16 GB de RAM también hay un presupuesto del sistema anfitrión.
 El presupuesto de contexto de la ventana NO cambia la reserva KV del servidor,
 que sigue configurado para 8192 tokens. No se afirma que recortar entrada libere
-inmediatamente esa VRAM. La integración WGPU continúa pendiente.
+inmediatamente esa VRAM. El laboratorio Tiny usa WGPU propio para entrenamiento;
+sus buffers y tokens se contabilizan aparte. Ver MODELO-PROPIO.md.
 
 Fuentes: [API del servidor llama.cpp](https://github.com/ggml-org/llama.cpp/tree/master/tools/server)
 para plantilla, tokenización, caché y métricas;

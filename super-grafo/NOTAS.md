@@ -25,13 +25,22 @@ Lectura de fuentes acotada y evidencia con SHA256. Estado: implemented. Dependen
 Consultas externas acotadas. Estado: implemented. Dependencias: ninguna.
 
 ## crates/boddy-app
-Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-agent, boddy-catalog, boddy-core, boddy-desktop, boddy-inference, boddy-reader, boddy-supergrafo, boddy-telemetry.
+Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-agent, boddy-catalog, boddy-core, boddy-desktop, boddy-inference, boddy-lab, boddy-reader, boddy-supergrafo, boddy-telemetry.
 
 ## crates/boddy-catalog
 Catalogo documental local. Estado: implemented. Dependencias: ninguna.
 
 ## crates/boddy-desktop
 Acciones manuales de escritorio registradas y auditadas. Estado: implemented. Dependencias: boddy-reader.
+
+## crates/boddy-lab
+Experimento desde cero, paridad CPU/GPU, metricas y checkpoints propios. Estado: implemented. Dependencias: boddy-neural, boddy-reader, boddy-wgpu.
+
+## crates/boddy-neural
+MLP no_std de siguiente caracter y gradientes CPU de referencia. Estado: implemented. Dependencias: ninguna.
+
+## gpu/wgpu
+Entrenamiento MLP con shaders propios WGPU y tipos GPU privados. Estado: implemented. Dependencias: boddy-neural.
 
 ## crates/boddy-telemetry
 Muestra de VRAM y uso de GPU, independiente del modelo. Estado: implemented. Dependencias: ninguna.
@@ -65,6 +74,3 @@ Frontera de verification. Estado: planned. Dependencias: ninguna.
 
 ## modules/evaluation
 Frontera de evaluation. Estado: planned. Dependencias: ninguna.
-
-## gpu/wgpu
-Adaptador GPU sin filtrar tipos al nucleo. Estado: planned. Dependencias: ninguna.
