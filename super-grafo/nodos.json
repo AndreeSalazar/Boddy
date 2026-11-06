@@ -5,13 +5,14 @@
     {
       "id": "boddy-agent",
       "path": "crates/boddy-agent",
-      "purpose": "Investigador con busqueda de componentes y una correccion de citas verificada",
+      "purpose": "Investigador de lectura y controlador Rust de ranking, propuesta y verificacion acotada",
       "status": "implemented",
       "no_std": false,
       "dependencies": [
         "boddy-core",
         "boddy-inference",
         "boddy-reader",
+        "boddy-rust-tasks",
         "boddy-supergrafo"
       ],
       "layer": 3
@@ -77,6 +78,15 @@
       "layer": 0
     },
     {
+      "id": "boddy-rust-tasks",
+      "path": "crates/boddy-rust-tasks",
+      "purpose": "Curriculo Rust y ejercicios tipados no_std con verificador finito de expresiones cerradas",
+      "status": "implemented",
+      "no_std": true,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
       "id": "boddy-supergrafo",
       "path": "crates/boddy-supergrafo",
       "purpose": "Consultas externas acotadas",
@@ -133,6 +143,7 @@
       "dependencies": [
         "boddy-neural",
         "boddy-reader",
+        "boddy-rust-tasks",
         "boddy-transformer",
         "boddy-wgpu"
       ],

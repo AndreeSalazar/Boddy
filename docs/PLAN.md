@@ -33,6 +33,9 @@ ejecución simultánea de varios agentes.
 Para el modelo propio: Attention 0.1 ya prueba UTF-8, embeddings y atención causal
 en un decoder educativo (ATTENTION.md). Lo siguiente es corpus y tareas de
 evaluación independientes; medir CPU/cinta GPU antes de optimizar kernels.
+La escuela Rust añade un corpus inicial y búsqueda verificada de expresiones
+conocidas (ESCUELA-RUST.md). Programación de proyectos, sesiones reanudables y
+ejecución aislada siguen pendientes; los seis ejercicios no completan esas entregas.
 Documentación Python recuperable sigue siendo un objetivo distinto: corpus fijado
 a una versión, referencias y diez preguntas contrastables antes de medir recuperación.
 

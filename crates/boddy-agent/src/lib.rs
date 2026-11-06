@@ -2,6 +2,7 @@
 mod planning;
 pub mod records;
 mod report;
+pub mod rust_school;
 use boddy_core::{Mission, Policy, Task, Tool};
 use serde_json::{json, Value};
 use std::io::Write;

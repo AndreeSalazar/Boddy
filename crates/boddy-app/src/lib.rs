@@ -46,7 +46,12 @@ fn demo() -> Result<(), String> {
 
 pub fn run(args: &[String]) -> Result<(), String> {
     match args {
-        [command] if command == "entrenar" || command == "modelo" || command == "atencion" => {
+        [command]
+            if command == "entrenar"
+                || command == "modelo"
+                || command == "atencion"
+                || command == "escuela-rust" =>
+        {
             let mut input = String::new();
             io::stdin()
                 .take(4097)
@@ -57,7 +62,25 @@ pub fn run(args: &[String]) -> Result<(), String> {
             }
             let request: serde_json::Value =
                 serde_json::from_str(&input).map_err(|e| e.to_string())?;
-            let result = if command == "atencion" {
+            let result = if command == "escuela-rust" {
+                match request["action"].as_str().ok_or("Falta accion Rust")? {
+                    "tasks" => boddy_agent::rust_school::catalog(),
+                    "run" => {
+                        let id = request["id"].as_str().ok_or("Falta modelo Attention")?;
+                        let ranker = boddy_lab::attention::Ranker::load(root(), id)?;
+                        boddy_agent::rust_school::run(
+                            root(),
+                            id,
+                            request["max_attempts"]
+                                .as_u64()
+                                .ok_or("Falta max_attempts")?,
+                            ranker.provenance(),
+                            |prefix, bodies| ranker.scores(prefix, bodies),
+                        )?
+                    }
+                    _ => return Err("Accion Rust no permitida".into()),
+                }
+            } else if command == "atencion" {
                 boddy_lab::attention::command(root(), &request)?
             } else if command == "modelo" {
                 boddy_lab::model_command(root(), &request)?
@@ -155,7 +178,7 @@ pub fn run(args: &[String]) -> Result<(), String> {
             Ok(())
         }
         [] => {
-            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  atencion (JSON por stdin: train, list, inspect, generate)\n  modelo (JSON por stdin: list, inspect, generate)\n  entrenar (JSON por stdin: steps 1..2000, parent_id opcional)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny reanudable; ejecucion autonoma y sandbox pendientes.");
+            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  escuela-rust (JSON por stdin: tasks, run)\n  atencion (JSON por stdin: train, list, inspect, generate)\n  modelo (JSON por stdin: list, inspect, generate)\n  entrenar (JSON por stdin: steps 1..2000, parent_id opcional)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny reanudable; ejecucion autonoma y sandbox pendientes.");
             Ok(())
         }
         [command] if command == "proposito" => {

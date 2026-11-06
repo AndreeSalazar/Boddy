@@ -1,7 +1,7 @@
 # Nodos de Boddy
 
 ## crates/boddy-agent
-Investigador con busqueda de componentes y una correccion de citas verificada. Estado: implemented. Dependencias: boddy-core, boddy-inference, boddy-reader, boddy-supergrafo.
+Investigador de lectura y controlador Rust de ranking, propuesta y verificacion acotada. Estado: implemented. Dependencias: boddy-core, boddy-inference, boddy-reader, boddy-rust-tasks, boddy-supergrafo.
 
 ## crates/boddy-core
 Estados, cupos y evidencia. Estado: implemented. Dependencias: boddy-contracts, boddy-mission, boddy-policy.
@@ -21,6 +21,9 @@ Chat con motor local por loopback, sin herramientas. Estado: implemented. Depend
 ## crates/boddy-reader
 Lectura de fuentes acotada y evidencia con SHA256. Estado: implemented. Dependencias: ninguna.
 
+## crates/boddy-rust-tasks
+Curriculo Rust y ejercicios tipados no_std con verificador finito de expresiones cerradas. Estado: implemented. Dependencias: ninguna.
+
 ## crates/boddy-supergrafo
 Consultas externas acotadas. Estado: implemented. Dependencias: ninguna.
 
@@ -34,7 +37,7 @@ Catalogo documental local. Estado: implemented. Dependencias: ninguna.
 Acciones manuales de escritorio registradas y auditadas. Estado: implemented. Dependencias: boddy-reader.
 
 ## crates/boddy-lab
-Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios. Estado: implemented. Dependencias: boddy-neural, boddy-reader, boddy-transformer, boddy-wgpu.
+Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios. Estado: implemented. Dependencias: boddy-neural, boddy-reader, boddy-rust-tasks, boddy-transformer, boddy-wgpu.
 
 ## crates/boddy-neural
 MLP no_std de siguiente caracter y gradientes CPU de referencia. Estado: implemented. Dependencias: ninguna.

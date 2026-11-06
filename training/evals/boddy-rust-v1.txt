@@ -1,0 +1,24 @@
+fn acumular(a: i32, b: i32) -> i32 {
+// objetivo: suma
+a + b
+}
+fn diferencia_firmada(a: i32, b: i32) -> i32 {
+// objetivo: resta
+a - b
+}
+fn escalar(a: i32, b: i32) -> i32 {
+// objetivo: producto
+a * b
+}
+fn seleccionar_superior(a: i32, b: i32) -> i32 {
+// objetivo: mayor
+a.max(b)
+}
+fn seleccionar_inferior(a: i32, b: i32) -> i32 {
+// objetivo: menor
+a.min(b)
+}
+fn valor_sin_signo(a: i32, _b: i32) -> i32 {
+// objetivo: absoluto
+a.abs()
+}

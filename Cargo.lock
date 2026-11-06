@@ -75,6 +75,7 @@ dependencies = [
  "boddy-core",
  "boddy-inference",
  "boddy-reader",
+ "boddy-rust-tasks",
  "boddy-supergrafo",
  "serde_json",
 ]
@@ -140,6 +141,7 @@ version = "0.1.0"
 dependencies = [
  "boddy-neural",
  "boddy-reader",
+ "boddy-rust-tasks",
  "boddy-transformer",
  "boddy-wgpu",
  "serde_json",
@@ -171,6 +173,10 @@ dependencies = [
  "serde_json",
  "sha2",
 ]
+
+[[package]]
+name = "boddy-rust-tasks"
+version = "0.1.0"
 
 [[package]]
 name = "boddy-supergrafo"

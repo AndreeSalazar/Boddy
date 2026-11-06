@@ -104,6 +104,10 @@
     "crates/boddy-transformer": [
       0,
       1160
+    ],
+    "crates/boddy-rust-tasks": [
+      0,
+      1305
     ]
   },
   "desplegadas": [

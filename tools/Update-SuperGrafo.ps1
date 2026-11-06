@@ -60,6 +60,8 @@ Estado vigente en docs/ESTADO.md y window/README.md. El chat local usa un motor
 externo. Los laboratorios Tiny y Attention entrenan una MLP y un decoder causal
 propios por WGPU con corpus versionado; Attention incorpora UTF-8 y embeddings;
 no sustituye al chat. Ejecutor aislado y agente general siguen pendientes.
+La escuela Rust añade entrenamiento de patrones y un ciclo acotado de propuesta
+y verificacion entre expresiones conocidas, sin ejecutar proyectos.
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.
 '@
 $map = $map.Replace('{{FILES}}', [string]$summary.archivos_indexados)

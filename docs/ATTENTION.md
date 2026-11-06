@@ -26,6 +26,17 @@ tensoriales paralelos y benchmarks son trabajo futuro. La generación usa CPU.
 
 ## Datos, texto y archivos
 
+El perfil original es `general-v1`. La escuela añade `rust-v1`, con corpus y
+validación de texto separados (ESCUELA-RUST.md). El selector permite continuar
+en el perfil del padre o elegir otro: cambiarlo transfiere pesos y reinicia el
+muestreador, registrando `transfer_profile`. El JSON guarda perfil y hash de
+validación; los tamaños iniciales de la tabla de esta página son históricos,
+anteriores a esos campos. Los pesos siguen ocupando 42.176 bytes.
+
+El host también expone un Ranker de continuaciones conocidas por pérdida media
+por byte. No recibe casos ni respuestas del verificador de ejercicios. Su uso
+en búsqueda de expresiones no equivale a generación libre de programas.
+
 Corpus educativo propio `training/corpora/boddy-attention-v1.txt`, con español,
 acentos y algunos símbolos. Se separa el último 20 % de líneas antes de crear
 ventanas; se evalúan los mismos 64 contextos de cada partición antes y después.

@@ -14,18 +14,19 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 
 | Ruta | Papel | Depende de |
 |---|---|---|
-| `crates/boddy-agent` | Investigador con busqueda de componentes y una correccion de citas verificada (implemented) | boddy-core, boddy-inference, boddy-reader, boddy-supergrafo |
+| `crates/boddy-agent` | Investigador de lectura y controlador Rust de ranking, propuesta y verificacion acotada (implemented) | boddy-core, boddy-inference, boddy-reader, boddy-rust-tasks, boddy-supergrafo |
 | `crates/boddy-core` | Estados, cupos y evidencia (implemented) | boddy-contracts, boddy-mission, boddy-policy |
 | `crates/boddy-contracts` | Errores compartidos sin plataforma (implemented) |  |
 | `crates/boddy-mission` | Razon, objetivo y aceptacion (implemented) | boddy-contracts |
 | `crates/boddy-policy` | Capacidades explicitas (implemented) |  |
 | `crates/boddy-inference` | Chat con motor local por loopback, sin herramientas (implemented) |  |
 | `crates/boddy-reader` | Lectura de fuentes acotada y evidencia con SHA256 (implemented) |  |
+| `crates/boddy-rust-tasks` | Curriculo Rust y ejercicios tipados no_std con verificador finito de expresiones cerradas (implemented) |  |
 | `crates/boddy-supergrafo` | Consultas externas acotadas (implemented) |  |
 | `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-agent, boddy-catalog, boddy-core, boddy-desktop, boddy-inference, boddy-lab, boddy-reader, boddy-supergrafo, boddy-telemetry |
 | `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
 | `crates/boddy-desktop` | Acciones manuales de escritorio registradas y auditadas (implemented) | boddy-reader |
-| `crates/boddy-lab` | Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios (implemented) | boddy-neural, boddy-reader, boddy-transformer, boddy-wgpu |
+| `crates/boddy-lab` | Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios (implemented) | boddy-neural, boddy-reader, boddy-rust-tasks, boddy-transformer, boddy-wgpu |
 | `crates/boddy-neural` | MLP no_std de siguiente caracter y gradientes CPU de referencia (implemented) |  |
 | `crates/boddy-transformer` | Decoder no_std con embeddings, atencion causal, RMSNorm y autodiferenciacion de referencia (implemented) |  |
 | `gpu/wgpu` | Entrenamiento MLP y cinta Transformer con shaders propios y tipos WGPU privados (implemented) | boddy-neural, boddy-transformer |
@@ -46,7 +47,7 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 
 ## Ãšltima instantÃ¡nea
 
-Archivos indexados: 166. Relaciones lÃ©xicas: 23. Ciclos reportados:
+Archivos indexados: 179. Relaciones lÃ©xicas: 26. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantÃ¡nea: generar este mapa agrega o modifica archivos y no produce
 una fotografÃ­a inmutable de sÃ­ mismo. Consultar de nuevo para el estado actual.
@@ -60,4 +61,6 @@ Estado vigente en docs/ESTADO.md y window/README.md. El chat local usa un motor
 externo. Los laboratorios Tiny y Attention entrenan una MLP y un decoder causal
 propios por WGPU con corpus versionado; Attention incorpora UTF-8 y embeddings;
 no sustituye al chat. Ejecutor aislado y agente general siguen pendientes.
+La escuela Rust aÃ±ade entrenamiento de patrones y un ciclo acotado de propuesta
+y verificacion entre expresiones conocidas, sin ejecutar proyectos.
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.

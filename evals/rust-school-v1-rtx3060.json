@@ -1,0 +1,42 @@
+{
+    "schema":  1,
+    "test":  "rust-school-v1",
+    "parent_model":  "attn-1793979963329433800",
+    "rust_model":  "attn-1793981266218979700",
+    "parent_unchanged":  true,
+    "training_profile":  "rust-v1",
+    "resume_kind":  "transfer_profile",
+    "loss":  {
+                 "train_after":  3.8320488929748535,
+                 "train_before":  4.487020969390869,
+                 "validation_after":  4.119173526763916,
+                 "validation_before":  4.8796467781066895
+             },
+    "before":  {
+                   "tasks":  6,
+                   "search":  2,
+                   "journal":  "data/rust-school/school-1793981259435713200/report.json",
+                   "first_choice":  0
+               },
+    "after":  {
+                  "tasks":  6,
+                  "search":  2,
+                  "journal":  "data/rust-school/school-1793981266870232700/report.json",
+                  "first_choice":  1
+              },
+    "single_attempt_solved":  1,
+    "state":  "Stopped",
+    "source_path":  "data/rust-school/school-1793981266870232700/solutions.rs",
+    "policy":  {
+                   "execute_code":  false,
+                   "network":  false,
+                   "write_scope":  "Solo artefactos de esta tarea en data/rust-school"
+               },
+    "limitations":  [
+                        "Nueve cuerpos de funciones conocidos; no genera programas libres",
+                        "Completar por busqueda no demuestra que el modelo sepa programar",
+                        "Aciertos del primer candidato y del agente se informan por separado",
+                        "Casos conocidos durante desarrollo, con operandos distintos del corpus",
+                        "Sin rustc, shell, red ni cambios a proyectos; sin autoentrenamiento"
+                    ]
+}

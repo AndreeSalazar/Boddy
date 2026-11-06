@@ -144,28 +144,67 @@ fn generate(w: &[f32], prefix: &str, count: usize) -> Result<String, String> {
     String::from_utf8(bytes).map_err(|e| e.to_string())
 }
 pub fn train(root: &Path, steps: u64, parent: Option<&str>) -> Result<Value, String> {
+    let profile = if let Some(id) = parent {
+        let (m, _) = load(root, id)?;
+        m["training_profile"]
+            .as_str()
+            .unwrap_or("general-v1")
+            .to_string()
+    } else {
+        "general-v1".to_string()
+    };
+    train_profile(root, steps, parent, &profile)
+}
+pub fn train_profile(
+    root: &Path,
+    steps: u64,
+    parent: Option<&str>,
+    profile: &str,
+) -> Result<Value, String> {
     if !(1..=1000).contains(&steps) {
         return Err("Attention: 1 a 1000 pasos".into());
     }
     let started = Instant::now();
-    let lines: Vec<_> = CORPUS.split_inclusive('\n').collect();
-    let cut = lines.len() * 4 / 5;
-    let training = encode(&lines[..cut].concat());
-    let validation = encode(&lines[cut..].concat());
+    let (training_text, validation_text, corpus_hash) = match profile {
+        "general-v1" => {
+            let lines: Vec<_> = CORPUS.split_inclusive('\n').collect();
+            let cut = lines.len() * 4 / 5;
+            (
+                lines[..cut].concat(),
+                lines[cut..].concat(),
+                hash(CORPUS.as_bytes()),
+            )
+        }
+        "rust-v1" => (
+            boddy_rust_tasks::TRAIN.to_string(),
+            boddy_rust_tasks::VALIDATION.to_string(),
+            hash(boddy_rust_tasks::TRAIN.as_bytes()),
+        ),
+        _ => return Err("Perfil de aprendizaje desconocido".into()),
+    };
+    let training = encode(&training_text);
+    let validation = encode(&validation_text);
     let graph = Graph::build(C).map_err(str::to_string)?;
     let mut sampler = Rng(42);
     let mut completed = 0;
+    let mut resume_kind = "fresh";
     let initial = if let Some(id) = parent {
         let (m, w) = load(root, id)?;
-        if m["corpus_sha256"] != hash(CORPUS.as_bytes())
+        let same_profile = m["training_profile"].as_str().unwrap_or("general-v1") == profile;
+        if (same_profile && m["corpus_sha256"] != corpus_hash)
             || m["training_protocol"] != "attention-sgd-clip1-v1"
         {
             return Err("Corpus o protocolo Attention incompatible".into());
         }
-        sampler.0 = m["sampler_state"]
-            .as_u64()
-            .and_then(|v| u32::try_from(v).ok())
-            .ok_or("Estado de muestreo invalido")?;
+        if same_profile {
+            sampler.0 = m["sampler_state"]
+                .as_u64()
+                .and_then(|v| u32::try_from(v).ok())
+                .ok_or("Estado de muestreo invalido")?;
+            resume_kind = "full_state";
+        } else {
+            resume_kind = "transfer_profile";
+        }
         completed = m["completed_steps"].as_u64().ok_or("Pasos invalidos")?;
         w
     } else {
@@ -222,7 +261,12 @@ pub fn train(root: &Path, steps: u64, parent: Option<&str>) -> Result<Value, Str
     let w = gpu.weights()?;
     let after_train = evaluate(&graph, &w, &training)?;
     let after_valid = evaluate(&graph, &w, &validation)?;
-    let text = generate(&w, "Boddy: ", 96)?;
+    let sample_prefix = if profile == "rust-v1" {
+        "fn completar(a: i32, b: i32) -> i32 {\n// objetivo: suma\n"
+    } else {
+        "Boddy: "
+    };
+    let text = generate(&w, sample_prefix, 96)?;
     let id = format!(
         "attn-{}",
         SystemTime::now()
@@ -235,7 +279,7 @@ pub fn train(root: &Path, steps: u64, parent: Option<&str>) -> Result<Value, Str
     let dir = root.join(&relative);
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let bytes: Vec<u8> = w.iter().flat_map(|v| v.to_le_bytes()).collect();
-    let manifest = json!({"schema":1,"model":NAME,"architecture":"boddy-causal-byte-transformer-v1","context":C.context,"dimension":C.dimension,"feed_forward":C.feed_forward,"tokenizer":"utf8-bytes-256-v1","weights_bytes":bytes.len(),"weights_sha256":hash(&bytes),"seed":1337,"sampler_state":sampler.0,"completed_steps":total,"parent_id":parent,"corpus_sha256":hash(CORPUS.as_bytes()),"training_protocol":"attention-sgd-clip1-v1","pretrained_weights":null});
+    let manifest = json!({"schema":1,"model":NAME,"architecture":"boddy-causal-byte-transformer-v1","context":C.context,"dimension":C.dimension,"feed_forward":C.feed_forward,"tokenizer":"utf8-bytes-256-v1","weights_bytes":bytes.len(),"weights_sha256":hash(&bytes),"seed":1337,"sampler_state":sampler.0,"completed_steps":total,"parent_id":parent,"corpus_sha256":corpus_hash,"validation_sha256":hash(validation_text.as_bytes()),"training_profile":profile,"training_protocol":"attention-sgd-clip1-v1","pretrained_weights":null});
     let metadata = serde_json::to_vec(&manifest).map_err(|e| e.to_string())?;
     super::write_new(&dir.join("weights.f32le"), &bytes)?;
     super::write_new(&dir.join("checkpoint.json"), &metadata)?;
@@ -244,11 +288,16 @@ pub fn train(root: &Path, steps: u64, parent: Option<&str>) -> Result<Value, Str
         .iter()
         .zip(&w)
         .any(|(a, b)| a.to_bits() != b.to_bits())
-        || generate(&restored, "Boddy: ", 96)? != text
+        || generate(&restored, sample_prefix, 96)? != text
     {
         return Err("Checkpoint Attention no reproduce pesos o muestra".into());
     }
     let report = json!({"schema":1,"id":id,"model":NAME,"architecture":"one_block_causal_transformer","parameters":C.parameters(),"context_tokens":C.context,"embedding_dimension":C.dimension,"feed_forward":C.feed_forward,"attention_heads":1,"tokenizer":"UTF8 bytes: 256 tokens","device":gpu.device_name,"backend":"WGPU/Vulkan scalar tape reference","nodes":nodes,"tensor_buffer_bytes":gpu.tensor_bytes,"steps":steps,"completed_steps":total,"parent_id":parent,"learning_rate":0.03,"gradient_clip_norm":1.0,"loss":{"train_before":before_train["loss"],"train_after":after_train["loss"],"validation_before":before_valid["loss"],"validation_after":after_valid["loss"]},"validation":{"before":before_valid,"after":after_valid},"validation_improved":after_valid["loss"].as_f64()<before_valid["loss"].as_f64(),"parity":{"loss_max_abs":loss_error,"gradient_max_abs":gradient_error,"sgd_max_abs":update_error},"curve":curve,"sample":text,"sample_backend":"CPU reference; greedy with UTF8 validity mask","elapsed_ms":started.elapsed().as_millis(),"checkpoint_roundtrip":true,"checkpoint_path":format!("{relative}/checkpoint.json"),"storage":{"manifest_bytes":metadata.len(),"weights_bytes":bytes.len(),"new_weight_bytes":bytes.len(),"blob_reused":false},"corpus_sha256":hash(CORPUS.as_bytes()),"provenance":{"pretrained_weights":null,"teacher_model":null},"limitations":["Experimental: no chat ni herramientas","16 bytes de contexto, no 16 caracteres","Una cabeza; FFN tanh; sin RoPE ni SwiGLU","Interprete escalar GPU: no se afirma mejora de rendimiento","Validacion pequena y relacionada; no evalua razonamiento","Formato separado de Tiny 1.0; pesos no intercambiables"]});
+    let mut report = report;
+    report["corpus_sha256"] = json!(corpus_hash);
+    report["validation_sha256"] = json!(hash(validation_text.as_bytes()));
+    report["training_profile"] = json!(profile);
+    report["resume_kind"] = json!(resume_kind);
     super::write_new(
         &dir.join("metrics.json"),
         &serde_json::to_vec(&report).map_err(|e| e.to_string())?,
@@ -257,14 +306,19 @@ pub fn train(root: &Path, steps: u64, parent: Option<&str>) -> Result<Value, Str
 }
 pub fn command(root: &Path, request: &Value) -> Result<Value, String> {
     match request["action"].as_str().ok_or("Falta accion Attention")? {
-        "train" => train(
-            root,
-            request["steps"].as_u64().ok_or("Falta steps")?,
-            match request.get("parent_id") {
+        "train" => {
+            let parent = match request.get("parent_id") {
                 None | Some(Value::Null) => None,
                 Some(v) => Some(v.as_str().ok_or("Padre invalido")?),
-            },
-        ),
+            };
+            let steps = request["steps"].as_u64().ok_or("Falta steps")?;
+            match request.get("profile") {
+                None => train(root, steps, parent),
+                Some(v) => {
+                    train_profile(root, steps, parent, v.as_str().ok_or("Perfil no textual")?)
+                }
+            }
+        }
         "generate" => {
             let id = request["id"].as_str().ok_or("Falta identificador")?;
             let (_, w) = load(root, id)?;
@@ -308,8 +362,8 @@ pub fn command(root: &Path, request: &Value) -> Result<Value, String> {
                     ids.sort_by(|a, b| b.len().cmp(&a.len()).then_with(|| b.cmp(a)));
                     truncated |= ids.len() > 64;
                     for id in ids.iter().take(64) {
-                        if load(root, id).is_ok() {
-                            models.push(json!({"id":id,"model":NAME}));
+                        if let Ok((m, _)) = load(root, id) {
+                            models.push(json!({"id":id,"model":NAME,"profile":m["training_profile"].as_str().unwrap_or("general-v1")}));
                         } else {
                             invalid += 1;
                         }
@@ -321,6 +375,58 @@ pub fn command(root: &Path, request: &Value) -> Result<Value, String> {
             Ok(json!({"models":models,"invalid":invalid,"truncated":truncated}))
         }
         _ => Err("Accion Attention no permitida".into()),
+    }
+}
+
+/// Puntua continuaciones cerradas; no recibe los casos ni respuestas del verificador.
+pub struct Ranker {
+    graph: Graph,
+    weights: Vec<f32>,
+    metadata: Value,
+}
+impl Ranker {
+    pub fn load(root: &Path, id: &str) -> Result<Self, String> {
+        let (metadata, weights) = load(root, id)?;
+        Ok(Self {
+            graph: Graph::build(C).map_err(str::to_string)?,
+            weights,
+            metadata,
+        })
+    }
+    pub fn provenance(&self) -> Value {
+        self.metadata.clone()
+    }
+    pub fn scores(&self, prefix: &str, candidates: &[&str]) -> Result<Vec<f32>, String> {
+        if prefix.len() > 512
+            || candidates.is_empty()
+            || candidates.len() > 16
+            || candidates.iter().any(|s| s.is_empty() || s.len() > 64)
+        {
+            return Err("Ranking fuera de limites".into());
+        }
+        let mut context = vec![32; C.context.saturating_sub(prefix.len())];
+        context.extend(encode(prefix));
+        candidates
+            .iter()
+            .map(|text| {
+                let mut tokens = context.clone();
+                let mut loss = 0.0;
+                for b in text.bytes() {
+                    loss += self
+                        .graph
+                        .evaluate(
+                            &self.weights,
+                            &tokens[tokens.len() - C.context..],
+                            u32::from(b),
+                            false,
+                        )
+                        .map_err(str::to_string)?
+                        .loss;
+                    tokens.push(u32::from(b));
+                }
+                Ok(loss / text.len() as f32)
+            })
+            .collect()
     }
 }
 #[cfg(test)]
@@ -341,5 +447,19 @@ mod tests {
         assert!(text.starts_with("¿Qué tal? 🧠"));
         assert!(generate(&w, "hola", 129).is_err());
         assert!(train(Path::new("."), 0, None).is_err());
+    }
+    #[test]
+    fn ranking_and_profiles_are_bounded() {
+        assert!(train_profile(Path::new("."), 1, None, "unknown").is_err());
+        let ranker = Ranker {
+            graph: Graph::build(C).unwrap(),
+            weights: initialize(C, 1337).unwrap(),
+            metadata: json!({}),
+        };
+        assert!(ranker.scores("", &[]).is_err());
+        assert!(ranker.scores("", &[""]).is_err());
+        let scores = ranker.scores("// suma\n", &["a + b", "a - b"]).unwrap();
+        assert_eq!(scores.len(), 2);
+        assert!(scores.iter().all(|s| s.is_finite()));
     }
 }

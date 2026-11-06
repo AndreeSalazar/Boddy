@@ -15,10 +15,11 @@ const descriptions = {
  'boddy-window':'Lanzador grafico Windows sin consola',
  'boddy-telemetry':'Muestra de VRAM y uso de GPU, independiente del modelo',
  'boddy-reader':'Lectura de fuentes acotada y evidencia con SHA256',
- 'boddy-agent':'Investigador con busqueda de componentes y una correccion de citas verificada',
+ 'boddy-agent':'Investigador de lectura y controlador Rust de ranking, propuesta y verificacion acotada',
  'boddy-desktop':'Acciones manuales de escritorio registradas y auditadas',
  'boddy-neural':'MLP no_std de siguiente caracter y gradientes CPU de referencia',
  'boddy-transformer':'Decoder no_std con embeddings, atencion causal, RMSNorm y autodiferenciacion de referencia',
+ 'boddy-rust-tasks':'Curriculo Rust y ejercicios tipados no_std con verificador finito de expresiones cerradas',
  'boddy-wgpu':'Entrenamiento MLP y cinta Transformer con shaders propios y tipos WGPU privados',
  'boddy-lab':'Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios'
 };

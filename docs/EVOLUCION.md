@@ -1,8 +1,10 @@
 # Evolución medible del agente
 
 Fortalecer Boddy implica mejorar recuperación, contratos, comprobaciones y resultados
-observables. El checkpoint Qwen y su cuantización permanecen intactos: esta entrega
-no entrena pesos, agrega neuronas ni convierte registros en entrenamiento.
+observables. El checkpoint Qwen y su cuantización permanecen intactos. Esta
+sección describe el investigador de lectura; los laboratorios propios sí entrenan
+Attention, y la escuela Rust añade un ciclo limitado de propuesta/verificación.
+Ver ESCUELA-RUST.md. Sus registros tampoco se convierten automáticamente en datos correctos.
 
 ## Cambios
 

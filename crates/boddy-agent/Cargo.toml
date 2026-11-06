@@ -9,6 +9,7 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
+boddy-rust-tasks = { path = "../boddy-rust-tasks" }
 boddy-core = { path = "../boddy-core" }
 boddy-inference = { path = "../boddy-inference" }
 boddy-reader = { path = "../boddy-reader" }

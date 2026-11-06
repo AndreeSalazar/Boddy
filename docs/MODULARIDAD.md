@@ -18,12 +18,13 @@ Las crates actuales comparten proceso y no constituyen sandboxes independientes.
 | boddy-telemetry | Muestra de VRAM y uso del dispositivo | serde_json; nvidia-smi externo |
 | boddy-reader | Fuentes acotadas, rutas y SHA256 | serde_json, sha2; disco del host |
 | boddy-desktop | Aperturas manuales registradas del escritorio | reader; procesos locales sin shell |
-| boddy-agent | Investigación de lectura y registro de tareas | core, inference, reader, supergrafo |
+| boddy-agent | Controladores de lectura y escuela Rust, con registros | core, inference, reader, supergrafo, rust-tasks |
 | window | Cuadro de comandos Windows | CLI por proceso |
 | boddy-neural | MLP, gradientes y referencia CPU no_std | libm; alloc del consumidor |
 | boddy-transformer | Decoder causal, cinta y autodiferenciación no_std | libm; alloc del consumidor |
 | gpu/wgpu (boddy-wgpu) | MLP y cinta Transformer en GPU | neural, transformer; WGPU privado |
-| boddy-lab | Experimentos, corpus y checkpoints | neural, transformer, wgpu, reader |
+| boddy-rust-tasks | Currículo y verificador tipado de expresiones no_std | Ninguna |
+| boddy-lab | Experimentos, corpus, checkpoints y ranking | neural, transformer, rust-tasks, wgpu, reader |
 
 Existe un adaptador a llama.cpp, una MLP propia y un decoder causal educativo con
 UTF-8/embeddings/WGPU, separados del chat. Módulos futuros del asistente general:

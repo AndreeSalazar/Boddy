@@ -1,7 +1,7 @@
 {
-  "analisis_ms": 8,
-  "archivos_indexados": 166,
-  "archivos_leidos": 28,
+  "analisis_ms": 20,
+  "archivos_indexados": 179,
+  "archivos_leidos": 30,
   "cabeceras_exportadas": null,
   "carpeta": "\\\\?\\C:\\Users\\Salazar\\Documents\\Boddy",
   "ciclos": {
@@ -10,7 +10,7 @@
     "total": 0
   },
   "compile_commands": null,
-  "dependencias": 23,
+  "dependencias": 26,
   "diagnosticos_gcc": 0,
   "diagnosticos_marcados": {
     "archivos": 0,

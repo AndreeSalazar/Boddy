@@ -1,0 +1,80 @@
+// Escuela Rust v1. Ejemplos escritos para Boddy, sin pesos ni respuestas externas.
+// Una funcion Rust declara tipos de parametros y tipo de retorno.
+fn sumar(a: i32, b: i32) -> i32 {
+// objetivo: suma
+a + b
+}
+fn agregar(a: i32, b: i32) -> i32 {
+// objetivo: suma
+a + b
+}
+fn sumar_enteros(a: i32, b: i32) -> i32 {
+// objetivo: suma
+a + b
+}
+fn restar(a: i32, b: i32) -> i32 {
+// objetivo: resta
+a - b
+}
+fn diferencia(a: i32, b: i32) -> i32 {
+// objetivo: resta
+a - b
+}
+fn quitar(a: i32, b: i32) -> i32 {
+// objetivo: resta
+a - b
+}
+fn multiplicar(a: i32, b: i32) -> i32 {
+// objetivo: producto
+a * b
+}
+fn producto(a: i32, b: i32) -> i32 {
+// objetivo: producto
+a * b
+}
+fn combinar_factores(a: i32, b: i32) -> i32 {
+// objetivo: producto
+a * b
+}
+fn mayor(a: i32, b: i32) -> i32 {
+// objetivo: mayor
+a.max(b)
+}
+fn maximo(a: i32, b: i32) -> i32 {
+// objetivo: mayor
+a.max(b)
+}
+fn elegir_mayor(a: i32, b: i32) -> i32 {
+// objetivo: mayor
+a.max(b)
+}
+fn menor(a: i32, b: i32) -> i32 {
+// objetivo: menor
+a.min(b)
+}
+fn minimo(a: i32, b: i32) -> i32 {
+// objetivo: menor
+a.min(b)
+}
+fn elegir_menor(a: i32, b: i32) -> i32 {
+// objetivo: menor
+a.min(b)
+}
+fn absoluto(a: i32, _b: i32) -> i32 {
+// objetivo: absoluto
+a.abs()
+}
+fn magnitud(a: i32, _b: i32) -> i32 {
+// objetivo: absoluto
+a.abs()
+}
+fn quitar_signo(a: i32, _b: i32) -> i32 {
+// objetivo: absoluto
+a.abs()
+}
+// Ejemplos de resultado, separados de los casos del verificador.
+// sumar(10, 6) devuelve 16; restar(10, 6) devuelve 4.
+// multiplicar(10, 6) devuelve 60; mayor(10, 6) devuelve 10.
+// menor(10, 6) devuelve 6; absoluto(-12, 0) devuelve 12.
+// El tipo i32 tiene limites; estas expresiones pueden desbordar fuera del dominio.
+// checked_add, checked_sub y checked_mul permiten detectar desbordamientos.
