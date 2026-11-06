@@ -37,8 +37,10 @@ generalización, capacidad para programar ni razonamiento.
 ## Usarlo
 
 Abrir Boddy y seleccionar **Laboratorio**, elegir 300, 1.000 o 2.000 pasos y
-pulsar **Entrenar en GPU**. Cada ejecución comienza desde cero; aumentar los
-pasos no reanuda el checkpoint anterior. También funciona sin servidor Qwen:
+pulsar **Entrenar en GPU** para crear un modelo. El menú de versiones permite
+elegir un modelo guardado y **Continuar en GPU**; los pasos elegidos se añaden
+a sus pesos. La versión nueva conserva al padre sin modificarlo y queda seleccionada
+para la siguiente etapa. También funciona sin servidor Qwen:
 
 ```powershell
 cargo build -p boddy-cli --offline
@@ -50,14 +52,44 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -STA -File .\window\Boddy.ps1
 El host guarda `data/lab/tiny-<id>/checkpoint.json`, `metrics.json` y `sample.txt`;
 están ignorados por Git. Checkpoint contiene configuración, tokenizer, semilla y
 todos los pesos; se comprueba su serialización, se relee el archivo y se exige
-que los pesos restaurados reproduzcan la muestra. No hay todavía comando para
-reanudar o conversar con este checkpoint.
+que los pesos restaurados reproduzcan la muestra. Checkpoint v2 guarda estado
+del muestreador, pasos acumulados, hash de corpus y protocolo SGD para continuar.
+Los v1 antiguos permiten continuar desde pesos, reiniciando el muestreador a 42;
+se marca `weights_only_legacy` y se deja desconocido el total acumulado. No se
+fabrica su historial. Reanudar exige mismo corpus y arquitectura compatibles.
+
+En **Conversar**, el selector permite Qwen para chat o un Tiny guardado para
+continuación experimental ASCII. Tiny usa solo los últimos ocho caracteres;
+no recibe historial, mapa ni herramientas. Su generación usa CPU de referencia;
+entrena por GPU. Cambiar modelo reinicia el historial y contadores; actualizar la
+lista conserva el historial del modelo actual. Es selección entre los modelos
+implementados, no importación de cualquier GGUF ni cambio de servidor remoto.
+
+Comandos adicionales (JSON por entrada estándar):
+
+```powershell
+'{"action":"list"}' | .\target\debug\boddy-cli.exe modelo
+# Sustituir tiny-<id> por un identificador real de la lista:
+'{"steps":300,"parent_id":"tiny-<id>"}' | .\target\debug\boddy-cli.exe entrenar
+'{"action":"generate","id":"tiny-<id>","prefix":"boddy ","max_tokens":64}' | .\target\debug\boddy-cli.exe modelo
+```
+
+Carga acotada: hasta 64 modelos entre 512 entradas, checkpoint máximo 2 MiB y
+métricas 64 KiB. Se rechazan rutas externas/enlaces, versiones o formas
+incompatibles y pesos no finitos. La lista informa inválidos y truncamiento.
 
 La pantalla muestra pérdida de entrenamiento/validación, GPU real, tiempo,
 tokens objetivo procesados, contexto por lote, pesos y buffers. Los 239.904 bytes
 de buffers declarados excluyen compilador, driver, staging y otros procesos; no
 son consumo total ni pico de VRAM. Tokens procesados incluyen repeticiones del
-corpus y no significan datos nuevos.
+corpus y no significan datos nuevos. Las versiones se conservan para comparar;
+una validación peor se muestra como tal, sin aprobar automáticamente el modelo.
+
+Frases adicionales en `training/evals/tiny-language-v1.txt` quedan fuera de SGD.
+Se informa pérdida y acierto del próximo carácter en 256 contextos fijos antes
+y después. Son un control educativo, no una prueba ciega independiente ni una
+medida de exactitud de respuestas. Usarlas repetidamente también orienta decisiones
+del desarrollador; no deben confundirse con una evaluación final de capacidades.
 
 ## Comprobaciones y evolución
 
@@ -76,9 +108,16 @@ preparación y verificaciones; no es un benchmark estable de rendimiento.
 
 Para crecer: primero corpus y evaluación independientes; luego soporte Unicode,
 embeddings y contexto mayor, comparados con esta línea base. Un Transformer,
-optimizadores como Adam, reanudación, evaluación de código y autonomía operativa
+optimizadores como Adam, evaluación de código y autonomía operativa
 son trabajo futuro. Añadir parámetros sin datos ni evaluación no garantiza mejoras.
 La formación de un asistente general desde cero excede el alcance de este prototipo.
+
+Prueba RTX 3060 de continuidad: 600 pasos seguidos frente a 300 + 300 reanudados
+produjeron pesos iguales (error absoluto máximo observado 0), mismo muestreador
+y SHA256 del padre intacto. En esa segunda etapa el control no entrenado mejoró
+acierto de carácter 24,6 % -> 28,9 %. Evidencia en
+`evals/tiny-continuation-v1-rtx3060.json`; reproducible con
+`tools/Test-TinyContinuation.ps1`. No se garantiza igualdad entre drivers/hardware.
 
 API contrastada con las fuentes oficiales de
 [WGPU](https://docs.rs/wgpu/30.0.1/wgpu/) y

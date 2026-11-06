@@ -127,7 +127,7 @@
     {
       "id": "boddy-lab",
       "path": "crates/boddy-lab",
-      "purpose": "Experimento desde cero, paridad CPU/GPU, metricas y checkpoints propios",
+      "purpose": "Entrenamiento reanudable, registro de modelos, control no entrenado y generacion Tiny CPU",
       "status": "implemented",
       "no_std": false,
       "dependencies": [

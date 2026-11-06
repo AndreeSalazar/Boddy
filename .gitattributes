@@ -1,1 +1,2 @@
 training/corpora/*.txt text eol=lf
+training/evals/*.txt text eol=lf

@@ -1,0 +1,38 @@
+{
+    "schema":  1,
+    "test":  "tiny-continuation-v1",
+    "device":  "NVIDIA GeForce RTX 3060",
+    "full_id":  "tiny-1793978475047037000",
+    "parent_id":  "tiny-1793978476176434500",
+    "child_id":  "tiny-1793978477101506400",
+    "full_steps":  600,
+    "split_steps":  [
+                        300,
+                        300
+                    ],
+    "maximum_weight_absolute_error":  0,
+    "sampler_equal":  true,
+    "parent_sha256_unchanged":  true,
+    "generated_tokens":  32,
+    "loss":  {
+                 "train_after":  2.156989336013794,
+                 "train_before":  2.56927752494812,
+                 "validation_after":  2.2724058628082275,
+                 "validation_before":  2.581148624420166
+             },
+    "external_control":  {
+                             "after":  {
+                                           "contexts":  256,
+                                           "loss":  2.272294521331787,
+                                           "next_character_accuracy":  0.2890625
+                                       },
+                             "before":  {
+                                            "contexts":  256,
+                                            "loss":  2.571403980255127,
+                                            "next_character_accuracy":  0.24609375
+                                        },
+                             "dataset":  "tiny-language-v1",
+                             "note":  "Frases de control nunca usadas en SGD; no mide razonamiento ni precision de respuestas",
+                             "sha256":  "b5bdb5e088799468db1afcdfed4192de33318e64585a7eea81fb1326d922b578"
+                         }
+}

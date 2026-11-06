@@ -25,7 +25,7 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 | `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-agent, boddy-catalog, boddy-core, boddy-desktop, boddy-inference, boddy-lab, boddy-reader, boddy-supergrafo, boddy-telemetry |
 | `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
 | `crates/boddy-desktop` | Acciones manuales de escritorio registradas y auditadas (implemented) | boddy-reader |
-| `crates/boddy-lab` | Experimento desde cero, paridad CPU/GPU, metricas y checkpoints propios (implemented) | boddy-neural, boddy-reader, boddy-wgpu |
+| `crates/boddy-lab` | Entrenamiento reanudable, registro de modelos, control no entrenado y generacion Tiny CPU (implemented) | boddy-neural, boddy-reader, boddy-wgpu |
 | `crates/boddy-neural` | MLP no_std de siguiente caracter y gradientes CPU de referencia (implemented) |  |
 | `gpu/wgpu` | Entrenamiento MLP con shaders propios WGPU y tipos GPU privados (implemented) | boddy-neural |
 | `crates/boddy-telemetry` | Muestra de VRAM y uso de GPU, independiente del modelo (implemented) |  |
@@ -45,7 +45,7 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 
 ## Ãšltima instantÃ¡nea
 
-Archivos indexados: 146. Relaciones lÃ©xicas: 16. Ciclos reportados:
+Archivos indexados: 152. Relaciones lÃ©xicas: 17. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantÃ¡nea: generar este mapa agrega o modifica archivos y no produce
 una fotografÃ­a inmutable de sÃ­ mismo. Consultar de nuevo para el estado actual.

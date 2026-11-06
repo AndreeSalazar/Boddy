@@ -1,0 +1,8 @@
+una herramienta fiable muestra sus errores con claridad.
+el usuario compara resultados antes de elegir un modelo.
+la biblioteca conserva versiones anteriores del experimento.
+medir una prediccion requiere ejemplos que no se entrenaron.
+una red de caracteres no explica un programa completo.
+el progreso se demuestra con resultados reproducibles.
+la ventana permite continuar desde un archivo guardado.
+el modelo pequeno reconoce algunos patrones de letras.

@@ -46,21 +46,29 @@ fn demo() -> Result<(), String> {
 
 pub fn run(args: &[String]) -> Result<(), String> {
     match args {
-        [command] if command == "entrenar" => {
+        [command] if command == "entrenar" || command == "modelo" => {
             let mut input = String::new();
             io::stdin()
-                .take(1025)
+                .take(4097)
                 .read_to_string(&mut input)
                 .map_err(|e| e.to_string())?;
-            if input.len() > 1024 {
+            if input.len() > 4096 {
                 return Err("Peticion de laboratorio demasiado grande".into());
             }
             let request: serde_json::Value =
                 serde_json::from_str(&input).map_err(|e| e.to_string())?;
-            let result = boddy_lab::train(
-                root(),
-                request["steps"].as_u64().ok_or("Falta steps entero")?,
-            )?;
+            let result = if command == "modelo" {
+                boddy_lab::model_command(root(), &request)?
+            } else {
+                boddy_lab::train_from(
+                    root(),
+                    request["steps"].as_u64().ok_or("Falta steps entero")?,
+                    match request.get("parent_id") {
+                        None | Some(serde_json::Value::Null) => None,
+                        Some(value) => Some(value.as_str().ok_or("parent_id debe ser texto")?),
+                    },
+                )?
+            };
             println!("{result}");
             Ok(())
         }
@@ -145,7 +153,7 @@ pub fn run(args: &[String]) -> Result<(), String> {
             Ok(())
         }
         [] => {
-            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  entrenar (JSON por stdin: steps entero 1..2000)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny desde cero; ejecucion autonoma y sandbox pendientes.");
+            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  modelo (JSON por stdin: list, inspect, generate)\n  entrenar (JSON por stdin: steps 1..2000, parent_id opcional)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny reanudable; ejecucion autonoma y sandbox pendientes.");
             Ok(())
         }
         [command] if command == "proposito" => {

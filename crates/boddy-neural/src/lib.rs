@@ -98,6 +98,9 @@ pub fn forward(
         *p = libm::expf(*p - max);
         sum += *p;
     }
+    if !sum.is_finite() || sum <= 0.0 {
+        return Err("Calculo neuronal no finito");
+    }
     for p in &mut probabilities {
         *p /= sum;
     }
@@ -198,6 +201,8 @@ mod tests {
         let after = loss_and_gradient(c, &w, &x, &y).unwrap().0;
         assert!(after < before * 0.2);
         assert!(forward(c, &w, &[99, 0]).is_err());
+        let invalid = vec![f32::NAN; c.parameters()];
+        assert!(forward(c, &invalid, &[0, 1]).is_err());
         assert!(Config {
             context: 0,
             vocab: 2,
