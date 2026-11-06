@@ -1,4 +1,4 @@
-param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [switch]$LabSmokeTest, [switch]$AttentionSmokeTest, [switch]$RustSchoolSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
+param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [switch]$LabSmokeTest, [switch]$AttentionSmokeTest, [switch]$RustSchoolSmokeTest, [switch]$LibrarySmokeTest, [string]$PreviewPath, [string]$EngineStatus)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -273,7 +273,29 @@ $form.Add_FormClosed({ $timer.Stop(); $timer.Dispose(); if ($script:active) { if
 . (Join-Path $PSScriptRoot 'components\ModelSelector.ps1')
 . (Join-Path $PSScriptRoot 'components\Attention.ps1')
 . (Join-Path $PSScriptRoot 'components\RustSchool.ps1')
-if($RustSchoolSmokeTest){
+. (Join-Path $PSScriptRoot 'components\Library.ps1')
+if($LibrarySmokeTest){
+    function Wait-LibrarySmoke { $deadline=[DateTime]::UtcNow.AddSeconds(20);while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25};if($script:wbProcess){throw 'Tiempo de espera de biblioteca agotado.'} }
+    $form.Opacity=0;$form.Show();[Windows.Forms.Application]::DoEvents();Wait-LibrarySmoke
+    $tabs.SelectedTab=$libraryPage;$libraryCategories.PerformClick();Wait-LibrarySmoke
+    if($libraryCategory.Items.Count -ne 6){throw 'No se cargaron las categorias desde el host.'}
+    $librarySearch.PerformClick();Wait-LibrarySmoke
+    if($libraryCards.Items.Count -lt 1 -or $script:wbLastResult.documents_read -ne 0){throw ('Busqueda documental incorrecta: '+$wbMessage.Text)}
+    $libraryBudget.SelectedItem='512';$libraryContext.PerformClick();Wait-LibrarySmoke
+    if($script:wbLastResult.context_bytes -gt 512 -or -not $script:wbLastResult.references){throw ('Contexto fuera de presupuesto: '+$wbMessage.Text)}
+    $libraryRemember.PerformClick();Wait-LibrarySmoke
+    if(-not $script:wbLastResult.memory_id){throw 'No se guardo el recuerdo.'}
+    $libraryRecall.PerformClick();Wait-LibrarySmoke
+    if(-not $script:wbLastResult.reread){throw 'No se releyeron referencias.'}
+    $libraryExport.PerformClick();Wait-LibrarySmoke
+    if(-not (Test-Path -LiteralPath (Join-Path $projectRoot $script:wbLastResult.markdown_path))){throw 'No se exporto Markdown.'}
+    $libraryLoadMemory.PerformClick();Wait-LibrarySmoke
+    if($null -eq $script:wbLastResult.memories -or $libraryMemory.Items.Count -lt 1){throw ('No se recupero la lista de recuerdos: '+$wbMessage.Text)}
+    $libraryQuery.Text='es';$libraryLanguages.PerformClick();Wait-LibrarySmoke
+    if($script:wbLastResult.records -lt 7000 -or $script:history.Count -ne 0){throw 'Fallo catalogo o se altero el chat.'}
+    'Biblioteca: registro, contexto de 512 bytes, recuerdo, relectura, exportacion y catalogo IANA desde ventana.'
+    $form.Close();$form.Dispose()
+} elseif($RustSchoolSmokeTest){
     $form.Opacity=0;$form.Show();[Windows.Forms.Application]::DoEvents()
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
@@ -352,7 +374,7 @@ if($RustSchoolSmokeTest){
     [Windows.Forms.Application]::DoEvents()
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
-    if($tabs.TabPages.Count -ne 7){throw 'Faltan espacios de trabajo.'}
+    if($tabs.TabPages.Count -ne 8){throw 'Faltan espacios de trabajo.'}
     if($gpuStats.Bottom -gt $chatPage.ClientSize.Height -or $inputPanel.Bottom -gt $chatPage.ClientSize.Height){throw 'Controles de chat fuera del area visible.'}
     $tabs.SelectedTab=$programPage
     $reloadSources.PerformClick()
@@ -379,7 +401,7 @@ if($RustSchoolSmokeTest){
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
     if(-not $script:wbLastResult.gpu){throw 'No se recibio el estado de recursos.'}
-    'Workbench: siete pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
+    'Workbench: ocho pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
     $form.Close(); $form.Dispose()
 } elseif ($ResearchSmokeTest) {
     $form.Opacity=0

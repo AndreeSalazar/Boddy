@@ -18,6 +18,10 @@ referencia CPU. Es experimental y aún no demuestra lenguaje útil.
 modelo ordena expresiones conocidas, el host verifica casos y revisa dentro de
 un cupo. [Resultados y límites](docs/ESCUELA-RUST.md).
 
+**Biblioteca** organiza La Forja, Babel, Agora, Atelier y Bitacora: fichas pequenas,
+fuentes y relaciones. Recupera fragmentos por presupuesto, recuerda referencias,
+relee documentos y exporta Markdown/JSON. [Uso y limites](docs/BIBLIOTECA.md).
+
 ## Abrir el chat
 
 Doble clic en `window/Boddy.vbs`, o:
@@ -40,7 +44,7 @@ Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargad
 
 ## Arquitectura
 
-Diecinueve crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+Veinte crates: contratos, misión, permisos, controlador, catálogo, biblioteca, SUPER GRAFO,
 inferencia local, telemetría, lector, agente, escritorio, aplicación, CLI, lanzador
 gráfico, red neuronal de referencia, Transformer, ejercicios Rust, adaptador WGPU y laboratorio.
 Las primeras cuatro permanecen no_std.

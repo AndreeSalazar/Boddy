@@ -1,6 +1,6 @@
 # Boddy 1.0 — chat local
 
-La ventana ofrece Conversar, Programar, Mi PC, Evidencia, Laboratorio, Atencion y Rust. Programar muestra
+La ventana ofrece Conversar, Programar, Mi PC, Evidencia, Laboratorio, Atencion, Rust y Biblioteca. Programar muestra
 fuentes y fragmentos y permite investigar la selección. Mi PC abre herramientas
 registradas por acción manual; Evidencia recupera las tareas guardadas.
 [Controles y alcance](../docs/ESCRITORIO.md).
@@ -79,3 +79,8 @@ de elección entre expresiones conocidas. Muestra primera elección, resultados
 tras búsqueda, propuestas aceptadas y registro. Los fallos quedan pendientes.
 Atencion incluye selector de corpus general/Rust; cambiar perfil conserva al
 padre y crea otra versión. [Alcance exacto](../docs/ESCUELA-RUST.md).
+
+**Biblioteca** carga categorias del host y busca fichas sin abrir todos sus
+documentos. Permite preparar contexto por bytes, guardar referencias, releer,
+consultar el catalogo IANA y exportar JSON/Markdown. No entrena al modelo ni
+inyecta contexto automaticamente al chat. [Guia](../docs/BIBLIOTECA.md).

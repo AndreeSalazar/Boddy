@@ -7,7 +7,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 - Chat Windows sencillo: historial reciente, Enter para enviar, Shift+Enter para
   nueva línea, nuevo chat y cancelación de la espera.
-- Diecinueve crates con dependencias acíclicas. Contratos, misión, política y controlador
+- Veinte crates con dependencias acíclicas. Contratos, misión, política y controlador
   siguen siendo no_std; host, inferencia y ventana permanecen separados.
 - Adaptador Rust boddy-inference a un motor local externo, solo 127.0.0.1:17861.
 - Qwen2.5-Coder-7B-Instruct Q4_K_M, 4683073536 bytes. SHA256 verificado contra
@@ -19,7 +19,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 - Autenticación local interna generada automáticamente; no es una clave de proveedor.
   Los pesos, motor, credencial y logs están en carpetas ignoradas por Git.
 - Catálogo de veinte referencias documentales; todavía son metadatos, sin corpus.
-- SUPER GRAFO: mapa, notas, posiciones y 27 nodos con estados explícitos.
+- SUPER GRAFO: mapa, notas, posiciones y 34 nodos con estados explícitos.
 - Contadores visibles de entrada, salida, caché y acumulados, velocidad, recorte
   e instantánea de VRAM del dispositivo al responder. Conteo previo por tokenizer
   del motor, con eliminación de pares antiguos para respetar el presupuesto.
@@ -33,7 +33,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   por el host y permite una corrección. Guarda todos los intentos y rechazos.
   Se excluyen cabeceras de función como evidencia de comportamiento y se detecta
   un caso léxico acotado de permisos afirmados contra inicializadores false.
-- Ventana con Conversar, Programar, Mi PC, Evidencia, Laboratorio, Atencion y Rust. Explorador acotado de
+- Ventana con Conversar, Programar, Mi PC, Evidencia, Laboratorio, Atencion, Rust y Biblioteca. Explorador acotado de
   fuentes (incluye window como texto), fragmentos y apertura manual en editor.
   Acciones fijas para Explorer, SUPER GRAFO y Administrador de tareas, con log local.
   Vista de tareas guardadas y consulta manual de GPU, independiente del modelo.
@@ -62,11 +62,21 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   guarda propuestas en data/rust-school sin compilar ni modificar proyectos.
   Perfiles nuevos conservan al padre, con transferencia explícita de pesos cuando
   cambia el corpus. Ver docs/ESCUELA-RUST.md.
+- Biblioteca Rust del host: cinco categorias, 14 fichas y relaciones documentales.
+  Ocho fichas introductorias de Rust; Babel contiene 8.276 registros IANA en 153 KB,
+  con esquemas es/en y cursos pendientes. Busqueda de registro, fragmentos con
+  presupuesto UTF-8, referencias persistentes, relectura con hashes y exportacion
+  JSON/Markdown. No modifica pesos ni se inyecta automaticamente al modelo.
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 50 pruebas aprobadas.
+- cargo test --workspace --offline: 56 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
+- Biblioteca: busqueda con cero cuerpos documentales abiertos; paquete de 375
+  bytes dentro de presupuesto 512, recuerdo de 336 bytes y JSON de 1.406 bytes.
+  Prueba nativa de categorias, busqueda, relectura, memoria, exportacion e idiomas.
+  Los tests detectan cambios de contenido y preservan UTF-8. Tokens reales no
+  medidos; no se declara ahorro de tokens, RAM o VRAM. Ver docs/BIBLIOTECA.md.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
 - cargo check -p boddy-neural --target wasm32-unknown-unknown --offline: aprobado.
 - cargo check -p boddy-transformer --target wasm32-unknown-unknown --offline: aprobado.

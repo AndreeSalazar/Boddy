@@ -4,8 +4,9 @@ $script:wbCallback = $null
 $script:wbLastResult = $null
 $wbTimer = New-Object Windows.Forms.Timer
 $wbTimer.Interval = 80
-function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [ValidateSet('pc','entrenar','modelo','atencion','escuela-rust')][string]$Command='pc') {
+function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [ValidateSet('pc','entrenar','modelo','atencion','escuela-rust','biblioteca')][string]$Command='pc') {
     if ($script:wbProcess) { $wbMessage.Text='Hay una accion en curso; espera un momento.'; return }
+    $script:wbLastResult=$null
     try {
         $info = New-Object Diagnostics.ProcessStartInfo
         $info.FileName = $binary
