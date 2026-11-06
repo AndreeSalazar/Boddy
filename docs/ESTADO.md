@@ -47,10 +47,14 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   CPU sin historial, herramientas ni investigación. Lista de modelos acotada y
   validación de pesos/arquitectura antes de cargar. Control de frases no entrenadas
   informa pérdida y acierto del siguiente carácter; sin aprobación automática.
+- Checkpoint propio v3: JSON compacto, pesos f32 little endian con SHA256 y
+  reutilización de archivos idénticos entre versiones. Mantiene carga v1/v2.
+  Ventana muestra bytes JSON, pesos y escritura nueva. No elimina versiones
+  previas; el autoaprendizaje general sigue pendiente.
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 38 pruebas aprobadas.
+- cargo test --workspace --offline: 40 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
 - cargo check -p boddy-neural --target wasm32-unknown-unknown --offline: aprobado.
@@ -66,6 +70,12 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   evals/tiny-continuation-v1-rtx3060.json. Prueba nativa de ventana: crear 1.000
   pasos, continuar hasta 1.300, seleccionar Tiny para generación y volver a Qwen;
   actualizar versiones conserva el historial. No es inspección visual del diseño.
+- Formato v3 verificado con restauración bit a bit, misma continuación 300 + 300
+  frente a 600 y mismo texto. Comparación de pesos iguales: 576.096 bytes de
+  JSON v2 frente a 576 de JSON v3 + 111.104 de binario. Archivo compartido para
+  las dos trayectorias, sin copiar otra vez sus pesos. Pruebas rechazan cambios
+  de bytes, truncamiento, referencias fuera de alcance y NaN. Evidencia en
+  evals/tiny-storage-v3-rtx3060.json; cifras de contenido en disco, no RAM/VRAM.
 - Comprobación del evento del botón de la ventana con generación real: respondió
   «¡Hola!» a la petición de saludo en español.
 - Dos turnos por el cliente Rust: respondió «Entendido.» y recuperó correctamente

@@ -50,6 +50,10 @@ function Show-LabResult($result) {
         $summary="VALIDACION: {0:N4} -> {1:N4} | Mejora: {2}`r`nCONTROL NO ENTRENADO: perdida {3:N4} -> {4:N4}; acierto siguiente caracter {5:P1} -> {6:P1}`r`nContinuacion: {7} | Pasos acumulados conocidos: {8}`r`n`r`n" -f $result.loss.validation_before,$result.loss.validation_after,$result.validation_improved,$result.external_control.before.loss,$result.external_control.after.loss,$result.external_control.before.next_character_accuracy,$result.external_control.after.next_character_accuracy,$result.resume_kind,$result.completed_steps
         $labOutput.Text=$summary+$labOutput.Text
     }
+    if($result.storage){
+        $sizes="ALMACENAMIENTO: JSON {0:N0} bytes | Pesos {1:N2} KiB | Pesos nuevos en disco {2:N0} bytes | Archivo compartido: {3}`r`nSin perdida de precision. Esto mide disco; no RAM ni VRAM.`r`n`r`n" -f $result.storage.manifest_bytes,($result.storage.weights_bytes/1024),$result.storage.new_weight_bytes,$result.storage.blob_reused
+        $labOutput.Text=$sizes+$labOutput.Text
+    }
 }
 function Register-LabModel($result) {
     $loss='{0:N3}' -f $result.loss.validation_after

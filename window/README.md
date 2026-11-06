@@ -63,4 +63,7 @@ incluye selector Qwen/Tiny: Tiny solo continua caracteres ASCII de manera
 experimental, sin historial ni herramientas. Actualizar recarga las versiones;
 cambiar modelo reinicia historial y contadores. Puede abrirse directamente con
 Boddy.ps1 sin iniciar el servidor Qwen.
+Los nuevos checkpoints usan JSON pequeño y pesos binarios compartidos cuando
+son idénticos. Laboratorio muestra tamaños de disco; los modelos antiguos siguen
+cargando. Para copiar una versión nueva hay que incluir también su blob de pesos.
 [Arquitectura, comprobaciones y límites](../docs/MODELO-PROPIO.md).

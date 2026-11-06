@@ -6,7 +6,8 @@ b12110, con Vulkan en la RTX 3060. No son pesos entrenados por este proyecto.
 
 **Laboratorio** añade Boddy Tiny 1.0: una red de 27.776 parámetros entrenada desde
 cero en la RTX 3060 por WGPU, con pesos propios, corpus versionado, contadores y
-checkpoints reanudables. Hay selector Qwen/Tiny y versiones propias guardadas.
+checkpoints reanudables: JSON compacto y pesos binarios propios con SHA256.
+Los pesos idénticos se comparten entre versiones. Hay selector Qwen/Tiny.
 Tiny es un experimento educativo de caracteres. [Cómo entrenarlo](docs/MODELO-PROPIO.md).
 
 ## Abrir el chat
