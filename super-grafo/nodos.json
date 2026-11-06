@@ -12,7 +12,8 @@
         "boddy-catalog",
         "boddy-core",
         "boddy-inference",
-        "boddy-supergrafo"
+        "boddy-supergrafo",
+        "boddy-telemetry"
       ],
       "layer": 3
     },
@@ -80,6 +81,15 @@
       "id": "boddy-supergrafo",
       "path": "crates/boddy-supergrafo",
       "purpose": "Consultas externas acotadas",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "boddy-telemetry",
+      "path": "crates/boddy-telemetry",
+      "purpose": "Muestra de VRAM y uso de GPU, independiente del modelo",
       "status": "implemented",
       "no_std": false,
       "dependencies": [],

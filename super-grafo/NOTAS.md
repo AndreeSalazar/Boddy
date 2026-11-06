@@ -1,7 +1,7 @@
 # Nodos de Boddy
 
 ## crates/boddy-app
-Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo.
+Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo, boddy-telemetry.
 
 ## crates/boddy-catalog
 Catalogo documental local. Estado: implemented. Dependencias: ninguna.
@@ -23,6 +23,9 @@ Chat con motor local por loopback, sin herramientas. Estado: implemented. Depend
 
 ## crates/boddy-supergrafo
 Consultas externas acotadas. Estado: implemented. Dependencias: ninguna.
+
+## crates/boddy-telemetry
+Muestra de VRAM y uso de GPU, independiente del modelo. Estado: implemented. Dependencias: ninguna.
 
 ## crates/boddy-cli
 Entrada de terminal. Estado: implemented. Dependencias: boddy-app.

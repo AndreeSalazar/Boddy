@@ -1,13 +1,13 @@
 //! Adaptador del host a un motor externo. Solo loopback, sin herramientas o shell.
 use serde_json::{json, Value};
-use std::io::{Read, Write};
-use std::net::{SocketAddr, TcpStream};
-use std::time::Duration;
+mod budget;
+mod transport;
 
 pub const ADDRESS: &str = "127.0.0.1:17861";
 const RESPONSE_LIMIT: u64 = 1024 * 1024;
 
 fn prepare(request: &Value) -> Result<Value, String> {
+    let (_, max_tokens) = budget::settings(request)?;
     let messages = request["messages"].as_array().ok_or("Falta messages")?;
     if messages.is_empty() || messages.len() > 24 {
         return Err("Se requieren entre 1 y 24 mensajes".into());
@@ -16,10 +16,13 @@ fn prepare(request: &Value) -> Result<Value, String> {
         json!({"role":"system","content":"Eres Boddy 1.0, el asistente personal de Eddi. Responde en español con claridad. Tu modelo base es Qwen2.5-Coder-7B-Instruct. No afirmes haber ejecutado herramientas, leído archivos o realizado acciones: este chat solo genera texto. Distingue hechos de hipótesis. No inventes resultados de pruebas."}),
     ];
     let mut total = 0;
-    for message in messages {
+    for (index, message) in messages.iter().enumerate() {
         let role = message["role"].as_str().ok_or("Falta role")?;
         if !matches!(role, "user" | "assistant") {
             return Err("Rol no permitido".into());
+        }
+        if role != if index % 2 == 0 { "user" } else { "assistant" } {
+            return Err("El historial debe alternar usuario y asistente".into());
         }
         let content = message["content"].as_str().ok_or("Falta content")?;
         if content.trim().is_empty() || content.chars().count() > 8000 {
@@ -28,6 +31,11 @@ fn prepare(request: &Value) -> Result<Value, String> {
         total += content.chars().count();
         context.push(json!({"role":role,"content":content}));
     }
+    if let Some(graph) = request.get("graph_context") {
+        let selected = json!({"archivos":graph["archivos_indexados"].as_u64(),"dependencias":graph["dependencias"].as_u64(),"ciclos":graph["ciclos"]["total"].as_u64()});
+        let base = context[0]["content"].as_str().unwrap().to_string();
+        context[0]["content"] = json!(format!("{base}\nEl host consultó SUPER GRAFO del proyecto Boddy. Solo aporta estas cifras léxicas: {selected}. No equivalen a leer archivos, compilar o auditar. No inventes otros detalles."));
+    }
     if total > 16000 {
         return Err("Conversación demasiado larga. Inicia un chat nuevo".into());
     }
@@ -35,106 +43,36 @@ fn prepare(request: &Value) -> Result<Value, String> {
         return Err("La última entrada debe ser del usuario".into());
     }
     Ok(
-        json!({"model":"boddy-1.0","messages":context,"stream":false,"max_tokens":512,"temperature":0.4}),
+        json!({"model":"boddy-1.0","messages":context,"stream":false,"max_tokens":max_tokens,"temperature":0.4,"cache_prompt":true}),
     )
 }
 
-fn decode(raw: &[u8]) -> Result<Value, String> {
-    let split = raw
-        .windows(4)
-        .position(|w| w == b"\r\n\r\n")
-        .ok_or("Respuesta HTTP incompleta")?;
-    let headers = std::str::from_utf8(&raw[..split]).map_err(|e| e.to_string())?;
-    if !headers
-        .lines()
-        .next()
-        .is_some_and(|l| l.split_whitespace().nth(1) == Some("200"))
-    {
-        return Err(format!(
-            "Motor local: {}",
-            String::from_utf8_lossy(raw)
-                .chars()
-                .take(1000)
-                .collect::<String>()
-        ));
-    }
-    let body = &raw[split + 4..];
-    let mut decoded = Vec::new();
-    if headers.lines().any(|l| {
-        l.to_ascii_lowercase()
-            .contains("transfer-encoding: chunked")
-    }) {
-        let mut remaining = body;
-        loop {
-            let end = remaining
-                .windows(2)
-                .position(|w| w == b"\r\n")
-                .ok_or("Chunk incompleto")?;
-            let size = std::str::from_utf8(&remaining[..end])
-                .map_err(|e| e.to_string())?
-                .split(';')
-                .next()
-                .unwrap();
-            let size = usize::from_str_radix(size, 16).map_err(|e| e.to_string())?;
-            remaining = &remaining[end + 2..];
-            if size == 0 {
-                break;
-            }
-            if remaining.len() < size
-                || remaining.get(size..size.saturating_add(2)) != Some(b"\r\n")
-            {
-                return Err("Chunk truncado".into());
-            }
-            decoded.extend_from_slice(&remaining[..size]);
-            remaining = &remaining[size + 2..];
-        }
-    } else {
-        decoded.extend_from_slice(body);
-    }
-    serde_json::from_slice(&decoded).map_err(|e| format!("JSON del motor inválido: {e}"))
-}
-
 pub fn chat(request: &Value) -> Result<Value, String> {
-    let payload = serde_json::to_vec(&prepare(request)?).map_err(|e| e.to_string())?;
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .unwrap()
-        .parent()
-        .unwrap();
-    let key = std::fs::read_to_string(root.join("runtime/access.key"))
-        .map_err(|_| "Inicia el modelo con window/Start-Boddy.ps1".to_string())?;
-    let key = key.trim();
-    if key.len() != 64 || !key.bytes().all(|b| b.is_ascii_hexdigit()) {
-        return Err("Credencial local inválida".into());
-    }
-    let address: SocketAddr = ADDRESS
-        .parse()
-        .map_err(|e: std::net::AddrParseError| e.to_string())?;
-    let mut stream = TcpStream::connect_timeout(&address, Duration::from_secs(3))
-        .map_err(|_| "El modelo local no está iniciado. Abre window/Start-Boddy.ps1".to_string())?;
-    stream
-        .set_read_timeout(Some(Duration::from_secs(120)))
-        .map_err(|e| e.to_string())?;
-    stream
-        .set_write_timeout(Some(Duration::from_secs(10)))
-        .map_err(|e| e.to_string())?;
-    write!(stream,"POST /v1/chat/completions HTTP/1.1\r\nHost: {ADDRESS}\r\nAuthorization: Bearer {key}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",payload.len()).map_err(|e| e.to_string())?;
-    stream.write_all(&payload).map_err(|e| e.to_string())?;
-    let mut raw = Vec::new();
-    stream
-        .take(RESPONSE_LIMIT + 1)
-        .read_to_end(&mut raw)
-        .map_err(|e| format!("Error leyendo el modelo: {e}"))?;
-    if raw.len() as u64 > RESPONSE_LIMIT {
-        return Err("Respuesta del modelo demasiado grande".into());
-    }
-    let response = decode(&raw)?;
+    let started = std::time::Instant::now();
+    let (limit, max_output) = budget::settings(request)?;
+    let mut body = prepare(request)?;
+    let (before, fitted, dropped) = budget::fit(&mut body, limit, max_output, |b| {
+        let template = transport::post("/apply-template", &json!({"messages":b["messages"]}))?;
+        let prompt = template["prompt"]
+            .as_str()
+            .ok_or("El motor no devolvió la plantilla")?;
+        let result = transport::post(
+            "/tokenize",
+            &json!({"content":prompt,"add_special":false,"parse_special":true}),
+        )?;
+        Ok(result["tokens"]
+            .as_array()
+            .ok_or("El motor no devolvió tokens")?
+            .len())
+    })?;
+    let response = transport::post("/v1/chat/completions", &body)?;
+
     let content = response["choices"][0]["message"]["content"]
         .as_str()
         .filter(|s| !s.trim().is_empty())
         .ok_or("El modelo no devolvió texto")?;
     Ok(
-        json!({"content":content,"model":"Qwen2.5-Coder-7B-Instruct Q4_K_M","application":"Boddy 1.0","finish_reason":response["choices"][0]["finish_reason"],"usage":response["usage"]}),
+        json!({"content":content,"model":"Qwen2.5-Coder-7B-Instruct Q4_K_M","application":"Boddy 1.0","finish_reason":response["choices"][0]["finish_reason"],"usage":response["usage"],"timings":response["timings"],"elapsed_ms":started.elapsed().as_millis(),"context_messages":body["messages"].as_array().unwrap()[1..],"budget":{"context_tokens":limit,"server_capacity":budget::CONTEXT_CAPACITY,"max_output_tokens":max_output,"margin":budget::SAFETY_MARGIN,"prompt_before":before,"prompt_after":fitted,"dropped_messages":dropped,"saved_input_tokens":before.saturating_sub(fitted)},"graph_context_used":request.get("graph_context").is_some()}),
     )
 }
 
@@ -152,15 +90,5 @@ mod tests {
         let body = prepare(&json!({"messages":[{"role":"user","content":"hola"}]})).unwrap();
         assert_eq!(body["messages"][1]["content"], "hola");
         assert_eq!(body["stream"], false);
-    }
-    #[test]
-    fn decodes_http_and_rejects_errors_and_truncated_chunks() {
-        assert_eq!(
-            decode(b"HTTP/1.1 200 OK\r\n\r\n{\"ok\":true}").unwrap()["ok"],
-            true
-        );
-        assert_eq!(decode(b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\nb\r\n{\"ok\":true}\r\n0\r\n\r\n").unwrap()["ok"],true);
-        assert!(decode(b"HTTP/1.1 500 Bad\r\n\r\n{}").is_err());
-        assert!(decode(b"HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\nff\r\nx").is_err());
     }
 }

@@ -23,8 +23,8 @@ Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargad
 
 ## Arquitectura
 
-Diez crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
-inferencia local, aplicación, CLI y lanzador gráfico. Las primeras cuatro permanecen no_std.
+Once crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+inferencia local, telemetría, aplicación, CLI y lanzador gráfico. Las primeras cuatro permanecen no_std.
 El host usa serde_json; GPU y ventana no entran en el núcleo.
 
 Esta versión usa Vulkan mediante un proceso externo. El backend propio WGPU,
@@ -35,6 +35,7 @@ sin clave ni pago a un proveedor por token.
 - [Reglas](AGENTS.md) y [fronteras](docs/MODULARIDAD.md).
 - [Propósito](docs/PROPOSITO.md), [investigación](docs/INVESTIGACION.md) y [plan](docs/PLAN.md).
 - [Estado y comprobaciones](docs/ESTADO.md).
+- [Tokens, GPU y presupuestos](docs/RECURSOS.md).
 - [Mapa](super-grafo/MAPA.md) y `super-grafo/nodos.json`.
 
 ## Comprobar y mantener

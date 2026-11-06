@@ -9,6 +9,7 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
+boddy-telemetry = { path = "../boddy-telemetry" }
 boddy-inference = { path = "../boddy-inference" }
 serde_json = "1"
 boddy-core = { path = "../boddy-core" }

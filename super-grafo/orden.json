@@ -72,6 +72,14 @@
     "gpu/wgpu": [
       2040,
       1160
+    ],
+    "crates/boddy-inference": [
+      0,
+      580
+    ],
+    "crates/boddy-telemetry": [
+      0,
+      725
     ]
   },
   "desplegadas": [

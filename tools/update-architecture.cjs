@@ -12,7 +12,8 @@ const descriptions = {
  'boddy-app':'Casos de uso de la aplicacion',
  'boddy-cli':'Entrada de terminal',
  'boddy-inference':'Chat con motor local por loopback, sin herramientas',
- 'boddy-window':'Lanzador grafico Windows sin consola'
+ 'boddy-window':'Lanzador grafico Windows sin consola',
+ 'boddy-telemetry':'Muestra de VRAM y uso de GPU, independiente del modelo'
 };
 const result = cp.spawnSync('cargo', ['metadata','--offline','--no-deps','--format-version','1'], {cwd:root,encoding:'utf8'});
 if(result.status !== 0) throw Error(result.stderr);
@@ -41,7 +42,15 @@ const dir=path.join(root,'super-grafo');
 fs.writeFileSync(path.join(dir,'nodos.json'),JSON.stringify({schema:1,source:'Cargo metadata + fronteras planificadas explicitas',nodes},null,2)+'\n');
 const orderFile=path.join(dir,'orden.json');
 // Preserve layout edits after the first generation.
-if(!fs.existsSync(orderFile)) fs.writeFileSync(orderFile,JSON.stringify({posiciones:{},grafo:positions,desplegadas:['crates','gpu','modules'],rejilla:false,bloqueada:false,foco:''},null,2)+'\n');
+const order=fs.existsSync(orderFile)?JSON.parse(fs.readFileSync(orderFile,'utf8')):{posiciones:{},grafo:{},desplegadas:['crates','gpu','modules'],rejilla:false,bloqueada:false,foco:''};
+order.grafo ||= {};
+for(const [node,position] of Object.entries(positions)) {
+ if(!Object.hasOwn(order.grafo,node)) {
+  const occupied=Object.values(order.grafo).filter(p=>p[0]===position[0]).map(p=>p[1]);
+  order.grafo[node]=[position[0],Math.max(position[1],occupied.length?Math.max(...occupied)+145:0)];
+ }
+}
+fs.writeFileSync(orderFile,JSON.stringify(order,null,2)+'\n');
 let notes='# Nodos de Boddy\n\n';
 for(const n of nodes) notes+=`## ${n.path}\n${n.purpose}. Estado: ${n.status}. Dependencias: ${n.dependencies.join(', ')||'ninguna'}.\n\n`;
 fs.writeFileSync(path.join(dir,'NOTAS.md'),notes.trimEnd()+'\n');

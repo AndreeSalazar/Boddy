@@ -14,6 +14,13 @@ Escribe normalmente. Enter envía; Shift+Enter agrega una línea. Puedes cancela
 la espera y empezar un nuevo chat. El historial reciente se conserva en memoria
 con un presupuesto acotado y se recorta por turnos; no se guarda en disco.
 
+Puedes elegir presupuesto de contexto y salida máxima. Se muestran tokens de
+entrada/salida, caché, acumulados, recortes, velocidad y una muestra de VRAM.
+La casilla Mapa de Boddy añade solo cifras seleccionadas de SUPER GRAFO.
+El historial enviado se recorta por tokens reales en el host y se sincroniza con
+la ventana. Los turnos antiguos siguen visibles pero pueden salir del contexto.
+Estos controles no modifican la reserva GPU del servidor. [Medidas y límites](../docs/RECURSOS.md).
+
 Boddy 1.0 es el nombre del asistente. El modelo base es Qwen2.5-Coder-7B-Instruct
 Q4_K_M, ejecutado por llama.cpp b12110 sobre Vulkan. El motor solo escucha en
 127.0.0.1:17861. No requiere cuenta ni clave de un proveedor. El chat envía texto

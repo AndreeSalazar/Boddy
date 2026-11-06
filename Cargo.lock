@@ -10,6 +10,7 @@ dependencies = [
  "boddy-core",
  "boddy-inference",
  "boddy-supergrafo",
+ "boddy-telemetry",
  "serde_json",
 ]
 
@@ -58,6 +59,13 @@ version = "0.1.0"
 [[package]]
 name = "boddy-supergrafo"
 version = "0.1.0"
+
+[[package]]
+name = "boddy-telemetry"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
 
 [[package]]
 name = "boddy-window"

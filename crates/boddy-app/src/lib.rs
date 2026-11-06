@@ -55,14 +55,24 @@ pub fn run(args: &[String]) -> Result<(), String> {
             if input.len() > 65536 {
                 return Err("Entrada de chat demasiado grande".into());
             }
-            let request =
+            let mut request: serde_json::Value =
                 serde_json::from_str(&input).map_err(|e| format!("Entrada JSON inválida: {e}"))?;
-            let response = boddy_inference::chat(&request)?;
+            if !request.is_object() {
+                return Err("Se requiere un objeto JSON".into());
+            }
+            request.as_object_mut().unwrap().remove("graph_context");
+            if request["use_graph"].as_bool() == Some(true) {
+                let bytes = graph::query(root(), "resumen")?;
+                request["graph_context"] =
+                    serde_json::from_slice(&bytes).map_err(|e| e.to_string())?;
+            }
+            let mut response = boddy_inference::chat(&request)?;
+            response["gpu"] = boddy_telemetry::snapshot();
             println!("{response}");
             Ok(())
         }
         [] => {
-            println!("Boddy — base de IA operativa personal\n\nComandos:\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nEstado: controlador no_std y catálogo; inferencia y sandbox pendientes.");
+            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat con presupuesto de tokens y metricas; ejecucion autonoma y sandbox pendientes.");
             Ok(())
         }
         [command] if command == "proposito" => {
