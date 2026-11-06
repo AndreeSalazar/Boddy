@@ -9,6 +9,7 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
+boddy-transformer = { path = "../boddy-transformer" }
 boddy-neural = { path = "../boddy-neural" }
 boddy-wgpu = { path = "../../gpu/wgpu" }
 boddy-reader = { path = "../boddy-reader" }

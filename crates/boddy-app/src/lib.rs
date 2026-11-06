@@ -46,7 +46,7 @@ fn demo() -> Result<(), String> {
 
 pub fn run(args: &[String]) -> Result<(), String> {
     match args {
-        [command] if command == "entrenar" || command == "modelo" => {
+        [command] if command == "entrenar" || command == "modelo" || command == "atencion" => {
             let mut input = String::new();
             io::stdin()
                 .take(4097)
@@ -57,7 +57,9 @@ pub fn run(args: &[String]) -> Result<(), String> {
             }
             let request: serde_json::Value =
                 serde_json::from_str(&input).map_err(|e| e.to_string())?;
-            let result = if command == "modelo" {
+            let result = if command == "atencion" {
+                boddy_lab::attention::command(root(), &request)?
+            } else if command == "modelo" {
                 boddy_lab::model_command(root(), &request)?
             } else {
                 boddy_lab::train_from(
@@ -153,7 +155,7 @@ pub fn run(args: &[String]) -> Result<(), String> {
             Ok(())
         }
         [] => {
-            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  modelo (JSON por stdin: list, inspect, generate)\n  entrenar (JSON por stdin: steps 1..2000, parent_id opcional)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny reanudable; ejecucion autonoma y sandbox pendientes.");
+            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  atencion (JSON por stdin: train, list, inspect, generate)\n  modelo (JSON por stdin: list, inspect, generate)\n  entrenar (JSON por stdin: steps 1..2000, parent_id opcional)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny reanudable; ejecucion autonoma y sandbox pendientes.");
             Ok(())
         }
         [command] if command == "proposito" => {

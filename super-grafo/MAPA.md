@@ -25,9 +25,10 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 | `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-agent, boddy-catalog, boddy-core, boddy-desktop, boddy-inference, boddy-lab, boddy-reader, boddy-supergrafo, boddy-telemetry |
 | `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
 | `crates/boddy-desktop` | Acciones manuales de escritorio registradas y auditadas (implemented) | boddy-reader |
-| `crates/boddy-lab` | Tiny propio: entrenamiento, evaluacion, registro y checkpoints JSON compactos con pesos binarios compartidos (implemented) | boddy-neural, boddy-reader, boddy-wgpu |
+| `crates/boddy-lab` | Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios (implemented) | boddy-neural, boddy-reader, boddy-transformer, boddy-wgpu |
 | `crates/boddy-neural` | MLP no_std de siguiente caracter y gradientes CPU de referencia (implemented) |  |
-| `gpu/wgpu` | Entrenamiento MLP con shaders propios WGPU y tipos GPU privados (implemented) | boddy-neural |
+| `crates/boddy-transformer` | Decoder no_std con embeddings, atencion causal, RMSNorm y autodiferenciacion de referencia (implemented) |  |
+| `gpu/wgpu` | Entrenamiento MLP y cinta Transformer con shaders propios y tipos WGPU privados (implemented) | boddy-neural, boddy-transformer |
 | `crates/boddy-telemetry` | Muestra de VRAM y uso de GPU, independiente del modelo (implemented) |  |
 | `crates/boddy-cli` | Entrada de terminal (implemented) | boddy-app |
 | `window` | Lanzador grafico Windows sin consola (implemented) | boddy-cli |
@@ -45,7 +46,7 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 
 ## Ãšltima instantÃ¡nea
 
-Archivos indexados: 153. Relaciones lÃ©xicas: 17. Ciclos reportados:
+Archivos indexados: 166. Relaciones lÃ©xicas: 23. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantÃ¡nea: generar este mapa agrega o modifica archivos y no produce
 una fotografÃ­a inmutable de sÃ­ mismo. Consultar de nuevo para el estado actual.
@@ -56,6 +57,7 @@ no son defectos confirmados. Las comprobaciones de Rust estÃ¡n en `docs/ESTADO
 ## Lo que sigue
 
 Estado vigente en docs/ESTADO.md y window/README.md. El chat local usa un motor
-externo. El laboratorio Tiny entrena una MLP propia por WGPU con corpus versionado;
+externo. Los laboratorios Tiny y Attention entrenan una MLP y un decoder causal
+propios por WGPU con corpus versionado; Attention incorpora UTF-8 y embeddings;
 no sustituye al chat. Ejecutor aislado y agente general siguen pendientes.
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.

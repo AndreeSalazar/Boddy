@@ -34,13 +34,16 @@ Catalogo documental local. Estado: implemented. Dependencias: ninguna.
 Acciones manuales de escritorio registradas y auditadas. Estado: implemented. Dependencias: boddy-reader.
 
 ## crates/boddy-lab
-Tiny propio: entrenamiento, evaluacion, registro y checkpoints JSON compactos con pesos binarios compartidos. Estado: implemented. Dependencias: boddy-neural, boddy-reader, boddy-wgpu.
+Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios. Estado: implemented. Dependencias: boddy-neural, boddy-reader, boddy-transformer, boddy-wgpu.
 
 ## crates/boddy-neural
 MLP no_std de siguiente caracter y gradientes CPU de referencia. Estado: implemented. Dependencias: ninguna.
 
+## crates/boddy-transformer
+Decoder no_std con embeddings, atencion causal, RMSNorm y autodiferenciacion de referencia. Estado: implemented. Dependencias: ninguna.
+
 ## gpu/wgpu
-Entrenamiento MLP con shaders propios WGPU y tipos GPU privados. Estado: implemented. Dependencias: boddy-neural.
+Entrenamiento MLP y cinta Transformer con shaders propios y tipos WGPU privados. Estado: implemented. Dependencias: boddy-neural, boddy-transformer.
 
 ## crates/boddy-telemetry
 Muestra de VRAM y uso de GPU, independiente del modelo. Estado: implemented. Dependencias: ninguna.

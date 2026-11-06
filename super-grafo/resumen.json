@@ -1,7 +1,7 @@
 {
-  "analisis_ms": 7,
-  "archivos_indexados": 153,
-  "archivos_leidos": 25,
+  "analisis_ms": 8,
+  "archivos_indexados": 166,
+  "archivos_leidos": 28,
   "cabeceras_exportadas": null,
   "carpeta": "\\\\?\\C:\\Users\\Salazar\\Documents\\Boddy",
   "ciclos": {
@@ -10,7 +10,7 @@
     "total": 0
   },
   "compile_commands": null,
-  "dependencias": 17,
+  "dependencias": 23,
   "diagnosticos_gcc": 0,
   "diagnosticos_marcados": {
     "archivos": 0,
@@ -23,7 +23,7 @@
     "se_pueden_romper": 0
   },
   "guardianes": null,
-  "megabytes": 0.1,
+  "megabytes": 0.2,
   "recortado": false,
   "reutilizados_de_la_cache": 0,
   "revisiones_gcc": {

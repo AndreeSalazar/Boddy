@@ -1,0 +1,42 @@
+{
+    "schema":  1,
+    "test":  "attention-continuation-v1",
+    "device":  "NVIDIA GeForce RTX 3060",
+    "full_id":  "attn-1793980264824317000",
+    "parent_id":  "attn-1793980267809546600",
+    "child_id":  "attn-1793980270825890000",
+    "full_steps":  200,
+    "split_steps":  [
+                        100,
+                        100
+                    ],
+    "weights_sha256_equal":  true,
+    "sampler_equal":  true,
+    "parent_unchanged":  true,
+    "unicode_prefix_preserved":  true,
+    "parity":  {
+                   "gradient_max_abs":  4.76837158203125E-07,
+                   "loss_max_abs":  4.76837158203125E-07,
+                   "sgd_max_abs":  7.4505805969238281E-09
+               },
+    "loss":  {
+                 "train_after":  4.306884288787842,
+                 "train_before":  5.540835380554199,
+                 "validation_after":  4.431577682495117,
+                 "validation_before":  5.567861557006836
+             },
+    "storage":  {
+                    "blob_reused":  false,
+                    "manifest_bytes":  508,
+                    "new_weight_bytes":  42176,
+                    "weights_bytes":  42176
+                },
+    "limitations":  [
+                        "Experimental: no chat ni herramientas",
+                        "16 bytes de contexto, no 16 caracteres",
+                        "Una cabeza; FFN tanh; sin RoPE ni SwiGLU",
+                        "Interprete escalar GPU: no se afirma mejora de rendimiento",
+                        "Validacion pequena y relacionada; no evalua razonamiento",
+                        "Formato separado de Tiny 1.0; pesos no intercambiables"
+                    ]
+}

@@ -100,6 +100,10 @@
     "crates/boddy-neural": [
       0,
       1015
+    ],
+    "crates/boddy-transformer": [
+      0,
+      1160
     ]
   },
   "desplegadas": [

@@ -16,6 +16,7 @@ const CONFIG: Config = Config {
     hidden: 32,
 };
 const BATCH: usize = 32;
+pub mod attention;
 pub mod checkpoints;
 const CONTROL: &str = include_str!("../../../training/evals/tiny-language-v1.txt");
 

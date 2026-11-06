@@ -1,0 +1,40 @@
+Boddy aprende con ejemplos pequeños y mediciones claras.
+Una red neuronal ajusta sus pesos durante el entrenamiento.
+El contexto contiene bytes de texto codificado como UTF-8.
+La atención relaciona la posición actual con posiciones anteriores.
+Los embeddings convierten cada token en un vector aprendido.
+Un modelo pequeño permite estudiar cómo cambia la pérdida.
+La GPU calcula los gradientes y actualiza los pesos.
+Rust organiza los módulos y conserva los resultados.
+Cada experimento usa una semilla y un corpus identificados.
+La validación utiliza frases que no entran en el entrenamiento.
+Guardar un modelo permite continuar desde sus valores anteriores.
+El texto español contiene letras como á, é, í, ó, ú, ü y ñ.
+Una pregunta puede empezar con ¿ y terminar con ?.
+También podemos representar 中文 y símbolos como 🌱.
+Representar un idioma no significa comprender todas sus frases.
+El modelo experimental predice el siguiente byte del texto.
+La pérdida mide cómo se ajusta la predicción al ejemplo.
+Un archivo binario conserva los pesos sin redondearlos.
+Un JSON pequeño describe la arquitectura y el entrenamiento.
+Los permisos del agente pertenecen a un controlador separado.
+La ventana muestra información sin implementar inferencia.
+El grafo documenta las dependencias entre componentes.
+Una prueba comprueba los gradientes con diferencias finitas.
+Otra prueba compara los resultados de CPU y GPU.
+La atención causal evita mirar posiciones futuras.
+Las conexiones residuales conservan información del contexto.
+La normalización estabiliza la escala de los valores.
+El bloque de transformación combina atención y una red interna.
+La predicción final asigna probabilidades a los bytes posibles.
+Entrenar más no garantiza que una respuesta sea correcta.
+Las pruebas separadas ayudan a detectar errores y regresiones.
+Un corpus pequeño permite aprender patrones muy limitados.
+Boddy registra la procedencia de sus datos y de sus pesos.
+Este modelo empieza con valores aleatorios, sin pesos externos.
+La evaluación necesita ejemplos distintos y criterios explícitos.
+Un asistente capaz necesita capacidades demostradas con tareas.
+El registro permite comparar una versión con la anterior.
+La precisión requiere comprobar resultados con evidencia.
+Los acentos y los símbolos ocupan varios bytes en UTF-8.
+El aprendizaje de este laboratorio sigue siendo experimental.

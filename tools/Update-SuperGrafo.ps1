@@ -57,7 +57,8 @@ no son defectos confirmados. Las comprobaciones de Rust están en `docs/ESTADO.m
 ## Lo que sigue
 
 Estado vigente en docs/ESTADO.md y window/README.md. El chat local usa un motor
-externo. El laboratorio Tiny entrena una MLP propia por WGPU con corpus versionado;
+externo. Los laboratorios Tiny y Attention entrenan una MLP y un decoder causal
+propios por WGPU con corpus versionado; Attention incorpora UTF-8 y embeddings;
 no sustituye al chat. Ejecutor aislado y agente general siguen pendientes.
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.
 '@

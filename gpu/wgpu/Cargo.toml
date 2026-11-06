@@ -9,6 +9,7 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
+boddy-transformer = { path = "../../crates/boddy-transformer" }
 boddy-neural = { path = "../../crates/boddy-neural" }
 wgpu = { version = "30.0.1", default-features = false, features = ["std", "vulkan", "wgsl", "parking_lot"] }
 pollster = "0.4"

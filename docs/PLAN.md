@@ -30,8 +30,9 @@ ejecución simultánea de varios agentes.
 
 ## Siguiente paso concreto
 
-Para el modelo propio: ampliar corpus y validación independiente sobre la línea
-base Tiny, después probar Unicode y embeddings con las mismas mediciones.
+Para el modelo propio: Attention 0.1 ya prueba UTF-8, embeddings y atención causal
+en un decoder educativo (ATTENTION.md). Lo siguiente es corpus y tareas de
+evaluación independientes; medir CPU/cinta GPU antes de optimizar kernels.
 Documentación Python recuperable sigue siendo un objetivo distinto: corpus fijado
 a una versión, referencias y diez preguntas contrastables antes de medir recuperación.
 

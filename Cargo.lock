@@ -140,6 +140,7 @@ version = "0.1.0"
 dependencies = [
  "boddy-neural",
  "boddy-reader",
+ "boddy-transformer",
  "boddy-wgpu",
  "serde_json",
  "sha2",
@@ -186,10 +187,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "boddy-transformer"
+version = "0.1.0"
+dependencies = [
+ "libm",
+]
+
+[[package]]
 name = "boddy-wgpu"
 version = "0.1.0"
 dependencies = [
  "boddy-neural",
+ "boddy-transformer",
  "bytemuck",
  "pollster",
  "wgpu",

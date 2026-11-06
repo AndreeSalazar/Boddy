@@ -2,6 +2,7 @@
 use boddy_neural::Config;
 use std::time::Duration;
 use wgpu::util::DeviceExt;
+pub mod transformer;
 
 pub struct Trainer {
     config: Config,

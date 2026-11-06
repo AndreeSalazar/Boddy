@@ -21,11 +21,13 @@ Las crates actuales comparten proceso y no constituyen sandboxes independientes.
 | boddy-agent | Investigación de lectura y registro de tareas | core, inference, reader, supergrafo |
 | window | Cuadro de comandos Windows | CLI por proceso |
 | boddy-neural | MLP, gradientes y referencia CPU no_std | libm; alloc del consumidor |
-| gpu/wgpu (boddy-wgpu) | Forward, gradientes y SGD GPU | neural; WGPU privado |
-| boddy-lab | Experimento, corpus y checkpoints | neural, wgpu, reader |
+| boddy-transformer | Decoder causal, cinta y autodiferenciación no_std | libm; alloc del consumidor |
+| gpu/wgpu (boddy-wgpu) | MLP y cinta Transformer en GPU | neural, transformer; WGPU privado |
+| boddy-lab | Experimentos, corpus y checkpoints | neural, transformer, wgpu, reader |
 
-Existe un adaptador de inferencia a llama.cpp y una MLP propia educativa con WGPU,
-separada del chat. Módulos futuros del asistente general: inferencia propia, tokenizer, ingestión, recuperación,
+Existe un adaptador a llama.cpp, una MLP propia y un decoder causal educativo con
+UTF-8/embeddings/WGPU, separados del chat. Módulos futuros del asistente general:
+inferencia propia completa, tokenizer de subpalabras, ingestión, recuperación,
 sesiones persistentes, ejecución aislada, verificación y evaluaciones del agente.
 Se distinguen en el registro de nodos como pendientes, sin crates vacías que
 prometan funcionalidad. Su implementación deberá fijar entradas, salidas, efectos,

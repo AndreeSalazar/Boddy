@@ -127,12 +127,13 @@
     {
       "id": "boddy-lab",
       "path": "crates/boddy-lab",
-      "purpose": "Tiny propio: entrenamiento, evaluacion, registro y checkpoints JSON compactos con pesos binarios compartidos",
+      "purpose": "Experimentos Tiny y Attention: corpus, entrenamiento, evaluacion, registro y checkpoints propios",
       "status": "implemented",
       "no_std": false,
       "dependencies": [
         "boddy-neural",
         "boddy-reader",
+        "boddy-transformer",
         "boddy-wgpu"
       ],
       "layer": 2
@@ -147,13 +148,23 @@
       "layer": 0
     },
     {
+      "id": "boddy-transformer",
+      "path": "crates/boddy-transformer",
+      "purpose": "Decoder no_std con embeddings, atencion causal, RMSNorm y autodiferenciacion de referencia",
+      "status": "implemented",
+      "no_std": true,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
       "id": "boddy-wgpu",
       "path": "gpu/wgpu",
-      "purpose": "Entrenamiento MLP con shaders propios WGPU y tipos GPU privados",
+      "purpose": "Entrenamiento MLP y cinta Transformer con shaders propios y tipos WGPU privados",
       "status": "implemented",
       "no_std": false,
       "dependencies": [
-        "boddy-neural"
+        "boddy-neural",
+        "boddy-transformer"
       ],
       "layer": 1
     },

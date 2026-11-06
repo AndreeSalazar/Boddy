@@ -131,9 +131,10 @@ Resultado observado desde la ventana en RTX 3060, 1.000 pasos: entrenamiento
 hash del corpus y métricas de esa ejecución. El tiempo de una ejecución incluye
 preparación y verificaciones; no es un benchmark estable de rendimiento.
 
-Para crecer: primero corpus y evaluación independientes; luego soporte Unicode,
-embeddings y contexto mayor, comparados con esta línea base. Un Transformer,
-optimizadores como Adam, evaluación de código y autonomía operativa
+Attention 0.1 implementa el primer experimento separado con UTF-8, embeddings
+y un decoder causal; ver ATTENTION.md. Tiny 1.0 conserva arquitectura y formato.
+Para crecer: corpus y evaluación independientes, contexto mayor y mediciones
+comparables. Optimizadores como Adam, evaluación de código y autonomía operativa
 son trabajo futuro. Añadir parámetros sin datos ni evaluación no garantiza mejoras.
 La formación de un asistente general desde cero excede el alcance de este prototipo.
 
