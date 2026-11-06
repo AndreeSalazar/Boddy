@@ -1,0 +1,85 @@
+{
+  "posiciones": {},
+  "grafo": {
+    "crates/boddy-app": [
+      1020,
+      0
+    ],
+    "crates/boddy-catalog": [
+      0,
+      0
+    ],
+    "crates/boddy-core": [
+      680,
+      0
+    ],
+    "crates/boddy-contracts": [
+      0,
+      145
+    ],
+    "crates/boddy-mission": [
+      340,
+      0
+    ],
+    "crates/boddy-policy": [
+      0,
+      290
+    ],
+    "crates/boddy-supergrafo": [
+      0,
+      435
+    ],
+    "crates/boddy-cli": [
+      1360,
+      0
+    ],
+    "window": [
+      1700,
+      0
+    ],
+    "modules/inference": [
+      2040,
+      0
+    ],
+    "modules/tokenizer": [
+      2040,
+      145
+    ],
+    "modules/ingestion": [
+      2040,
+      290
+    ],
+    "modules/retrieval": [
+      2040,
+      435
+    ],
+    "modules/session": [
+      2040,
+      580
+    ],
+    "modules/executor": [
+      2040,
+      725
+    ],
+    "modules/verification": [
+      2040,
+      870
+    ],
+    "modules/evaluation": [
+      2040,
+      1015
+    ],
+    "gpu/wgpu": [
+      2040,
+      1160
+    ]
+  },
+  "desplegadas": [
+    "crates",
+    "gpu",
+    "modules"
+  ],
+  "rejilla": false,
+  "bloqueada": false,
+  "foco": ""
+}

@@ -1,16 +1,55 @@
-# Notas del proyecto Boddy
+# Nodos de Boddy
+
+## crates/boddy-app
+Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-catalog, boddy-core, boddy-supergrafo.
+
+## crates/boddy-catalog
+Catalogo documental local. Estado: implemented. Dependencias: ninguna.
 
 ## crates/boddy-core
-Controlador de tareas no_std: misión, capacidades, cupo de llamadas y aprobación explícita del verificador. Sin modelo, I/O, heap ni sandbox propio.
+Estados, cupos y evidencia. Estado: implemented. Dependencias: boddy-contracts, boddy-mission, boddy-policy.
+
+## crates/boddy-contracts
+Errores compartidos sin plataforma. Estado: implemented. Dependencias: ninguna.
+
+## crates/boddy-mission
+Razon, objetivo y aceptacion. Estado: implemented. Dependencias: boddy-contracts.
+
+## crates/boddy-policy
+Capacidades explicitas. Estado: implemented. Dependencias: ninguna.
+
+## crates/boddy-supergrafo
+Consultas externas acotadas. Estado: implemented. Dependencias: ninguna.
 
 ## crates/boddy-cli
-Host Rust con std: muestra propósito, busca metadatos y consulta SUPER GRAFO con límites. La demo es determinista y no genera respuestas con un LLM.
+Entrada de terminal. Estado: implemented. Dependencias: boddy-app.
 
-## knowledge
-Catálogo de fuentes primarias. Solo metadatos y enlaces; no contiene un corpus descargado ni datos de entrenamiento.
+## window
+Cuadro de comandos Windows. Estado: implemented. Dependencias: boddy-cli.
 
-## docs
-Propósito, decisiones sustentadas en investigación, arquitectura, uso de Python, plan y estado real para continuar.
+## modules/inference
+Frontera de inference. Estado: planned. Dependencias: ninguna.
 
-## super-grafo
-Mapa y notas para orientarse en Boddy. La precisión del análisis léxico del grafo se contrasta con Cargo y con la lectura de las fuentes.
+## modules/tokenizer
+Frontera de tokenizer. Estado: planned. Dependencias: ninguna.
+
+## modules/ingestion
+Frontera de ingestion. Estado: planned. Dependencias: ninguna.
+
+## modules/retrieval
+Frontera de retrieval. Estado: planned. Dependencias: ninguna.
+
+## modules/session
+Frontera de session. Estado: planned. Dependencias: ninguna.
+
+## modules/executor
+Frontera de executor. Estado: planned. Dependencias: ninguna.
+
+## modules/verification
+Frontera de verification. Estado: planned. Dependencias: ninguna.
+
+## modules/evaluation
+Frontera de evaluation. Estado: planned. Dependencias: ninguna.
+
+## gpu/wgpu
+Adaptador GPU sin filtrar tipos al nucleo. Estado: planned. Dependencias: ninguna.

@@ -14,15 +14,31 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 | Ruta | Papel | Depende de |
 |---|---|---|
-| `crates/boddy-core` | Misión, permisos, cupo, estados y verificación | `core`, sin paquetes externos |
-| `crates/boddy-cli` | Host, catálogo, demo e integración SUPER GRAFO | `boddy-core` y `std` |
+| `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-catalog, boddy-core, boddy-supergrafo |
+| `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
+| `crates/boddy-core` | Estados, cupos y evidencia (implemented) | boddy-contracts, boddy-mission, boddy-policy |
+| `crates/boddy-contracts` | Errores compartidos sin plataforma (implemented) |  |
+| `crates/boddy-mission` | Razon, objetivo y aceptacion (implemented) | boddy-contracts |
+| `crates/boddy-policy` | Capacidades explicitas (implemented) |  |
+| `crates/boddy-supergrafo` | Consultas externas acotadas (implemented) |  |
+| `crates/boddy-cli` | Entrada de terminal (implemented) | boddy-app |
+| `window` | Cuadro de comandos Windows (implemented) | boddy-cli |
+| `modules/inference` | Frontera de inference (planned) |  |
+| `modules/tokenizer` | Frontera de tokenizer (planned) |  |
+| `modules/ingestion` | Frontera de ingestion (planned) |  |
+| `modules/retrieval` | Frontera de retrieval (planned) |  |
+| `modules/session` | Frontera de session (planned) |  |
+| `modules/executor` | Frontera de executor (planned) |  |
+| `modules/verification` | Frontera de verification (planned) |  |
+| `modules/evaluation` | Frontera de evaluation (planned) |  |
+| `gpu/wgpu` | Adaptador GPU sin filtrar tipos al nucleo (planned) |  |
 | `knowledge/sources.tsv` | Veinte fuentes: enlaces y metadatos | Fuentes oficiales consultadas |
 | `docs` | Propósito, investigación, diseño, plan y estado | Decisiones y evidencia del proyecto |
 | `tools/Update-SuperGrafo.ps1` | Actualizar este mapa y el resumen | Ejecutable externo de SUPER GRAFO |
 
 ## Última instantánea
 
-Archivos indexados: 32. Relaciones léxicas: 7. Ciclos reportados:
+Archivos indexados: 82. Relaciones léxicas: 7. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantánea: generar este mapa agrega o modifica archivos y no produce
 una fotografía inmutable de sí mismo. Consultar de nuevo para el estado actual.

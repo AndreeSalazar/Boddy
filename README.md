@@ -28,9 +28,14 @@ cargo run -p boddy-cli --offline -- demo
 cargo run -p boddy-cli --offline -- grafo resumen
 ```
 
-Las dos crates no dependen de paquetes externos. `boddy-core` usa exclusivamente
+Las ocho crates no dependen de paquetes externos. `boddy-core` y sus dependencias de dominio usan exclusivamente
 `core`, sin `std`, `alloc`, heap, I/O ni código `unsafe`.
 La CLI usa `std` para acceder al sistema anfitrión.
+
+Reglas persistentes: [AGENTS.md](AGENTS.md). Fronteras: [modularidad](docs/MODULARIDAD.md).
+El cuadro de comandos Windows vive en [window](window/README.md).
+El registro de nodos separa módulos implementados y pendientes en `super-grafo/nodos.json`;
+`orden.json` conserva posiciones por capa. Actualizar el mapa requiere Node.js y Cargo.
 
 `fuentes` busca títulos y metadatos del catálogo local; **no busca dentro de
 documentos completos**. La demo muestra el controlador y sus rechazos de permisos;

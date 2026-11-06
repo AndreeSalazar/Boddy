@@ -4,10 +4,9 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 publish.workspace = true
-default-run = "boddy-cli"
-
-[dependencies]
-boddy-core = { path = "../boddy-core" }
 
 [lints]
 workspace = true
+
+[dependencies]
+boddy-app = { path = "../boddy-app" }

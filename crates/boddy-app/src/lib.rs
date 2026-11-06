@@ -1,0 +1,91 @@
+use boddy_catalog as catalog;
+use boddy_supergrafo as graph;
+
+use boddy_core::{Mission, Policy, Task, Tool};
+use std::io::{self, Write};
+use std::path::Path;
+
+fn root() -> &'static Path {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap()
+}
+
+fn demo() -> Result<(), String> {
+    println!("DEMO DETERMINISTA del controlador. Sin LLM, GPU ni código generado.");
+    let result = (|| -> Result<(), boddy_core::Error> {
+        let mission = Mission::new(
+            "Mantener una investigación trazable",
+            "Preparar el plan inicial de Boddy",
+            "Plan con referencias y estado explícito",
+        )?;
+        let mut task = Task::new(mission, Policy::local_research(), 4)?;
+        task.start()?;
+        task.request_tool(Tool::ReadDocuments)?;
+        task.record_evidence("knowledge/sources.tsv#A01")?;
+        task.set_plan("docs/PLAN.md")?;
+        println!(
+            "Estado: {:?}; fuentes: {}; llamadas reservadas: {}",
+            task.stage(),
+            task.evidence_count(),
+            task.tool_calls()
+        );
+        println!(
+            "Ejecución de código: {:?}",
+            task.request_tool(Tool::ExecuteCode)
+        );
+        task.begin_verification()?;
+        println!("Completar sin verificador: {:?}", task.complete());
+        println!("La demo termina pendiente de verificación; no fabrica un resultado aprobado.");
+        Ok(())
+    })();
+    result.map_err(|e| format!("{e:?}"))
+}
+
+pub fn run(args: &[String]) -> Result<(), String> {
+    match args {
+        [] => {
+            println!("Boddy — base de IA operativa personal\n\nComandos:\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nEstado: controlador no_std y catálogo; inferencia y sandbox pendientes.");
+            Ok(())
+        }
+        [command] if command == "proposito" => {
+            print!("{}", include_str!("../../../docs/PROPOSITO.md"));
+            Ok(())
+        }
+        [command, rest @ ..] if command == "fuentes" && rest.len() <= 1 => {
+            let query = rest.first().map(String::as_str).unwrap_or("");
+            let matches = catalog::search(query);
+            println!(
+                "{} fuentes; mostrando hasta 10. Metadatos, sin documentos ingeridos.",
+                matches.len()
+            );
+            println!("{}", catalog::DATA.lines().next().unwrap());
+            for line in matches.iter().take(10) {
+                println!("{line}");
+            }
+            Ok(())
+        }
+        [command] if command == "demo" => demo(),
+        [command, rest @ ..] if command == "grafo" && rest.len() <= 1 => {
+            let mission = Mission::new(
+                "Orientarse sin cargar el repositorio completo",
+                "Consultar el mapa de Boddy",
+                "Respuesta acotada de SUPER GRAFO",
+            )
+            .map_err(|e| format!("{e:?}"))?;
+            let mut task =
+                Task::new(mission, Policy::local_research(), 1).map_err(|e| format!("{e:?}"))?;
+            task.start().map_err(|e| format!("{e:?}"))?;
+            task.request_tool(Tool::ReadGraph)
+                .map_err(|e| format!("{e:?}"))?;
+            let bytes = graph::query(
+                root(),
+                rest.first().map(String::as_str).unwrap_or("resumen"),
+            )?;
+            io::stdout().write_all(&bytes).map_err(|e| e.to_string())
+        }
+        _ => Err("Comando inválido. Ejecuta cargo run -p boddy-cli -- para ver la ayuda".into()),
+    }
+}

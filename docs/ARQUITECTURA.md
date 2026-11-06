@@ -23,6 +23,12 @@ procesos, red, heap ni dependencia del sistema. Sus datos son referencias presta
 y un máximo de ocho referencias de evidencia. Las referencias no contienen los
 documentos ni certifican su autenticidad.
 
+La estructura actual separa contratos, misión, política, núcleo, catálogo,
+adaptador SUPER GRAFO, aplicación y terminal en ocho crates. Las fronteras y
+dependencias vigentes están en `MODULARIDAD.md` y `super-grafo/nodos.json`.
+`window` consume la terminal mediante proceso; `gpu/wgpu` reserva el adaptador
+GPU pendiente. Las reglas persistentes de construcción están en `AGENTS.md`.
+
 Estados actuales: `Created -> Researching -> Planned -> Verifying -> Completed`.
 Una revisión vuelve de `Verifying` a `Planned` e invalida la aprobación previa.
 Una tarea activa puede detenerse. Un resultado fallido o una verificación ausente

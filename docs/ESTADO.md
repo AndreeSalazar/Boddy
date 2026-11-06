@@ -10,9 +10,20 @@ Fecha de inicio: 5 de noviembre de 2026, America/Lima.
 - Convertir conocimiento y herramientas de Python en capacidades útiles.
 - Hardware comunicado: RTX 3060 de 12 GB, 16 GB de RAM.
 
+## Modularización posterior al commit inicial
+
+Base inicial guardada en `091dc56`. Ahora hay ocho crates independientes:
+contracts, mission, policy, core, catalog, supergrafo, app y cli.
+Contratos, misión, política y núcleo siguen siendo no_std.
+El cuadro Windows está en `window/Boddy.ps1`; prueba de controles y ejecución
+de búsqueda Python aprobada con Windows PowerShell en STA.
+Registro de 18 nodos con dependencias acíclicas y posiciones por capa;
+WGPU y los otros componentes futuros figuran como pendientes.
+Esto separa código y responsabilidades: no establece aislamiento de procesos del SO.
+
 ## Implementado
 
-- Workspace Rust con controlador `boddy-core` y host `boddy-cli`, sin dependencias externas.
+- Workspace Rust modular, sin paquetes externos; `boddy-cli` consume `boddy-app`.
 - Misión con razón, objetivo y aceptación; estados y referencias de evidencia acotadas.
 - Política inicial que deniega ejecución de código y red; cupo por tarea en memoria.
 - Verificación explícita requerida para completar; revisión invalida resultados anteriores.

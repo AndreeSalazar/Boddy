@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "source": "Cargo metadata + fronteras planificadas explicitas",
+  "nodes": [
+    {
+      "id": "boddy-app",
+      "path": "crates/boddy-app",
+      "purpose": "Casos de uso de la aplicacion",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [
+        "boddy-catalog",
+        "boddy-core",
+        "boddy-supergrafo"
+      ],
+      "layer": 3
+    },
+    {
+      "id": "boddy-catalog",
+      "path": "crates/boddy-catalog",
+      "purpose": "Catalogo documental local",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "boddy-core",
+      "path": "crates/boddy-core",
+      "purpose": "Estados, cupos y evidencia",
+      "status": "implemented",
+      "no_std": true,
+      "dependencies": [
+        "boddy-contracts",
+        "boddy-mission",
+        "boddy-policy"
+      ],
+      "layer": 2
+    },
+    {
+      "id": "boddy-contracts",
+      "path": "crates/boddy-contracts",
+      "purpose": "Errores compartidos sin plataforma",
+      "status": "implemented",
+      "no_std": true,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "boddy-mission",
+      "path": "crates/boddy-mission",
+      "purpose": "Razon, objetivo y aceptacion",
+      "status": "implemented",
+      "no_std": true,
+      "dependencies": [
+        "boddy-contracts"
+      ],
+      "layer": 1
+    },
+    {
+      "id": "boddy-policy",
+      "path": "crates/boddy-policy",
+      "purpose": "Capacidades explicitas",
+      "status": "implemented",
+      "no_std": true,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "boddy-supergrafo",
+      "path": "crates/boddy-supergrafo",
+      "purpose": "Consultas externas acotadas",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "boddy-cli",
+      "path": "crates/boddy-cli",
+      "purpose": "Entrada de terminal",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [
+        "boddy-app"
+      ],
+      "layer": 4
+    },
+    {
+      "id": "window",
+      "path": "window",
+      "purpose": "Cuadro de comandos Windows",
+      "status": "implemented",
+      "dependencies": [
+        "boddy-cli"
+      ],
+      "layer": 5
+    },
+    {
+      "id": "inference",
+      "path": "modules/inference",
+      "purpose": "Frontera de inference",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "tokenizer",
+      "path": "modules/tokenizer",
+      "purpose": "Frontera de tokenizer",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "ingestion",
+      "path": "modules/ingestion",
+      "purpose": "Frontera de ingestion",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "retrieval",
+      "path": "modules/retrieval",
+      "purpose": "Frontera de retrieval",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "session",
+      "path": "modules/session",
+      "purpose": "Frontera de session",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "executor",
+      "path": "modules/executor",
+      "purpose": "Frontera de executor",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "verification",
+      "path": "modules/verification",
+      "purpose": "Frontera de verification",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "evaluation",
+      "path": "modules/evaluation",
+      "purpose": "Frontera de evaluation",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    },
+    {
+      "id": "wgpu",
+      "path": "gpu/wgpu",
+      "purpose": "Adaptador GPU sin filtrar tipos al nucleo",
+      "status": "planned",
+      "dependencies": [],
+      "layer": 6
+    }
+  ]
+}

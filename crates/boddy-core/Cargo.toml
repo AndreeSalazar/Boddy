@@ -7,3 +7,8 @@ publish.workspace = true
 
 [lints]
 workspace = true
+
+[dependencies]
+boddy-contracts = { path = "../boddy-contracts" }
+boddy-mission = { path = "../boddy-mission" }
+boddy-policy = { path = "../boddy-policy" }

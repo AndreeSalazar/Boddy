@@ -3,12 +3,49 @@
 version = 3
 
 [[package]]
-name = "boddy-cli"
+name = "boddy-app"
 version = "0.1.0"
 dependencies = [
+ "boddy-catalog",
  "boddy-core",
+ "boddy-supergrafo",
 ]
 
 [[package]]
+name = "boddy-catalog"
+version = "0.1.0"
+
+[[package]]
+name = "boddy-cli"
+version = "0.1.0"
+dependencies = [
+ "boddy-app",
+]
+
+[[package]]
+name = "boddy-contracts"
+version = "0.1.0"
+
+[[package]]
 name = "boddy-core"
+version = "0.1.0"
+dependencies = [
+ "boddy-contracts",
+ "boddy-mission",
+ "boddy-policy",
+]
+
+[[package]]
+name = "boddy-mission"
+version = "0.1.0"
+dependencies = [
+ "boddy-contracts",
+]
+
+[[package]]
+name = "boddy-policy"
+version = "0.1.0"
+
+[[package]]
+name = "boddy-supergrafo"
 version = "0.1.0"

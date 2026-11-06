@@ -1,4 +1,4 @@
-use crate::{Mission, Policy, Tool};
+use crate::{Error, Mission, Policy, Tool};
 
 pub const MAX_EVIDENCE: usize = 8;
 
@@ -10,18 +10,6 @@ pub enum Stage {
     Verifying,
     Completed,
     Stopped,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum Error {
-    EmptyField,
-    InvalidBudget,
-    InvalidStage,
-    MissingEvidence,
-    EvidenceFull,
-    ToolDenied,
-    BudgetExhausted,
-    NotVerified,
 }
 
 /// Sin heap, I/O ni dependencias. Referencias de evidencia aportadas por el host.

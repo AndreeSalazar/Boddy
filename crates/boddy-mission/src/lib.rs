@@ -1,4 +1,5 @@
-use crate::Error;
+#![no_std]
+use boddy_contracts::Error;
 
 /// El porqué, el resultado buscado y la condición de aceptación de una tarea.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

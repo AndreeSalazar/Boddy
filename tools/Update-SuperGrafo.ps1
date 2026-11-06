@@ -2,6 +2,8 @@ param([string]$SuperGrafoBin)
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+& node (Join-Path $PSScriptRoot 'update-architecture.cjs')
+if ($LASTEXITCODE -ne 0) { throw 'Falló la validación de módulos.' }
 if (-not $SuperGrafoBin) { $SuperGrafoBin = $env:BODDY_SG_BIN }
 if (-not $SuperGrafoBin) {
     $SuperGrafoBin = Join-Path (Split-Path -Parent $projectRoot) 'SUPER GRAFO\ultra-carpetas\target\release\ultra-carpetas.exe'
@@ -37,8 +39,7 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 | Ruta | Papel | Depende de |
 |---|---|---|
-| `crates/boddy-core` | Misión, permisos, cupo, estados y verificación | `core`, sin paquetes externos |
-| `crates/boddy-cli` | Host, catálogo, demo e integración SUPER GRAFO | `boddy-core` y `std` |
+{{LAYERS}}
 | `knowledge/sources.tsv` | Veinte fuentes: enlaces y metadatos | Fuentes oficiales consultadas |
 | `docs` | Propósito, investigación, diseño, plan y estado | Decisiones y evidencia del proyecto |
 | `tools/Update-SuperGrafo.ps1` | Actualizar este mapa y el resumen | Ejecutable externo de SUPER GRAFO |
@@ -60,6 +61,9 @@ después ejecutor aislado y ciclo del agente. Hoy no hay LLM ni sandbox operativ
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.
 '@
 $map = $map.Replace('{{FILES}}', [string]$summary.archivos_indexados)
+$nodes = (Get-Content -LiteralPath (Join-Path $destination 'nodos.json') -Raw | ConvertFrom-Json).nodes
+$layers = ($nodes | ForEach-Object { '| `' + $_.path + '` | ' + $_.purpose + ' (' + $_.status + ') | ' + ($_.dependencies -join ', ') + ' |' }) -join "`n"
+$map = $map.Replace('{{LAYERS}}', $layers)
 $map = $map.Replace('{{DEPS}}', [string]$summary.dependencias)
 $map = $map.Replace('{{CYCLES}}', [string]$summary.ciclos.total)
 [IO.File]::WriteAllText((Join-Path $destination 'MAPA.md'), $map + "`n", $utf8)

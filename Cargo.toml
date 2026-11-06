@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/boddy-core", "crates/boddy-cli"]
+members = ["crates/*"]
 resolver = "2"
 
 [workspace.package]
