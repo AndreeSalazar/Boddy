@@ -1,4 +1,4 @@
-param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [switch]$LabSmokeTest, [switch]$AttentionSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
+param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [switch]$LabSmokeTest, [switch]$AttentionSmokeTest, [switch]$RustSchoolSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -272,7 +272,22 @@ $form.Add_FormClosed({ $timer.Stop(); $timer.Dispose(); if ($script:active) { if
 . (Join-Path $PSScriptRoot 'components\Laboratory.ps1')
 . (Join-Path $PSScriptRoot 'components\ModelSelector.ps1')
 . (Join-Path $PSScriptRoot 'components\Attention.ps1')
-if($AttentionSmokeTest){
+. (Join-Path $PSScriptRoot 'components\RustSchool.ps1')
+if($RustSchoolSmokeTest){
+    $form.Opacity=0;$form.Show();[Windows.Forms.Application]::DoEvents()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
+    $tabs.SelectedTab=$rustPage;$rustTrain.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(180)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
+    if($script:wbLastResult.training_profile -ne 'rust-v1'){throw ('Fallo entrenamiento Rust UI: '+$wbMessage.Text)}
+    $rustRun.PerformClick();$deadline=[DateTime]::UtcNow.AddSeconds(180)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
+    if($script:wbLastResult.task_count -ne 6 -or $script:wbLastResult.policy.execute_code -or $rustOutput.Text -notmatch 'PRIMERA ELECCION'){throw ('Fallo agente Rust UI: '+$wbMessage.Text)}
+    if($script:history.Count -ne 0){throw 'La escuela altero el historial del chat.'}
+    'Escuela Rust: entrenamiento GPU y ciclo de verificacion desde ventana; estado '+$script:wbLastResult.state
+    $form.Close();$form.Dispose()
+} elseif($AttentionSmokeTest){
     $form.Opacity=0;$form.Show();[Windows.Forms.Application]::DoEvents()
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
@@ -337,7 +352,7 @@ if($AttentionSmokeTest){
     [Windows.Forms.Application]::DoEvents()
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
-    if($tabs.TabPages.Count -ne 6){throw 'Faltan espacios de trabajo.'}
+    if($tabs.TabPages.Count -ne 7){throw 'Faltan espacios de trabajo.'}
     if($gpuStats.Bottom -gt $chatPage.ClientSize.Height -or $inputPanel.Bottom -gt $chatPage.ClientSize.Height){throw 'Controles de chat fuera del area visible.'}
     $tabs.SelectedTab=$programPage
     $reloadSources.PerformClick()
@@ -364,7 +379,7 @@ if($AttentionSmokeTest){
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
     if(-not $script:wbLastResult.gpu){throw 'No se recibio el estado de recursos.'}
-    'Workbench: seis pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
+    'Workbench: siete pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
     $form.Close(); $form.Dispose()
 } elseif ($ResearchSmokeTest) {
     $form.Opacity=0

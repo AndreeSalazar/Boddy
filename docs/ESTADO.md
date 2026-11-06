@@ -7,7 +7,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 - Chat Windows sencillo: historial reciente, Enter para enviar, Shift+Enter para
   nueva línea, nuevo chat y cancelación de la espera.
-- Dieciocho crates con dependencias acíclicas. Contratos, misión, política y controlador
+- Diecinueve crates con dependencias acíclicas. Contratos, misión, política y controlador
   siguen siendo no_std; host, inferencia y ventana permanecen separados.
 - Adaptador Rust boddy-inference a un motor local externo, solo 127.0.0.1:17861.
 - Qwen2.5-Coder-7B-Instruct Q4_K_M, 4683073536 bytes. SHA256 verificado contra
@@ -19,7 +19,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 - Autenticación local interna generada automáticamente; no es una clave de proveedor.
   Los pesos, motor, credencial y logs están en carpetas ignoradas por Git.
 - Catálogo de veinte referencias documentales; todavía son metadatos, sin corpus.
-- SUPER GRAFO: mapa, notas, posiciones y 26 nodos con estados explícitos.
+- SUPER GRAFO: mapa, notas, posiciones y 27 nodos con estados explícitos.
 - Contadores visibles de entrada, salida, caché y acumulados, velocidad, recorte
   e instantánea de VRAM del dispositivo al responder. Conteo previo por tokenizer
   del motor, con eliminación de pares antiguos para respetar el presupuesto.
@@ -33,7 +33,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   por el host y permite una corrección. Guarda todos los intentos y rechazos.
   Se excluyen cabeceras de función como evidencia de comportamiento y se detecta
   un caso léxico acotado de permisos afirmados contra inicializadores false.
-- Ventana con Conversar, Programar, Mi PC, Evidencia, Laboratorio y Atencion. Explorador acotado de
+- Ventana con Conversar, Programar, Mi PC, Evidencia, Laboratorio, Atencion y Rust. Explorador acotado de
   fuentes (incluye window como texto), fragmentos y apertura manual en editor.
   Acciones fijas para Explorer, SUPER GRAFO y Administrador de tareas, con log local.
   Vista de tareas guardadas y consulta manual de GPU, independiente del modelo.
@@ -56,14 +56,27 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   bytes, contexto 16 bytes. Entrena por intérprete escalar WGPU y genera por CPU.
   Panel separado para crear, continuar, consultar y generar; formato independiente
   de Tiny. No importa pesos Qwen y todavía repite espacios en la muestra inicial.
+- Escuela Rust: perfil rust-v1 para Attention y controlador de seis ejercicios
+  sobre nueve expresiones conocidas. Ranking neuronal, propuesta, verificación de
+  cinco casos y hasta tres intentos. Registra primera elección y búsqueda aparte;
+  guarda propuestas en data/rust-school sin compilar ni modificar proyectos.
+  Perfiles nuevos conservan al padre, con transferencia explícita de pesos cuando
+  cambia el corpus. Ver docs/ESCUELA-RUST.md.
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 45 pruebas aprobadas.
+- cargo test --workspace --offline: 50 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
 - cargo check -p boddy-neural --target wasm32-unknown-unknown --offline: aprobado.
 - cargo check -p boddy-transformer --target wasm32-unknown-unknown --offline: aprobado.
+- cargo check -p boddy-rust-tasks --target wasm32-unknown-unknown --offline: aprobado.
+- Escuela Rust real: 300 pasos sobre un Attention general propio. Pérdida Rust
+  entrenamiento 4,4870 -> 3,8320; validación 4,8796 -> 4,1192. Primera elección
+  0/6 -> 1/6; búsqueda de hasta tres intentos 2/6 -> 2/6. Cuatro pendientes,
+  estado Stopped; propuestas de suma y resta pasaron solo sus casos finitos.
+  Perfil y ciclo también funcionaron desde la ventana. Sin evidencia de Rust
+  general ni ejecución autónoma de proyectos. evals/rust-school-v1-rtx3060.json.
 - Attention real en RTX 3060: 300 pasos, pérdida de entrenamiento 5,5408 -> 3,9268
   y validación 5,5679 -> 4,1217. Error máximo de gradientes GPU/CPU 4,77e-7.
   200 pasos frente a 100 + 100 produjeron los mismos pesos y muestreador; padre

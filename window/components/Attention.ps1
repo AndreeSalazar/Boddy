@@ -21,7 +21,7 @@ $attentionSteps.SetBounds(24,172,100,30)
 $attentionTrain=New-WorkbenchButton 'Entrenar en GPU' 140 168 190
 $attentionInspect=New-WorkbenchButton 'Ver metricas' 346 168 150
 $attentionState=New-Object Windows.Forms.Label
-$attentionState.SetBounds(514,176,350,32);$attentionState.Anchor='Top,Left,Right'
+$attentionState.SetBounds(24,254,850,24);$attentionState.Anchor='Top,Left,Right'
 $attentionState.Text='Cinta GPU de referencia; no optimizada.'
 $attentionPrefix=New-Object Windows.Forms.TextBox
 $attentionPrefix.Text='Boddy: ';$attentionPrefix.SetBounds(24,220,620,30);$attentionPrefix.Anchor='Top,Left,Right'
@@ -31,16 +31,25 @@ $attentionOutput=New-Object Windows.Forms.TextBox
 $attentionOutput.Multiline=$true;$attentionOutput.ReadOnly=$true;$attentionOutput.ScrollBars='Vertical'
 $attentionOutput.BackColor=[Drawing.ColorTranslator]::FromHtml('#202329');$attentionOutput.ForeColor=$form.ForeColor
 $attentionOutput.Font=New-Object Drawing.Font('Consolas',10)
-$attentionOutput.SetBounds(24,274,850,430);$attentionOutput.Anchor='Top,Bottom,Left,Right'
+$attentionOutput.SetBounds(24,288,850,416);$attentionOutput.Anchor='Top,Bottom,Left,Right'
 $attentionOutput.Text="Modelo propio con pesos aleatorios. Antes de entrenar se comparan perdida, gradientes y SGD contra CPU.`r`n`r`nLa tokenizacion representa cualquier texto UTF-8. Las muestras usan una mascara de validez UTF-8; no demuestra comprension del idioma.`r`n`r`nLos pesos se guardan en binario junto a un JSON pequeno en data/attention. No se importan pesos Qwen."
 $attentionPage.Controls.AddRange(@($attentionTitle,$attentionInfo,$attentionModels,$attentionRefresh,$attentionSteps,$attentionTrain,$attentionInspect,$attentionState,$attentionPrefix,$attentionGenerate,$attentionOutput))
-$attentionModels.Add_SelectedIndexChanged({$attentionTrain.Text=if($attentionModels.SelectedItem.id){'Continuar en GPU'}else{'Entrenar en GPU'}})
+$attentionProfile=New-Object Windows.Forms.ComboBox
+$attentionProfile.DropDownStyle='DropDownList';$attentionProfile.DisplayMember='label'
+[void]$attentionProfile.Items.Add([pscustomobject]@{id='general-v1';label='Corpus general v1'})
+[void]$attentionProfile.Items.Add([pscustomobject]@{id='rust-v1';label='Escuela Rust v1'})
+$attentionProfile.SelectedIndex=0;$attentionProfile.SetBounds(514,172,350,30);$attentionProfile.Anchor='Top,Left,Right'
+$attentionPage.Controls.Add($attentionProfile)
+$attentionModels.Add_SelectedIndexChanged({
+    $attentionTrain.Text=if($attentionModels.SelectedItem.id){'Continuar en GPU'}else{'Entrenar en GPU'}
+    if($attentionModels.SelectedItem.profile){for($i=0;$i -lt $attentionProfile.Items.Count;$i++){if($attentionProfile.Items[$i].id -eq $attentionModels.SelectedItem.profile){$attentionProfile.SelectedIndex=$i;break}}}
+})
 $attentionRefresh.Add_Click({
     Invoke-WorkbenchCommand @{action='list'} {
         param($result)
         $selected=$attentionModels.SelectedItem.id;$attentionModels.Items.Clear()
         [void]$attentionModels.Items.Add([pscustomobject]@{id='';label='Nuevo Attention 0.1 desde cero'})
-        foreach($item in $result.models){[void]$attentionModels.Items.Add([pscustomobject]@{id=$item.id;label=$item.id})}
+        foreach($item in $result.models){[void]$attentionModels.Items.Add([pscustomobject]@{id=$item.id;profile=$item.profile;label=($item.id+' | '+$item.profile)})}
         $attentionModels.SelectedIndex=0
         for($i=0;$i -lt $attentionModels.Items.Count;$i++){if($attentionModels.Items[$i].id -eq $selected){$attentionModels.SelectedIndex=$i;break}}
         $attentionState.Text='Modelos: '+$result.models.Count+' | Invalidos: '+$result.invalid
@@ -50,11 +59,11 @@ $attentionTrain.Add_Click({
     if($script:active -or $script:wbProcess){$attentionState.Text='Espera a que termine la accion actual.';return}
     $parent=if($attentionModels.SelectedItem.id){$attentionModels.SelectedItem.id}else{$null}
     $attentionState.Text='Entrenando y verificando...'
-    Invoke-WorkbenchCommand @{action='train';steps=[int]$attentionSteps.SelectedItem;parent_id=$parent} {
+    Invoke-WorkbenchCommand @{action='train';steps=[int]$attentionSteps.SelectedItem;parent_id=$parent;profile=$attentionProfile.SelectedItem.id} {
         param($result)
         $attentionOutput.Text=$result | ConvertTo-Json -Depth 14
         $attentionState.Text='Guardado: '+$result.id
-        [void]$attentionModels.Items.Add([pscustomobject]@{id=$result.id;label=$result.id})
+        [void]$attentionModels.Items.Add([pscustomobject]@{id=$result.id;profile=$result.training_profile;label=($result.id+' | '+$result.training_profile)})
         $attentionModels.SelectedIndex=$attentionModels.Items.Count-1
     } 'atencion'
 })

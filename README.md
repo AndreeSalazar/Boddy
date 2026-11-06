@@ -14,6 +14,10 @@ Tiny es un experimento educativo de caracteres. [Cómo entrenarlo](docs/MODELO-P
 bytes UTF-8, embeddings y atención causal. Entrena por WGPU y genera con la
 referencia CPU. Es experimental y aún no demuestra lenguaje útil.
 
+**Rust** añade un corpus de enseñanza y un agente de ejercicios acotados: el
+modelo ordena expresiones conocidas, el host verifica casos y revisa dentro de
+un cupo. [Resultados y límites](docs/ESCUELA-RUST.md).
+
 ## Abrir el chat
 
 Doble clic en `window/Boddy.vbs`, o:
@@ -36,9 +40,9 @@ Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargad
 
 ## Arquitectura
 
-Dieciocho crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+Diecinueve crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
 inferencia local, telemetría, lector, agente, escritorio, aplicación, CLI, lanzador
-gráfico, red neuronal de referencia, Transformer, adaptador WGPU y laboratorio.
+gráfico, red neuronal de referencia, Transformer, ejercicios Rust, adaptador WGPU y laboratorio.
 Las primeras cuatro permanecen no_std.
 El host usa serde_json; GPU y ventana no entran en el núcleo.
 

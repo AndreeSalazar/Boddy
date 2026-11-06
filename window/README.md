@@ -1,6 +1,6 @@
 # Boddy 1.0 — chat local
 
-La ventana ofrece Conversar, Programar, Mi PC, Evidencia, Laboratorio y Atencion. Programar muestra
+La ventana ofrece Conversar, Programar, Mi PC, Evidencia, Laboratorio, Atencion y Rust. Programar muestra
 fuentes y fragmentos y permite investigar la selección. Mi PC abre herramientas
 registradas por acción manual; Evidencia recupera las tareas guardadas.
 [Controles y alcance](../docs/ESCRITORIO.md).
@@ -73,3 +73,9 @@ Tiny. Usa bytes UTF-8, embeddings y una cabeza causal. Permite crear pesos desde
 cero, continuar una versión guardada, consultar métricas y generar desde un
 prefijo Unicode. Entrena por WGPU y genera por CPU. Aún no demuestra lenguaje
 útil ni programación. [Detalles y evidencia](../docs/ATTENTION.md).
+
+**Rust** permite educar un Attention con el perfil Rust y ejecutar seis ejercicios
+de elección entre expresiones conocidas. Muestra primera elección, resultados
+tras búsqueda, propuestas aceptadas y registro. Los fallos quedan pendientes.
+Atencion incluye selector de corpus general/Rust; cambiar perfil conserva al
+padre y crea otra versión. [Alcance exacto](../docs/ESCUELA-RUST.md).

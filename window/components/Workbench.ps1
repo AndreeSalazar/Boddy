@@ -4,7 +4,7 @@ $script:wbCallback = $null
 $script:wbLastResult = $null
 $wbTimer = New-Object Windows.Forms.Timer
 $wbTimer.Interval = 80
-function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [ValidateSet('pc','entrenar','modelo','atencion')][string]$Command='pc') {
+function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [ValidateSet('pc','entrenar','modelo','atencion','escuela-rust')][string]$Command='pc') {
     if ($script:wbProcess) { $wbMessage.Text='Hay una accion en curso; espera un momento.'; return }
     try {
         $info = New-Object Diagnostics.ProcessStartInfo
@@ -29,7 +29,7 @@ function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [Val
         $script:wbCallback = $OnDone
         $script:wbStarted = [DateTime]::UtcNow
         $script:wbCommand = $Command
-        $script:wbTimeout = if ($Command -eq 'entrenar' -or ($Command -eq 'atencion' -and $Request.action -eq 'train')) { 180 } else { 15 }
+        $script:wbTimeout = if ($Command -eq 'entrenar' -or $Command -eq 'escuela-rust' -or ($Command -eq 'atencion' -and $Request.action -eq 'train')) { 180 } else { 15 }
         $wbMessage.Text='Consultando: ' + $Request.action
         $wbTimer.Start()
     } catch {
