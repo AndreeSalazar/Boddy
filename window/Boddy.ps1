@@ -1,4 +1,4 @@
-param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [string]$PreviewPath)
+param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -15,7 +15,7 @@ $script:requestMode = 'chat'
 $script:lastTaskState = ''
 $form = New-Object Windows.Forms.Form
 $form.Text = 'Boddy 1.0'
-$form.ClientSize = New-Object Drawing.Size(900, 800)
+$form.ClientSize = New-Object Drawing.Size(900, 850)
 $form.MinimumSize = New-Object Drawing.Size(760, 650)
 $form.StartPosition = 'CenterScreen'
 $form.BackColor = [Drawing.ColorTranslator]::FromHtml('#17191D')
@@ -70,6 +70,7 @@ $send.ForeColor = [Drawing.ColorTranslator]::FromHtml('#14251F')
 $inputPanel.Controls.AddRange(@($prompt, $send))
 $status = New-Object Windows.Forms.Label
 $status.Text = 'Modelo local: Qwen2.5-Coder 7B | Enter para enviar; Shift+Enter para nueva linea'
+if($EngineStatus){$status.Text=$EngineStatus}
 $status.Font = New-Object Drawing.Font('Segoe UI', 9)
 $status.ForeColor = [Drawing.Color]::Silver
 $status.SetBounds(32, 668, 835, 25)
@@ -254,15 +255,54 @@ $prompt.Add_KeyDown({
 })
 $newChat.Add_Click({ $script:history.Clear(); $script:totalInput=0L; $script:totalOutput=0L; $script:totalCached=0L; $tokenStats.Text='Nuevo chat: acumulados reiniciados.'; $transcript.Clear(); Add-ChatText 'Boddy' 'Nuevo chat. Que quieres construir?'; $prompt.Focus() })
 $form.Add_FormClosed({ $timer.Stop(); $timer.Dispose(); if ($script:active) { if (-not $script:active.HasExited) { $script:active.Kill() }; $script:active.Dispose() } })
-if ($ResearchSmokeTest) {
+. (Join-Path $PSScriptRoot 'components\Workbench.ps1')
+if ($WorkbenchSmokeTest) {
+    $form.Opacity=0; $form.Show()
+    [Windows.Forms.Application]::DoEvents()
+    if($tabs.TabPages.Count -ne 4){throw 'Faltan espacios de trabajo.'}
+    if($gpuStats.Bottom -gt $chatPage.ClientSize.Height -or $inputPanel.Bottom -gt $chatPage.ClientSize.Height){throw 'Controles de chat fuera del area visible.'}
+    $tabs.SelectedTab=$programPage
+    $reloadSources.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if($wbFiles.Items.Count -lt 1){throw ('No se cargaron fuentes: '+$wbMessage.Text)}
+    $wbFiles.SelectedItem='crates/boddy-inference/src/budget.rs'
+    $previewSource.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if($wbPreview.Text -notmatch 'CONTEXT_CAPACITY'){throw 'La vista de fuente no coincide.'}
+    $tabs.SelectedTab=$evidencePage
+    $refreshTasks.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if($wbTasks.Items.Count -gt 0){
+        $wbTasks.SelectedIndex=0; $showTask.PerformClick()
+        $deadline=[DateTime]::UtcNow.AddSeconds(20)
+        while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+        if($wbRecord.Text -notmatch '"schema"'){throw 'No se cargo el registro seleccionado.'}
+    }
+    $tabs.SelectedTab=$pcPage
+    $refreshGpu.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if(-not $script:wbLastResult.gpu){throw 'No se recibio el estado de recursos.'}
+    'Workbench: cuatro pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
+    $form.Close(); $form.Dispose()
+} elseif ($ResearchSmokeTest) {
     $form.Opacity=0
     $form.Show()
-    $research.Checked=$true
-    $prompt.Text='Explica como budget.rs limita el contexto de tokens de Boddy.'
-    $send.PerformClick()
+    $tabs.SelectedTab=$programPage
+    $reloadSources.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    $wbFiles.SelectedItem='crates/boddy-inference/src/budget.rs'
+    if(-not $wbFiles.SelectedItem){throw 'No se pudo seleccionar budget.rs.'}
+    $investigateSource.PerformClick()
     $deadline=[DateTime]::UtcNow.AddSeconds(430)
     while ($script:active -and [DateTime]::UtcNow -lt $deadline) { [Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25 }
-    if ($script:lastTaskState -ne 'Completed' -or $script:lastReply -notmatch '\[S[1-3] ') { throw ('Investigacion no completada: '+$transcript.Text) }
+    if ($script:lastTaskState -notin @('Completed','Stopped') -or $script:lastReply -notmatch 'Registro:') { throw ('No se obtuvo un estado final de la investigacion: '+$transcript.Text) }
+    if ($script:lastTaskState -eq 'Completed' -and $script:lastReply -notmatch '\[S[1-3] ') { throw 'Informe aprobado sin citas visibles.' }
+    if ($script:lastTaskState -eq 'Stopped' -and $script:lastReply -notmatch 'No se aprobo') { throw 'Tarea detenida presentada como aprobada.' }
     if ($script:history.Count -ne 0) { throw 'La investigacion altero el historial del chat.' }
     'Investigacion en ventana: '+$status.Text
     $form.Close(); $form.Dispose()

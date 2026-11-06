@@ -22,8 +22,9 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 | `crates/boddy-inference` | Chat con motor local por loopback, sin herramientas (implemented) |  |
 | `crates/boddy-reader` | Lectura de fuentes acotada y evidencia con SHA256 (implemented) |  |
 | `crates/boddy-supergrafo` | Consultas externas acotadas (implemented) |  |
-| `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-agent, boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo, boddy-telemetry |
+| `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-agent, boddy-catalog, boddy-core, boddy-desktop, boddy-inference, boddy-reader, boddy-supergrafo, boddy-telemetry |
 | `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
+| `crates/boddy-desktop` | Acciones manuales de escritorio registradas y auditadas (implemented) | boddy-reader |
 | `crates/boddy-telemetry` | Muestra de VRAM y uso de GPU, independiente del modelo (implemented) |  |
 | `crates/boddy-cli` | Entrada de terminal (implemented) | boddy-app |
 | `window` | Lanzador grafico Windows sin consola (implemented) | boddy-cli |
@@ -42,7 +43,7 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 ## Última instantánea
 
-Archivos indexados: 115. Relaciones léxicas: 12. Ciclos reportados:
+Archivos indexados: 123. Relaciones léxicas: 13. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantánea: generar este mapa agrega o modifica archivos y no produce
 una fotografía inmutable de sí mismo. Consultar de nuevo para el estado actual.

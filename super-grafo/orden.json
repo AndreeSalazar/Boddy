@@ -88,6 +88,10 @@
     "crates/boddy-reader": [
       0,
       870
+    ],
+    "crates/boddy-desktop": [
+      340,
+      145
     ]
   },
   "desplegadas": [

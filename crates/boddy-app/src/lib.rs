@@ -46,6 +46,34 @@ fn demo() -> Result<(), String> {
 
 pub fn run(args: &[String]) -> Result<(), String> {
     match args {
+        [command] if command == "pc" => {
+            let mut input = String::new();
+            io::stdin()
+                .take(4097)
+                .read_to_string(&mut input)
+                .map_err(|e| e.to_string())?;
+            if input.len() > 4096 {
+                return Err("Peticion de escritorio demasiado grande".into());
+            }
+            let request: serde_json::Value =
+                serde_json::from_str(&input).map_err(|e| e.to_string())?;
+            let response = match request["action"].as_str().ok_or("Falta accion")? {
+                "resources" => serde_json::json!({"gpu":boddy_telemetry::snapshot()}),
+                "source_list" => boddy_reader::list(root())?,
+                "source_preview" => {
+                    boddy_reader::read(root(), request["path"].as_str().ok_or("Falta ruta")?, &[])?
+                        .as_json("preview")
+                }
+                "task_list" => boddy_agent::records::list(root())?,
+                "task_record" => boddy_agent::records::record(
+                    root(),
+                    request["id"].as_str().ok_or("Falta identificador")?,
+                )?,
+                _ => boddy_desktop::run(root(), &request)?,
+            };
+            println!("{response}");
+            Ok(())
+        }
         [command] if command == "investigar" => {
             let started = std::time::Instant::now();
             let mut input = String::new();

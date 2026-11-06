@@ -19,11 +19,12 @@ pub fn allowed(path: &str) -> bool {
     }
     let scope = path.starts_with("crates/")
         || path.starts_with("docs/")
+        || path.starts_with("window/")
         || matches!(path, "README.md" | "Cargo.toml");
     scope
         && matches!(
             Path::new(path).extension().and_then(|x| x.to_str()),
-            Some("rs" | "md" | "toml")
+            Some("rs" | "md" | "toml" | "ps1" | "vbs")
         )
 }
 
@@ -47,6 +48,49 @@ pub fn plain_path(root: &Path, relative: &Path) -> Result<(), String> {
         }
     }
     Ok(())
+}
+
+pub fn list(root: &Path) -> Result<Value, String> {
+    let mut pending = vec![
+        "docs".to_string(),
+        "crates".to_string(),
+        "window".to_string(),
+    ];
+    let mut files = vec!["README.md".to_string(), "Cargo.toml".to_string()];
+    let mut visited = 0;
+    while let Some(relative) = pending.pop() {
+        if visited >= 2048 || files.len() >= 200 {
+            return Ok(json!({"files":files,"truncated":true}));
+        }
+        if plain_path(root, Path::new(&relative)).is_err() {
+            continue;
+        }
+        for entry in std::fs::read_dir(root.join(&relative)).map_err(|e| e.to_string())? {
+            visited += 1;
+            if visited > 2048 || files.len() >= 200 {
+                return Ok(json!({"files":files,"truncated":true}));
+            }
+            let entry = entry.map_err(|e| e.to_string())?;
+            let name = entry.file_name().to_string_lossy().to_string();
+            if name.starts_with('.')
+                || matches!(name.as_str(), "target" | "node_modules" | "vendor")
+            {
+                continue;
+            }
+            let path = format!("{relative}/{name}");
+            if plain_path(root, Path::new(&path)).is_err() {
+                continue;
+            }
+            let metadata = entry.metadata().map_err(|e| e.to_string())?;
+            if metadata.is_dir() {
+                pending.push(path);
+            } else if metadata.is_file() && allowed(&path) {
+                files.push(path);
+            }
+        }
+    }
+    files.sort();
+    Ok(json!({"files":files,"truncated":false}))
 }
 
 #[derive(Clone, Debug)]
@@ -154,6 +198,7 @@ mod tests {
             assert!(!allowed(p), "{p}");
         }
         assert!(allowed("crates/boddy-core/src/task.rs"));
+        assert!(allowed("window/components/Workbench.ps1"));
     }
     #[test]
     fn validates_quotes_against_exact_line_ranges() {

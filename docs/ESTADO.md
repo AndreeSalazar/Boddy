@@ -7,7 +7,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 - Chat Windows sencillo: historial reciente, Enter para enviar, Shift+Enter para
   nueva línea, nuevo chat y cancelación de la espera.
-- Trece crates con dependencias acíclicas. Contratos, misión, política y controlador
+- Catorce crates con dependencias acíclicas. Contratos, misión, política y controlador
   siguen siendo no_std; host, inferencia y ventana permanecen separados.
 - Adaptador Rust boddy-inference a un motor local externo, solo 127.0.0.1:17861.
 - Qwen2.5-Coder-7B-Instruct Q4_K_M, 4683073536 bytes. SHA256 verificado contra
@@ -19,7 +19,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 - Autenticación local interna generada automáticamente; no es una clave de proveedor.
   Los pesos, motor, credencial y logs están en carpetas ignoradas por Git.
 - Catálogo de veinte referencias documentales; todavía son metadatos, sin corpus.
-- SUPER GRAFO: mapa, notas, posiciones y 22 nodos con estados explícitos.
+- SUPER GRAFO: mapa, notas, posiciones y 23 nodos con estados explícitos.
 - Contadores visibles de entrada, salida, caché y acumulados, velocidad, recorte
   e instantánea de VRAM del dispositivo al responder. Conteo previo por tokenizer
   del motor, con eliminación de pares antiguos para respetar el presupuesto.
@@ -29,10 +29,14 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   y lecturas decididas por el modelo dentro de un flujo acotado. Hasta tres fuentes;
   informe con líneas/citas comprobadas y SHA256 estable. Registro en data/tasks,
   excluido de Git. Revisión semántica pendiente incluso cuando termina Completed.
+- Ventana con Conversar, Programar, Mi PC y Evidencia. Explorador acotado de
+  fuentes (incluye window como texto), fragmentos y apertura manual en editor.
+  Acciones fijas para Explorer, SUPER GRAFO y Administrador de tareas, con log local.
+  Vista de tareas guardadas y consulta manual de GPU, independiente del modelo.
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 22 pruebas aprobadas.
+- cargo test --workspace --offline: 24 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
 - Comprobación del evento del botón de la ventana con generación real: respondió
@@ -42,6 +46,10 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 - Investigación real sobre budget.rs: Completed, tres llamadas al modelo, citas
   textuales comprobadas por el host. Pasó también desde la ventana y no alteró
   el historial del chat. Una prueba sin motor terminó Stopped con registro local.
+- Las cuatro pestañas cargaron fuentes, fragmento, un registro y estado de GPU.
+  La investigación desde Programar también mostró una cita incorrecta del modelo:
+  quedó Stopped y visible como no aprobada. Las aperturas externas se verificaron
+  como planes de argumentos, sin automatizar esas aplicaciones durante las pruebas.
 - VRAM total observada tras cargar y generar: aproximadamente 5,5–5,6 GiB,
   incluyendo el uso previo del escritorio. No es consumo aislado del proceso,
   una medición del pico ni un benchmark de calidad o velocidad general.

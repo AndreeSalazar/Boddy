@@ -1,4 +1,5 @@
 //! Investigador de lectura acotado: búsquedas, selección, evidencia y diario local.
+pub mod records;
 mod report;
 use boddy_core::{Mission, Policy, Task, Tool};
 use serde_json::{json, Value};

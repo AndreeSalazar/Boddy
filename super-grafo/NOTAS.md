@@ -25,10 +25,13 @@ Lectura de fuentes acotada y evidencia con SHA256. Estado: implemented. Dependen
 Consultas externas acotadas. Estado: implemented. Dependencias: ninguna.
 
 ## crates/boddy-app
-Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-agent, boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo, boddy-telemetry.
+Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-agent, boddy-catalog, boddy-core, boddy-desktop, boddy-inference, boddy-reader, boddy-supergrafo, boddy-telemetry.
 
 ## crates/boddy-catalog
 Catalogo documental local. Estado: implemented. Dependencias: ninguna.
+
+## crates/boddy-desktop
+Acciones manuales de escritorio registradas y auditadas. Estado: implemented. Dependencias: boddy-reader.
 
 ## crates/boddy-telemetry
 Muestra de VRAM y uso de GPU, independiente del modelo. Estado: implemented. Dependencias: ninguna.

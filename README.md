@@ -26,8 +26,8 @@ Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargad
 
 ## Arquitectura
 
-Trece crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
-inferencia local, telemetría, lector, agente, aplicación, CLI y lanzador gráfico.
+Catorce crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+inferencia local, telemetría, lector, agente, escritorio, aplicación, CLI y lanzador gráfico.
 Las primeras cuatro permanecen no_std.
 El host usa serde_json; GPU y ventana no entran en el núcleo.
 
@@ -41,6 +41,7 @@ sin clave ni pago a un proveedor por token.
 - [Estado y comprobaciones](docs/ESTADO.md).
 - [Tokens, GPU y presupuestos](docs/RECURSOS.md).
 - [Agente de lectura con citas verificadas](docs/AGENTE-LECTURA.md).
+- [Programar, Mi PC y Evidencia en Windows](docs/ESCRITORIO.md).
 - [Mapa](super-grafo/MAPA.md) y `super-grafo/nodos.json`.
 
 ## Comprobar y mantener

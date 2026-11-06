@@ -36,7 +36,8 @@ de un fragmento tampoco equivale a una revisión completa del archivo o del proy
   caracteres de texto. Se selecciona el primer acierto de los términos con contexto.
 - Objetivo de hasta 800 caracteres; cada llamada usa el presupuesto del adaptador
   (4096 tokens de contexto, 512 de salida). Si no cabe, se detiene con un motivo.
-- Solo archivos `.rs`, `.md` o `.toml` dentro de `crates/`, `docs/`, o los archivos
+- Solo fuentes `.rs`, `.md`, `.toml`, `.ps1` o `.vbs` dentro de `crates/`, `docs/`,
+  `window/`, o los archivos
   raíz `README.md` y `Cargo.toml`. No se ofrecen `runtime`, pesos, Git ni credenciales.
 - Se rechazan rutas absolutas, componentes ocultos, escapes, enlaces y puntos de
   reanálisis de Windows. Se comprueba también la ruta canónica bajo el proyecto.

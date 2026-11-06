@@ -95,7 +95,9 @@
         "boddy-agent",
         "boddy-catalog",
         "boddy-core",
+        "boddy-desktop",
         "boddy-inference",
+        "boddy-reader",
         "boddy-supergrafo",
         "boddy-telemetry"
       ],
@@ -109,6 +111,17 @@
       "no_std": false,
       "dependencies": [],
       "layer": 0
+    },
+    {
+      "id": "boddy-desktop",
+      "path": "crates/boddy-desktop",
+      "purpose": "Acciones manuales de escritorio registradas y auditadas",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [
+        "boddy-reader"
+      ],
+      "layer": 1
     },
     {
       "id": "boddy-telemetry",

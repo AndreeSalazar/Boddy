@@ -1,5 +1,10 @@
 # Boddy 1.0 — chat local
 
+La ventana ofrece Conversar, Programar, Mi PC y Evidencia. Programar muestra
+fuentes y fragmentos y permite investigar la selección. Mi PC abre herramientas
+registradas por acción manual; Evidencia recupera las tareas guardadas.
+[Controles y alcance](../docs/ESCRITORIO.md).
+
 Doble clic en `Boddy.vbs`, o desde la raíz del proyecto:
 
 ```powershell

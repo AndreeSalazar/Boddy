@@ -1,0 +1,13 @@
+[package]
+name = "boddy-desktop"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+boddy-reader = { path = "../boddy-reader" }
+serde_json = "1"

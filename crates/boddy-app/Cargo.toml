@@ -9,6 +9,8 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
+boddy-desktop = { path = "../boddy-desktop" }
+boddy-reader = { path = "../boddy-reader" }
 boddy-agent = { path = "../boddy-agent" }
 boddy-telemetry = { path = "../boddy-telemetry" }
 boddy-inference = { path = "../boddy-inference" }

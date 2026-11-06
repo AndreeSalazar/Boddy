@@ -29,7 +29,9 @@ dependencies = [
  "boddy-agent",
  "boddy-catalog",
  "boddy-core",
+ "boddy-desktop",
  "boddy-inference",
+ "boddy-reader",
  "boddy-supergrafo",
  "boddy-telemetry",
  "serde_json",
@@ -57,6 +59,14 @@ dependencies = [
  "boddy-contracts",
  "boddy-mission",
  "boddy-policy",
+]
+
+[[package]]
+name = "boddy-desktop"
+version = "0.1.0"
+dependencies = [
+ "boddy-reader",
+ "serde_json",
 ]
 
 [[package]]
