@@ -1,5 +1,5 @@
-# inference — pendiente
+# Inferencia: adaptador local disponible, motor propio pendiente
 
-Frontera independiente reservada. Sin implementacion conectada todavia.
-Antes de integrarla: definir entradas, salidas, permisos, presupuesto y prueba
-de aceptacion. Ver docs/MODULARIDAD.md y docs/PLAN.md.
+crates/boddy-inference conecta el chat con llama.cpp en loopback. Los pesos son
+Qwen2.5-Coder 7B Q4_K_M; el cálculo usa Vulkan en un proceso externo. Este nodo
+mantiene pendiente el motor neuronal propio y su integración WGPU.

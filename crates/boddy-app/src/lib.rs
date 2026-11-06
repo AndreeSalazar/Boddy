@@ -2,7 +2,7 @@ use boddy_catalog as catalog;
 use boddy_supergrafo as graph;
 
 use boddy_core::{Mission, Policy, Task, Tool};
-use std::io::{self, Write};
+use std::io::{self, Read, Write};
 use std::path::Path;
 
 fn root() -> &'static Path {
@@ -46,6 +46,21 @@ fn demo() -> Result<(), String> {
 
 pub fn run(args: &[String]) -> Result<(), String> {
     match args {
+        [command] if command == "chat" => {
+            let mut input = String::new();
+            io::stdin()
+                .take(65537)
+                .read_to_string(&mut input)
+                .map_err(|e| e.to_string())?;
+            if input.len() > 65536 {
+                return Err("Entrada de chat demasiado grande".into());
+            }
+            let request =
+                serde_json::from_str(&input).map_err(|e| format!("Entrada JSON inválida: {e}"))?;
+            let response = boddy_inference::chat(&request)?;
+            println!("{response}");
+            Ok(())
+        }
         [] => {
             println!("Boddy — base de IA operativa personal\n\nComandos:\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nEstado: controlador no_std y catálogo; inferencia y sandbox pendientes.");
             Ok(())

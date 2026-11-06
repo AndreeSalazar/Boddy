@@ -1,66 +1,59 @@
-# Estado para continuar
+# Estado vigente: Boddy 1.0
 
-Fecha de inicio: 5 de noviembre de 2026, America/Lima.
+Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunicada:
+16 GB. Los commits 091dc56 y c9aa594 conservan las etapas iniciales del proyecto.
 
-## Decisiones del dueño
+## Disponible
 
-- Construir una IA operativa personal desde sus fundamentos en Rust y `no_std`.
-- Usar SUPER GRAFO para orientarse y mantener el contexto del proyecto.
-- Investigar publicaciones públicas de Anthropic como inspiración.
-- Convertir conocimiento y herramientas de Python en capacidades útiles.
-- Hardware comunicado: RTX 3060 de 12 GB, 16 GB de RAM.
+- Chat Windows sencillo: historial reciente, Enter para enviar, Shift+Enter para
+  nueva línea, nuevo chat y cancelación de la espera.
+- Diez crates con dependencias acíclicas. Contratos, misión, política y controlador
+  siguen siendo no_std; host, inferencia y ventana permanecen separados.
+- Adaptador Rust boddy-inference a un motor local externo, solo 127.0.0.1:17861.
+- Qwen2.5-Coder-7B-Instruct Q4_K_M, 4683073536 bytes. SHA256 verificado contra
+  metadatos oficiales de Hugging Face; motor llama.cpp b12110 Vulkan verificado
+  contra digest oficial de GitHub. Origen y hashes en models.lock.json.
+- El motor detectó Vulkan0: NVIDIA GeForce RTX 3060. Modelo cargado con contexto
+  de 8192 tokens; generación limitada a 512 tokens por respuesta.
+- Autenticación local interna generada automáticamente; no es una clave de proveedor.
+  Los pesos, motor, credencial y logs están en carpetas ignoradas por Git.
+- Catálogo de veinte referencias documentales; todavía son metadatos, sin corpus.
+- SUPER GRAFO: mapa, notas, posiciones y 19 nodos con estados explícitos.
 
-## Modularización posterior al commit inicial
+## Verificado en esta entrega
 
-Base inicial guardada en `091dc56`. Ahora hay ocho crates independientes:
-contracts, mission, policy, core, catalog, supergrafo, app y cli.
-Contratos, misión, política y núcleo siguen siendo no_std.
-El cuadro Windows está en `window/Boddy.ps1`; prueba de controles y ejecución
-de búsqueda Python aprobada con Windows PowerShell en STA.
-Registro de 18 nodos con dependencias acíclicas y posiciones por capa;
-WGPU y los otros componentes futuros figuran como pendientes.
-Esto separa código y responsabilidades: no establece aislamiento de procesos del SO.
+- cargo test --workspace --offline: 15 pruebas aprobadas.
+- cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
+- cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
+- Comprobación del evento del botón de la ventana con generación real: respondió
+  «¡Hola!» a la petición de saludo en español.
+- Dos turnos por el cliente Rust: respondió «Entendido.» y recuperó correctamente
+  «FaroAzul» del historial de prueba. No se atribuye al modelo memoria persistente.
+- VRAM total observada tras cargar y generar: aproximadamente 5,5–5,6 GiB,
+  incluyendo el uso previo del escritorio. No es consumo aislado del proceso,
+  una medición del pico ni un benchmark de calidad o velocidad general.
+- Lanzador nativo compilado sin consola; proceso Windows con título Boddy 1.0.
+  La herramienta visual no expuso sus ventanas PowerShell; la verificación de
+  interfaz se limita al test nativo de controles/eventos. DrawToBitmap no captura
+  correctamente RichTextBox y su vista previa no sirve como prueba del transcript.
 
-## Implementado
+## Límites y pendientes
 
-- Workspace Rust modular, sin paquetes externos; `boddy-cli` consume `boddy-app`.
-- Misión con razón, objetivo y aceptación; estados y referencias de evidencia acotadas.
-- Política inicial que deniega ejecución de código y red; cupo por tarea en memoria.
-- Verificación explícita requerida para completar; revisión invalida resultados anteriores.
-- Catálogo de veinte fuentes primarias con búsqueda de metadatos.
-- Adaptador a SUPER GRAFO con tres consultas de lectura, límite de salida y timeout.
-- Documentos de propósito, arquitectura, investigación, Python y plan.
+Boddy 1.0 nombra la aplicación, no un modelo entrenado desde cero. La inferencia
+actual usa llama.cpp/Vulkan, no WGPU. Falta motor propio, corpus versionado,
+embeddings, herramientas del agente, ejecución Python, sandbox del SO y sesiones
+persistentes. El chat solo genera texto: no lee proyectos ni ejecuta sus propuestas.
+El historial es limitado y se recorta por turnos. La respuesta se muestra completa
+al terminar, sin streaming. Cancelar cierra el cliente; el servidor puede tardar en
+liberar el trabajo. El modelo sigue cargado hasta tools/Stop-Model.ps1.
 
-## Comprobaciones
+El acceso loopback se usa para inferencia autorizada por el dueño y no otorga al
+modelo una herramienta de red general. La política inicial del núcleo conserva
+la denegación de red y ejecución para tareas. Los módulos comparten proceso cuando
+se enlazan; separar crates no constituye una frontera de seguridad del SO.
 
-- `cargo test --workspace --offline`: 13 pruebas aprobadas (9 contratos del núcleo y 4 del host).
-- `cargo clippy --workspace --all-targets --offline -- -D warnings`: aprobado.
-- `cargo check -p boddy-core --target wasm32-unknown-unknown --offline`: aprobado.
-- `cargo run -p boddy-cli --offline -- fuentes python`: devuelve las siete referencias Python del catálogo.
-- `cargo run -p boddy-cli --offline -- demo`: deniega código y completar sin verificación.
-- `cargo run -p boddy-cli --offline -- grafo resumen`: consulta real al ejecutable existente, salida JSON correcta.
-- `tools/Update-SuperGrafo.ps1`: ejecutado; creó el mapa de continuidad y la instantánea JSON.
+## Continuar
 
-El check Wasm comprueba portabilidad de compilación de la librería; no demuestra
-un arranque bare metal ni ejecuta código en GPU. La terminación por timeout está
-implementada, pero no se ha sometido todavía a una prueba de integración que fuerce
-30 segundos de bloqueo. Se probaron el límite de bytes y la lista de consultas.
-
-El ejecutable disponible de SUPER GRAFO responde a `resumen` pero rechaza `guardar`
-como herramienta inexistente. Se usa su resumen real y un mapa de continuidad
-generado por `tools/Update-SuperGrafo.ps1`, sin modificar ni recompilar SUPER GRAFO.
-No se interpretan sus sospechas léxicas de elegancia como errores confirmados.
-
-## Pendiente
-
-No hay pesos, tokenizer, inferencia, shaders de cómputo, corpus descargado, embeddings,
-intérprete Python, generación de parches, sandbox del SO ni registro persistente de
-sesiones del agente. No hay benchmark en GPU. Los tests del controlador no miden
-inteligencia o calidad de programación. El host puede aportar referencias falsas:
-su verificador es parte de la base de confianza.
-
-## Retomar
-
-Leer primero `super-grafo/MAPA.md`, este archivo y `docs/PLAN.md`. Consultar
-`cargo run -p boddy-cli --offline -- grafo resumen` antes de bajar a archivos.
-Mantener lo observado separado de lo propuesto; registrar evidencia de cada capacidad.
+Leer super-grafo/MAPA.md y docs/PLAN.md. Mantener explícito el motor real, la
+procedencia de los pesos y el alcance de cada comprobación. La siguiente mejora
+puede conectar recuperación documental al contexto sin conceder ejecución de código.

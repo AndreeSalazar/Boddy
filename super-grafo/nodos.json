@@ -11,6 +11,7 @@
       "dependencies": [
         "boddy-catalog",
         "boddy-core",
+        "boddy-inference",
         "boddy-supergrafo"
       ],
       "layer": 3
@@ -67,6 +68,15 @@
       "layer": 0
     },
     {
+      "id": "boddy-inference",
+      "path": "crates/boddy-inference",
+      "purpose": "Chat con motor local por loopback, sin herramientas",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
       "id": "boddy-supergrafo",
       "path": "crates/boddy-supergrafo",
       "purpose": "Consultas externas acotadas",
@@ -87,10 +97,11 @@
       "layer": 4
     },
     {
-      "id": "window",
+      "id": "boddy-window",
       "path": "window",
-      "purpose": "Cuadro de comandos Windows",
+      "purpose": "Lanzador grafico Windows sin consola",
       "status": "implemented",
+      "no_std": false,
       "dependencies": [
         "boddy-cli"
       ],

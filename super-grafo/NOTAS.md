@@ -1,7 +1,7 @@
 # Nodos de Boddy
 
 ## crates/boddy-app
-Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-catalog, boddy-core, boddy-supergrafo.
+Casos de uso de la aplicacion. Estado: implemented. Dependencias: boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo.
 
 ## crates/boddy-catalog
 Catalogo documental local. Estado: implemented. Dependencias: ninguna.
@@ -18,6 +18,9 @@ Razon, objetivo y aceptacion. Estado: implemented. Dependencias: boddy-contracts
 ## crates/boddy-policy
 Capacidades explicitas. Estado: implemented. Dependencias: ninguna.
 
+## crates/boddy-inference
+Chat con motor local por loopback, sin herramientas. Estado: implemented. Dependencias: ninguna.
+
 ## crates/boddy-supergrafo
 Consultas externas acotadas. Estado: implemented. Dependencias: ninguna.
 
@@ -25,7 +28,7 @@ Consultas externas acotadas. Estado: implemented. Dependencias: ninguna.
 Entrada de terminal. Estado: implemented. Dependencias: boddy-app.
 
 ## window
-Cuadro de comandos Windows. Estado: implemented. Dependencias: boddy-cli.
+Lanzador grafico Windows sin consola. Estado: implemented. Dependencias: boddy-cli.
 
 ## modules/inference
 Frontera de inference. Estado: planned. Dependencias: ninguna.

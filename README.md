@@ -1,70 +1,53 @@
-# Boddy
+# Boddy 1.0
 
-IA operativa personal de Eddi Salazar: investigar, entender proyectos, preparar
-cambios y comprobar sus resultados, con Rust como base y SUPER GRAFO como mapa.
+Asistente personal de Eddi Salazar. Chat local sencillo, Rust modular y núcleo
+no_std. Modelo base: Qwen2.5-Coder-7B-Instruct Q4_K_M; motor externo llama.cpp
+b12110, con Vulkan en la RTX 3060. No son pesos entrenados por este proyecto.
 
-La primera entrega fija el **por qué, para qué y cómo**, registra fuentes
-primarias y construye el controlador de tareas. Todavía no genera respuestas con
-un modelo, no ejecuta Python ni tiene un sandbox del sistema operativo.
+## Abrir el chat
 
-- [Propósito](docs/PROPOSITO.md): qué problema resuelve y qué cuenta como éxito.
-- [Investigación](docs/INVESTIGACION.md): publicaciones consultadas y decisiones propias.
-- [Arquitectura](docs/ARQUITECTURA.md): núcleo `no_std`, host, modelo y aislamiento.
-- [Python como utilidad](docs/PYTHON.md): documentos, herramientas y portabilidad.
-- [Plan](docs/PLAN.md): entregas y condiciones de aceptación.
-- [Estado](docs/ESTADO.md): lo comprobado y lo pendiente.
-- [Mapa](super-grafo/MAPA.md): orientación para retomar el trabajo.
+Doble clic en `window/Boddy.vbs`, o:
 
-## Probar la base
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -STA -File .\window\Start-Boddy.ps1
+```
 
-Desde esta carpeta, con Rust y el linker de la plataforma instalados:
+Enter envía, Shift+Enter agrega una línea. Nuevo chat borra el historial en memoria.
+El chat no tiene herramientas para leer tus archivos o ejecutar programas.
+La respuesta se muestra al finalizar; el historial reciente se recorta con límites.
+
+Primera preparación en otro equipo: `tools/Install-Model.ps1` descarga motor y
+pesos oficiales y verifica SHA256. Son unos 4,7 GB de modelo, conservados fuera de
+Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargado;
+`tools/Stop-Model.ps1` lo detiene para liberar recursos. [Detalles](window/README.md).
+
+## Arquitectura
+
+Diez crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+inferencia local, aplicación, CLI y lanzador gráfico. Las primeras cuatro permanecen no_std.
+El host usa serde_json; GPU y ventana no entran en el núcleo.
+
+Esta versión usa Vulkan mediante un proceso externo. El backend propio WGPU,
+el sandbox del SO y la ejecución operativa de tareas siguen pendientes.
+Los tokens son unidades internas de texto del modelo; el cómputo es local,
+sin clave ni pago a un proveedor por token.
+
+- [Reglas](AGENTS.md) y [fronteras](docs/MODULARIDAD.md).
+- [Propósito](docs/PROPOSITO.md), [investigación](docs/INVESTIGACION.md) y [plan](docs/PLAN.md).
+- [Estado y comprobaciones](docs/ESTADO.md).
+- [Mapa](super-grafo/MAPA.md) y `super-grafo/nodos.json`.
+
+## Comprobar y mantener
 
 ```powershell
 cargo test --workspace --offline
-cargo check -p boddy-core --offline
-cargo run -p boddy-cli --offline -- proposito
+cargo clippy --workspace --all-targets --offline -- -D warnings
+cargo check -p boddy-core --target wasm32-unknown-unknown --offline
 cargo run -p boddy-cli --offline -- fuentes python
-cargo run -p boddy-cli --offline -- demo
 cargo run -p boddy-cli --offline -- grafo resumen
-```
-
-Las ocho crates no dependen de paquetes externos. `boddy-core` y sus dependencias de dominio usan exclusivamente
-`core`, sin `std`, `alloc`, heap, I/O ni código `unsafe`.
-La CLI usa `std` para acceder al sistema anfitrión.
-
-Reglas persistentes: [AGENTS.md](AGENTS.md). Fronteras: [modularidad](docs/MODULARIDAD.md).
-El cuadro de comandos Windows vive en [window](window/README.md).
-El registro de nodos separa módulos implementados y pendientes en `super-grafo/nodos.json`;
-`orden.json` conserva posiciones por capa. Actualizar el mapa requiere Node.js y Cargo.
-
-`fuentes` busca títulos y metadatos del catálogo local; **no busca dentro de
-documentos completos**. La demo muestra el controlador y sus rechazos de permisos;
-es determinista, sin inferencia ni tareas reales resueltas por una IA.
-
-## SUPER GRAFO
-
-`grafo` invoca el ejecutable existente en la carpeta hermana
-`SUPER GRAFO/ultra-carpetas/target/release/ultra-carpetas.exe`. Para otra instalación:
-
-```powershell
-$env:BODDY_SG_BIN = 'C:\ruta\ultra-carpetas.exe'
-cargo run -p boddy-cli --offline -- grafo resumen
-```
-
-La integración permite `resumen`, `fallos` y `ciclos` sobre Boddy; envía argumentos
-por separado, sin shell. Limita stdout y stderr a 64 KiB cada uno y espera hasta
-30 segundos. El analizador puede escribir su caché de metadatos: esto no equivale
-a un sistema de archivos montado como solo lectura. SUPER GRAFO sigue siendo un
-programa externo; no se copió ni enlazó su código en el núcleo.
-
-Para actualizar el mapa de continuidad y su instantánea de cifras:
-
-```powershell
 .\tools\Update-SuperGrafo.ps1
 ```
 
-El script de mantenimiento usa el resumen de SUPER GRAFO y escribe únicamente
-el mapa y su JSON en `super-grafo/`. Las notas se mantienen por separado.
-
-Hardware objetivo comunicado: RTX 3060 de 12 GB y 16 GB de RAM. Aún no se han medido
-inferencia, consumo de VRAM ni velocidad en ese equipo.
+El adaptador del chat solo conecta a 127.0.0.1:17861. No hace peticiones de
+inferencia a servidores remotos. El catálogo sigue conteniendo metadatos y enlaces,
+no un corpus descargado. Actualizar el mapa requiere Node.js y Cargo.

@@ -14,10 +14,12 @@ Las crates actuales comparten proceso y no constituyen sandboxes independientes.
 | boddy-supergrafo | Proceso externo y consultas acotadas | Ninguna |
 | boddy-app | Casos de uso y comandos | core, catalog, supergrafo |
 | boddy-cli | Entrada/salida de terminal | app |
+| boddy-inference | Cliente del modelo local, sin herramientas | serde_json; motor externo por loopback |
 | window | Cuadro de comandos Windows | CLI por proceso |
 | gpu/wgpu | Backend GPU pendiente | Contrato futuro con host |
 
-Módulos futuros separados: inferencia, tokenizer, ingestión, recuperación,
+Existe un primer adaptador de inferencia a llama.cpp; no una implementación propia
+de redes neuronales o WGPU. Módulos futuros separados: inferencia propia, tokenizer, ingestión, recuperación,
 sesiones persistentes, ejecución aislada, verificación y evaluaciones del agente.
 Se distinguen en el registro de nodos como pendientes, sin crates vacías que
 prometan funcionalidad. Su implementación deberá fijar entradas, salidas, efectos,

@@ -10,14 +10,16 @@ const descriptions = {
  'boddy-catalog':'Catalogo documental local',
  'boddy-supergrafo':'Consultas externas acotadas',
  'boddy-app':'Casos de uso de la aplicacion',
- 'boddy-cli':'Entrada de terminal'
+ 'boddy-cli':'Entrada de terminal',
+ 'boddy-inference':'Chat con motor local por loopback, sin herramientas',
+ 'boddy-window':'Lanzador grafico Windows sin consola'
 };
 const result = cp.spawnSync('cargo', ['metadata','--offline','--no-deps','--format-version','1'], {cwd:root,encoding:'utf8'});
 if(result.status !== 0) throw Error(result.stderr);
 const packages = JSON.parse(result.stdout).packages;
 const names = new Set(packages.map(p=>p.name));
-const nodes = packages.map(p=>({id:p.name,path:path.relative(root,path.dirname(p.manifest_path)).replaceAll('\\','/'),purpose:descriptions[p.name],status:'implemented',no_std:fs.readFileSync(path.join(path.dirname(p.manifest_path),'src',p.name==='boddy-cli'?'main.rs':'lib.rs'),'utf8').includes('#![no_std]'),dependencies:p.dependencies.filter(d=>names.has(d.name)).map(d=>d.name)}));
-nodes.push({id:'window',path:'window',purpose:'Cuadro de comandos Windows',status:'implemented',dependencies:['boddy-cli']});
+const nodes = packages.map(p=>({id:p.name,path:path.relative(root,path.dirname(p.manifest_path)).replaceAll('\\','/'),purpose:descriptions[p.name],status:'implemented',no_std:fs.readFileSync(path.join(path.dirname(p.manifest_path),'src',['boddy-cli','boddy-window'].includes(p.name)?'main.rs':'lib.rs'),'utf8').includes('#![no_std]'),dependencies:p.dependencies.filter(d=>names.has(d.name)).map(d=>d.name)}));
+nodes.find(n=>n.id==='boddy-window').dependencies.push('boddy-cli'); // Frontera de proceso, no enlace Rust.
 const future = ['inference','tokenizer','ingestion','retrieval','session','executor','verification','evaluation'];
 for(const id of future) {
  const folder = 'modules/'+id;

@@ -1,5 +1,7 @@
 /target/
 /models/
+/runtime/
+/window/preview.png
 /data/private/
 /data/cache/
 /.super-grafo-cache*

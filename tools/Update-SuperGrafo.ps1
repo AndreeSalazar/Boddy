@@ -56,8 +56,8 @@ no son defectos confirmados. Las comprobaciones de Rust están en `docs/ESTADO.m
 
 ## Lo que sigue
 
-Corpus documental versionado, comparación de modelos locales e inferencia real;
-después ejecutor aislado y ciclo del agente. Hoy no hay LLM ni sandbox operativo.
+Estado vigente en docs/ESTADO.md y window/README.md. El chat local usa un motor
+externo; WGPU propio, corpus versionado, ejecutor aislado y ciclo del agente siguen pendientes.
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.
 '@
 $map = $map.Replace('{{FILES}}', [string]$summary.archivos_indexados)

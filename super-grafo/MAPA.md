@@ -14,15 +14,16 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 | Ruta | Papel | Depende de |
 |---|---|---|
-| `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-catalog, boddy-core, boddy-supergrafo |
+| `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo |
 | `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
 | `crates/boddy-core` | Estados, cupos y evidencia (implemented) | boddy-contracts, boddy-mission, boddy-policy |
 | `crates/boddy-contracts` | Errores compartidos sin plataforma (implemented) |  |
 | `crates/boddy-mission` | Razon, objetivo y aceptacion (implemented) | boddy-contracts |
 | `crates/boddy-policy` | Capacidades explicitas (implemented) |  |
+| `crates/boddy-inference` | Chat con motor local por loopback, sin herramientas (implemented) |  |
 | `crates/boddy-supergrafo` | Consultas externas acotadas (implemented) |  |
 | `crates/boddy-cli` | Entrada de terminal (implemented) | boddy-app |
-| `window` | Cuadro de comandos Windows (implemented) | boddy-cli |
+| `window` | Lanzador grafico Windows sin consola (implemented) | boddy-cli |
 | `modules/inference` | Frontera de inference (planned) |  |
 | `modules/tokenizer` | Frontera de tokenizer (planned) |  |
 | `modules/ingestion` | Frontera de ingestion (planned) |  |
@@ -38,7 +39,7 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 ## Última instantánea
 
-Archivos indexados: 82. Relaciones léxicas: 7. Ciclos reportados:
+Archivos indexados: 95. Relaciones léxicas: 7. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantánea: generar este mapa agrega o modifica archivos y no produce
 una fotografía inmutable de sí mismo. Consultar de nuevo para el estado actual.
@@ -48,6 +49,6 @@ no son defectos confirmados. Las comprobaciones de Rust están en `docs/ESTADO.m
 
 ## Lo que sigue
 
-Corpus documental versionado, comparación de modelos locales e inferencia real;
-después ejecutor aislado y ciclo del agente. Hoy no hay LLM ni sandbox operativo.
+Estado vigente en docs/ESTADO.md y window/README.md. El chat local usa un motor
+externo; WGPU propio, corpus versionado, ejecutor aislado y ciclo del agente siguen pendientes.
 Las notas de cada nodo viven en `super-grafo/NOTAS.md`.
