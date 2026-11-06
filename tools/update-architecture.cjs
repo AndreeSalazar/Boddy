@@ -33,6 +33,7 @@ const categories=JSON.parse(fs.readFileSync(path.join(root,'biblioteca/categoria
 for(const c of categories) nodes.push({id:'biblioteca-'+c.id,path:'biblioteca/'+c.path,purpose:c.name+': '+c.purpose,status:'partial',dependencies:[]});
 nodes.push({id:'library-data',path:'biblioteca',purpose:'Registro de fichas, relaciones documentales y catalogo IANA; contenido parcial, no pesos entrenados',status:'partial',dependencies:categories.map(c=>'biblioteca-'+c.id)});
 nodes.find(n=>n.id==='boddy-library').dependencies.push('library-data');
+nodes.push({id:'boddy-visuals',path:'assets/identity',purpose:'Arte conceptual de documentacion, prompts y procedencia; no capacidad de los modelos',status:'documentation',dependencies:[]});
 nodes.find(n=>n.id==='boddy-window').dependencies.push('boddy-cli'); // Frontera de proceso, no enlace Rust.
 const future = ['inference','tokenizer','ingestion','retrieval','session','executor','verification','evaluation'];
 for(const id of future) {
@@ -51,7 +52,7 @@ function level(id, stack=[]) {
 const positions={};const rows={};
 for(const n of nodes) { n.layer= n.status==='planned'?6:level(n.id); const row=rows[n.layer]||0; positions[n.path]=[n.layer*340,row*145];rows[n.layer]=row+1; }
 const dir=path.join(root,'super-grafo');
-fs.writeFileSync(path.join(dir,'nodos.json'),JSON.stringify({schema:1,source:'Cargo metadata + categorias de biblioteca + fronteras planificadas explicitas',nodes},null,2)+'\n');
+fs.writeFileSync(path.join(dir,'nodos.json'),JSON.stringify({schema:1,source:'Cargo metadata + datos y documentacion declarados + fronteras planificadas explicitas',nodes},null,2)+'\n');
 const orderFile=path.join(dir,'orden.json');
 // Preserve layout edits after the first generation.
 const order=fs.existsSync(orderFile)?JSON.parse(fs.readFileSync(orderFile,'utf8')):{posiciones:{},grafo:{},desplegadas:['crates','gpu','modules'],rejilla:false,bloqueada:false,foco:''};

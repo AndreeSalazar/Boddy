@@ -40,6 +40,7 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 | `biblioteca/04-atelier` | Atelier: Creacion: problemas, alternativas y criterios de decision (partial) |  |
 | `biblioteca/05-bitacora` | Bitacora: Memoria documental: referencias, contexto y relectura (partial) |  |
 | `biblioteca` | Registro de fichas, relaciones documentales y catalogo IANA; contenido parcial, no pesos entrenados (partial) | biblioteca-forja, biblioteca-babel, biblioteca-agora, biblioteca-atelier, biblioteca-bitacora |
+| `assets/identity` | Arte conceptual de documentacion, prompts y procedencia; no capacidad de los modelos (documentation) |  |
 | `modules/inference` | Frontera de inference (planned) |  |
 | `modules/tokenizer` | Frontera de tokenizer (planned) |  |
 | `modules/ingestion` | Frontera de ingestion (planned) |  |
@@ -54,7 +55,7 @@ de la herramienta `guardar`: el ejecutable disponible aÃºn no la implementa.
 
 ## Ãšltima instantÃ¡nea
 
-Archivos indexados: 216. Relaciones lÃ©xicas: 26. Ciclos reportados:
+Archivos indexados: 222. Relaciones lÃ©xicas: 26. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantÃ¡nea: generar este mapa agrega o modifica archivos y no produce
 una fotografÃ­a inmutable de sÃ­ mismo. Consultar de nuevo para el estado actual.

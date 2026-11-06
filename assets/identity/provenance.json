@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "concept_art",
+  "tool": "image_gen builtin",
+  "generated_by_boddy_models": false,
+  "prompt_path": "assets/identity/README.md",
+  "files": [
+    {
+      "path": "assets/identity/boddy-cover.png",
+      "width": 1983,
+      "height": 793,
+      "bytes": 1810889,
+      "sha256": "0d02d64e77082095113d2ba8ed32cd30f7515f0b36f6d3c6b02e4b08e140a337"
+    },
+    {
+      "path": "assets/identity/boddy-network.png",
+      "width": 1774,
+      "height": 887,
+      "bytes": 1749982,
+      "sha256": "cfa695608167d2e48dcb871043faffd2f90c2a984cd23c720930fb5457a0510a"
+    }
+  ]
+}

@@ -78,6 +78,9 @@ Bitacora: Memoria documental: referencias, contexto y relectura. Estado: partial
 ## biblioteca
 Registro de fichas, relaciones documentales y catalogo IANA; contenido parcial, no pesos entrenados. Estado: partial. Dependencias: biblioteca-forja, biblioteca-babel, biblioteca-agora, biblioteca-atelier, biblioteca-bitacora.
 
+## assets/identity
+Arte conceptual de documentacion, prompts y procedencia; no capacidad de los modelos. Estado: documentation. Dependencias: ninguna.
+
 ## modules/inference
 Frontera de inference. Estado: planned. Dependencias: ninguna.
 

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source": "Cargo metadata + categorias de biblioteca + fronteras planificadas explicitas",
+  "source": "Cargo metadata + datos y documentacion declarados + fronteras planificadas explicitas",
   "nodes": [
     {
       "id": "boddy-agent",
@@ -276,6 +276,14 @@
         "biblioteca-bitacora"
       ],
       "layer": 1
+    },
+    {
+      "id": "boddy-visuals",
+      "path": "assets/identity",
+      "purpose": "Arte conceptual de documentacion, prompts y procedencia; no capacidad de los modelos",
+      "status": "documentation",
+      "dependencies": [],
+      "layer": 0
     },
     {
       "id": "inference",

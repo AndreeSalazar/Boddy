@@ -19,7 +19,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 - Autenticación local interna generada automáticamente; no es una clave de proveedor.
   Los pesos, motor, credencial y logs están en carpetas ignoradas por Git.
 - Catálogo de veinte referencias documentales; todavía son metadatos, sin corpus.
-- SUPER GRAFO: mapa, notas, posiciones y 34 nodos con estados explícitos.
+- SUPER GRAFO: mapa, notas, posiciones y 35 nodos con estados explícitos.
 - Contadores visibles de entrada, salida, caché y acumulados, velocidad, recorte
   e instantánea de VRAM del dispositivo al responder. Conteo previo por tokenizer
   del motor, con eliminación de pares antiguos para respetar el presupuesto.
