@@ -12,11 +12,12 @@ Las crates actuales comparten proceso y no constituyen sandboxes independientes.
 | boddy-core | Estados, evidencia y cupos, no_std | contracts, mission, policy |
 | boddy-catalog | Metadatos documentales | Ninguna |
 | boddy-supergrafo | Proceso externo y consultas acotadas | Ninguna |
-| boddy-app | Casos de uso y comandos | core, catalog, supergrafo, inference, telemetry, reader, agent, desktop, lab |
+| boddy-app | Casos de uso y comandos | core, catalog, library, supergrafo, inference, telemetry, reader, agent, desktop, lab |
 | boddy-cli | Entrada/salida de terminal | app |
 | boddy-inference | Cliente del modelo local, sin herramientas | serde_json; motor externo por loopback |
 | boddy-telemetry | Muestra de VRAM y uso del dispositivo | serde_json; nvidia-smi externo |
 | boddy-reader | Fuentes acotadas, rutas y SHA256 | serde_json, sha2; disco del host |
+| boddy-library | Registro documental, recuperacion, referencias y exportacion | reader; serde_json, sha2; datos en biblioteca |
 | boddy-desktop | Aperturas manuales registradas del escritorio | reader; procesos locales sin shell |
 | boddy-agent | Controladores de lectura y escuela Rust, con registros | core, inference, reader, supergrafo, rust-tasks |
 | window | Cuadro de comandos Windows | CLI por proceso |

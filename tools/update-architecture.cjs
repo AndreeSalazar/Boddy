@@ -8,6 +8,7 @@ const descriptions = {
  'boddy-policy':'Capacidades explicitas',
  'boddy-core':'Estados, cupos y evidencia',
  'boddy-catalog':'Catalogo documental local',
+ 'boddy-library':'Biblioteca local: registro, recuperacion lexica por presupuesto, recuerdos y exportacion con procedencia',
  'boddy-supergrafo':'Consultas externas acotadas',
  'boddy-app':'Casos de uso de la aplicacion',
  'boddy-cli':'Entrada de terminal',
@@ -28,6 +29,10 @@ if(result.status !== 0) throw Error(result.stderr);
 const packages = JSON.parse(result.stdout).packages;
 const names = new Set(packages.map(p=>p.name));
 const nodes = packages.map(p=>({id:p.name,path:path.relative(root,path.dirname(p.manifest_path)).replaceAll('\\','/'),purpose:descriptions[p.name],status:'implemented',no_std:fs.readFileSync(path.join(path.dirname(p.manifest_path),'src',['boddy-cli','boddy-window'].includes(p.name)?'main.rs':'lib.rs'),'utf8').includes('#![no_std]'),dependencies:p.dependencies.filter(d=>names.has(d.name)).map(d=>d.name)}));
+const categories=JSON.parse(fs.readFileSync(path.join(root,'biblioteca/categorias.json'),'utf8')).categories;
+for(const c of categories) nodes.push({id:'biblioteca-'+c.id,path:'biblioteca/'+c.path,purpose:c.name+': '+c.purpose,status:'partial',dependencies:[]});
+nodes.push({id:'library-data',path:'biblioteca',purpose:'Registro de fichas, relaciones documentales y catalogo IANA; contenido parcial, no pesos entrenados',status:'partial',dependencies:categories.map(c=>'biblioteca-'+c.id)});
+nodes.find(n=>n.id==='boddy-library').dependencies.push('library-data');
 nodes.find(n=>n.id==='boddy-window').dependencies.push('boddy-cli'); // Frontera de proceso, no enlace Rust.
 const future = ['inference','tokenizer','ingestion','retrieval','session','executor','verification','evaluation'];
 for(const id of future) {
@@ -46,7 +51,7 @@ function level(id, stack=[]) {
 const positions={};const rows={};
 for(const n of nodes) { n.layer= n.status==='planned'?6:level(n.id); const row=rows[n.layer]||0; positions[n.path]=[n.layer*340,row*145];rows[n.layer]=row+1; }
 const dir=path.join(root,'super-grafo');
-fs.writeFileSync(path.join(dir,'nodos.json'),JSON.stringify({schema:1,source:'Cargo metadata + fronteras planificadas explicitas',nodes},null,2)+'\n');
+fs.writeFileSync(path.join(dir,'nodos.json'),JSON.stringify({schema:1,source:'Cargo metadata + categorias de biblioteca + fronteras planificadas explicitas',nodes},null,2)+'\n');
 const orderFile=path.join(dir,'orden.json');
 // Preserve layout edits after the first generation.
 const order=fs.existsSync(orderFile)?JSON.parse(fs.readFileSync(orderFile,'utf8')):{posiciones:{},grafo:{},desplegadas:['crates','gpu','modules'],rejilla:false,bloqueada:false,foco:''};

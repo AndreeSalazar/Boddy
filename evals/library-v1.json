@@ -1,0 +1,46 @@
+{
+    "schema":  1,
+    "test":  "library-v1",
+    "categories":  5,
+    "cards":  14,
+    "first_match":  "rust-prestamos",
+    "search_document_reads":  0,
+    "budget_bytes":  512,
+    "context_bytes":  375,
+    "source_bytes_read":  912,
+    "references":  1,
+    "memory_bytes":  336,
+    "memory_id":  "mem-1793984559911284600",
+    "reread":  true,
+    "new_query":  "referencias mutables",
+    "export":  {
+                   "context_bytes":  375,
+                   "json_bytes":  1406,
+                   "json_path":  "data/library/exports/packet-1793984559961614700.json",
+                   "markdown_path":  "data/library/exports/packet-1793984559961614700.md",
+                   "references":  [
+                                      {
+                                          "from_line":  6,
+                                          "id":  "rust-prestamos",
+                                          "path":  "biblioteca/01-forja/rust/02-prestamos.md",
+                                          "related":  [
+                                                          "rust-propiedad",
+                                                          "rust-lifetimes"
+                                                      ],
+                                          "sha256":  "a0da2802ad7ce81242fc47371098e6cdb6566022cb6ea7ed0dfb5af8f181c9e1",
+                                          "sources":  [
+                                                          "https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html"
+                                                      ],
+                                          "status":  "authored_note",
+                                          "title":  "Rust: referencias y prestamos",
+                                          "to_line":  7,
+                                          "truncated":  false
+                                      }
+                                  ]
+               },
+    "language_records":  8276,
+    "iana_file_date":  "2026-09-17",
+    "iana_catalog_bytes":  153050,
+    "tokens_measured":  false,
+    "training_effect":  "none"
+}

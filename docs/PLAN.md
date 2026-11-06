@@ -39,6 +39,11 @@ ejecución aislada siguen pendientes; los seis ejercicios no completan esas entr
 Documentación Python recuperable sigue siendo un objetivo distinto: corpus fijado
 a una versión, referencias y diez preguntas contrastables antes de medir recuperación.
 
+La biblioteca ya ofrece recuperacion lexica por registro, notas introductorias
+Rust, catalogo IANA, referencias persistentes y exportacion acotada. Ver BIBLIOTECA.md.
+Cursos completos, recuperacion semantica e inyeccion automatica a modelos siguen
+pendientes. La biblioteca actual no completa por si sola la entrega de conocimiento.
+
 ## Cómo medir la IA cuando exista
 
 - Investigación: exactitud de respuesta, soporte de las citas y recuperación de la sección correcta.

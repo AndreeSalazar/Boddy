@@ -90,6 +90,7 @@ dependencies = [
  "boddy-desktop",
  "boddy-inference",
  "boddy-lab",
+ "boddy-library",
  "boddy-reader",
  "boddy-supergrafo",
  "boddy-telemetry",
@@ -144,6 +145,15 @@ dependencies = [
  "boddy-rust-tasks",
  "boddy-transformer",
  "boddy-wgpu",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
+name = "boddy-library"
+version = "0.1.0"
+dependencies = [
+ "boddy-reader",
  "serde_json",
  "sha2",
 ]

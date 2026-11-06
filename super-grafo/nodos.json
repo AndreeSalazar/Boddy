@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source": "Cargo metadata + fronteras planificadas explicitas",
+  "source": "Cargo metadata + categorias de biblioteca + fronteras planificadas explicitas",
   "nodes": [
     {
       "id": "boddy-agent",
@@ -108,6 +108,7 @@
         "boddy-desktop",
         "boddy-inference",
         "boddy-lab",
+        "boddy-library",
         "boddy-reader",
         "boddy-supergrafo",
         "boddy-telemetry"
@@ -180,6 +181,18 @@
       "layer": 1
     },
     {
+      "id": "boddy-library",
+      "path": "crates/boddy-library",
+      "purpose": "Biblioteca local: registro, recuperacion lexica por presupuesto, recuerdos y exportacion con procedencia",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [
+        "boddy-reader",
+        "library-data"
+      ],
+      "layer": 2
+    },
+    {
       "id": "boddy-telemetry",
       "path": "crates/boddy-telemetry",
       "purpose": "Muestra de VRAM y uso de GPU, independiente del modelo",
@@ -209,6 +222,60 @@
         "boddy-cli"
       ],
       "layer": 6
+    },
+    {
+      "id": "biblioteca-forja",
+      "path": "biblioteca/01-forja",
+      "purpose": "La Forja: Programacion: escuelas, fundamentos, motivos y comprobaciones",
+      "status": "partial",
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "biblioteca-babel",
+      "path": "biblioteca/02-babel",
+      "purpose": "Babel: Idiomas naturales: catalogo IANA y escuelas documentales ampliables",
+      "status": "partial",
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "biblioteca-agora",
+      "path": "biblioteca/03-agora",
+      "purpose": "Agora: Razonamiento: hipotesis, evidencia y contradicciones",
+      "status": "partial",
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "biblioteca-atelier",
+      "path": "biblioteca/04-atelier",
+      "purpose": "Atelier: Creacion: problemas, alternativas y criterios de decision",
+      "status": "partial",
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "biblioteca-bitacora",
+      "path": "biblioteca/05-bitacora",
+      "purpose": "Bitacora: Memoria documental: referencias, contexto y relectura",
+      "status": "partial",
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "library-data",
+      "path": "biblioteca",
+      "purpose": "Registro de fichas, relaciones documentales y catalogo IANA; contenido parcial, no pesos entrenados",
+      "status": "partial",
+      "dependencies": [
+        "biblioteca-forja",
+        "biblioteca-babel",
+        "biblioteca-agora",
+        "biblioteca-atelier",
+        "biblioteca-bitacora"
+      ],
+      "layer": 1
     },
     {
       "id": "inference",

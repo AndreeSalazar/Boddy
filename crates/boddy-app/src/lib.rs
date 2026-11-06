@@ -50,7 +50,8 @@ pub fn run(args: &[String]) -> Result<(), String> {
             if command == "entrenar"
                 || command == "modelo"
                 || command == "atencion"
-                || command == "escuela-rust" =>
+                || command == "escuela-rust"
+                || command == "biblioteca" =>
         {
             let mut input = String::new();
             io::stdin()
@@ -62,7 +63,9 @@ pub fn run(args: &[String]) -> Result<(), String> {
             }
             let request: serde_json::Value =
                 serde_json::from_str(&input).map_err(|e| e.to_string())?;
-            let result = if command == "escuela-rust" {
+            let result = if command == "biblioteca" {
+                boddy_library::command(root(), &request)?
+            } else if command == "escuela-rust" {
                 match request["action"].as_str().ok_or("Falta accion Rust")? {
                     "tasks" => boddy_agent::rust_school::catalog(),
                     "run" => {
@@ -178,7 +181,7 @@ pub fn run(args: &[String]) -> Result<(), String> {
             Ok(())
         }
         [] => {
-            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  escuela-rust (JSON por stdin: tasks, run)\n  atencion (JSON por stdin: train, list, inspect, generate)\n  modelo (JSON por stdin: list, inspect, generate)\n  entrenar (JSON por stdin: steps 1..2000, parent_id opcional)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny reanudable; ejecucion autonoma y sandbox pendientes.");
+            println!("Boddy — IA personal local\n\nComandos:\n  chat (JSON por stdin)\n  investigar (JSON por stdin)\n  pc (JSON por stdin)\n  biblioteca (JSON por stdin: categories, search, context, remember, recall, export, languages)\n  escuela-rust (JSON por stdin: tasks, run)\n  atencion (JSON por stdin: train, list, inspect, generate)\n  modelo (JSON por stdin: list, inspect, generate)\n  entrenar (JSON por stdin: steps 1..2000, parent_id opcional)\n  proposito\n  fuentes [texto]\n  demo\n  grafo [resumen|fallos|ciclos]\n\nChat local y laboratorio Tiny reanudable; ejecucion autonoma y sandbox pendientes.");
             Ok(())
         }
         [command] if command == "proposito" => {

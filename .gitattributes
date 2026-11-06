@@ -1,2 +1,5 @@
 training/corpora/*.txt text eol=lf
 training/evals/*.txt text eol=lf
+biblioteca/** text eol=lf
+# TSV conserva celdas vacias finales: los tabuladores son separadores de columnas.
+biblioteca/**/*.tsv whitespace=-blank-at-eol

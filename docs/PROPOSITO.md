@@ -32,7 +32,8 @@ con su evidencia. Primero debe existir y comprobarse la infraestructura necesari
 - Modelo neuronal: interpretar peticiones y generar propuestas.
 - SUPER GRAFO: localizar contexto y relaciones del proyecto.
 - Documentación: aportar información consultable y trazable.
-- `wgpu`: candidato para acelerar cómputo del modelo en la GPU.
+- Biblioteca: localizar fichas, recuperar contexto y recordar referencias sin entrenar pesos automaticamente.
+- `wgpu`: backend educativo de entrenamiento GPU; optimizacion tensorial pendiente.
 - Sandbox del sistema: restringir la ejecución de herramientas.
 
 ## Alcance personal inicial

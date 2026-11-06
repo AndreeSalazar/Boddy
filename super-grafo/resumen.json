@@ -1,7 +1,7 @@
 {
-  "analisis_ms": 20,
-  "archivos_indexados": 179,
-  "archivos_leidos": 30,
+  "analisis_ms": 8,
+  "archivos_indexados": 216,
+  "archivos_leidos": 31,
   "cabeceras_exportadas": null,
   "carpeta": "\\\\?\\C:\\Users\\Salazar\\Documents\\Boddy",
   "ciclos": {
@@ -32,7 +32,7 @@
   },
   "siguiente": "fallos, ciclos o senales para ver lo peor; camino/peso/archivo para bajar a un archivo",
   "sospechas": {
-    "Elegancia": 19,
+    "Elegancia": 36,
     "Rendimiento": 0,
     "Seguridad": 0,
     "a_proposito": 0

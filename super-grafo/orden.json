@@ -108,6 +108,34 @@
     "crates/boddy-rust-tasks": [
       0,
       1305
+    ],
+    "crates/boddy-library": [
+      680,
+      290
+    ],
+    "biblioteca/01-forja": [
+      0,
+      1450
+    ],
+    "biblioteca/02-babel": [
+      0,
+      1595
+    ],
+    "biblioteca/03-agora": [
+      0,
+      1740
+    ],
+    "biblioteca/04-atelier": [
+      0,
+      1885
+    ],
+    "biblioteca/05-bitacora": [
+      0,
+      2030
+    ],
+    "biblioteca": [
+      340,
+      435
     ]
   },
   "desplegadas": [
