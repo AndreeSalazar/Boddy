@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "metric": "verified_citations_and_expected_source_not_semantic_correctness",
+  "cases": [
+    {"id":"budget-programming-template","objective":"Explica el proposito y comportamiento de crates/boddy-inference/src/budget.rs. Cita solamente evidencia leida.","expected_source":"crates/boddy-inference/src/budget.rs"},
+    {"id":"budget-token-context","objective":"Explica como budget.rs limita el contexto de tokens de Boddy.","expected_source":"crates/boddy-inference/src/budget.rs"},
+    {"id":"policy-component-alias","objective":"Explica que permisos permite y deniega policy.rs.","expected_source":"crates/boddy-policy/src/lib.rs"}
+  ]
+}

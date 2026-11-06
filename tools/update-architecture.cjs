@@ -15,7 +15,7 @@ const descriptions = {
  'boddy-window':'Lanzador grafico Windows sin consola',
  'boddy-telemetry':'Muestra de VRAM y uso de GPU, independiente del modelo',
  'boddy-reader':'Lectura de fuentes acotada y evidencia con SHA256',
- 'boddy-agent':'Investigador de lectura con nucleo, citas y diario local',
+ 'boddy-agent':'Investigador con busqueda de componentes y una correccion de citas verificada',
  'boddy-desktop':'Acciones manuales de escritorio registradas y auditadas'
 };
 const result = cp.spawnSync('cargo', ['metadata','--offline','--no-deps','--format-version','1'], {cwd:root,encoding:'utf8'});

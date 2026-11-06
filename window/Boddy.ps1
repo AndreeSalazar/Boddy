@@ -120,7 +120,7 @@ $research.Add_CheckedChanged({
     $contextBudget.Enabled = -not $research.Checked
     $responseBudget.Enabled = -not $research.Checked
     $useGraph.Enabled = -not $research.Checked
-    $hint.Text = if ($research.Checked) { 'Lectura de Boddy: hasta 3 archivos y 3 llamadas al modelo; objetivo de hasta 800 caracteres.' } else { 'Tokens: recorte por presupuesto. El mapa aporta solo cifras.' }
+    $hint.Text = if ($research.Checked) { 'Lectura: hasta 3 archivos, 4 llamadas al modelo y 1 correccion; objetivo de hasta 800 caracteres.' } else { 'Tokens: recorte por presupuesto. El mapa aporta solo cifras.' }
 })
 $timer = New-Object Windows.Forms.Timer
 $timer.Interval = 80
@@ -239,7 +239,7 @@ $timer.Add_Tick({
             $status.Text = 'Contexto {0}/{1} tokens | Limite configurado del motor: {2} | Mapa: {3}' -f $contextDisplay,$reply.budget.context_tokens,$reply.budget.server_capacity,$reply.graph_context_used
             if ($reply.finish_reason -eq 'length') { $status.Text += ' | Respuesta cortada por limite' }
             if ($script:requestMode -eq 'investigar') {
-                $status.Text = 'Tarea: {0} | Modelo: {1} llamadas | Herramientas: {2}/6 | Revision semantica pendiente' -f $reply.task.state,$reply.task.model_calls,$reply.task.tool_calls
+                $status.Text = 'Tarea: {0} | Modelo: {1}/4 | Herramientas: {2}/6 | Correcciones: {3}/1' -f $reply.task.state,$reply.task.model_calls,$reply.task.tool_calls,$reply.task.repairs_used
                 $tokenStats.Text = "Investigacion: entrada $inputTokens, salida $outputTokens, cache $cachedTokens | {0:N1} s`nAcumulado de esta ventana: entrada {1}, salida {2}, cache {3}" -f ([double]$reply.elapsed_ms/1000),$script:totalInput,$script:totalOutput,$script:totalCached
             }
         } catch {

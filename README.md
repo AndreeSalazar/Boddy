@@ -42,6 +42,7 @@ sin clave ni pago a un proveedor por token.
 - [Tokens, GPU y presupuestos](docs/RECURSOS.md).
 - [Agente de lectura con citas verificadas](docs/AGENTE-LECTURA.md).
 - [Programar, Mi PC y Evidencia en Windows](docs/ESCRITORIO.md).
+- [Evolución y evaluaciones del agente](docs/EVOLUCION.md).
 - [Mapa](super-grafo/MAPA.md) y `super-grafo/nodos.json`.
 
 ## Comprobar y mantener

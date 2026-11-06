@@ -32,6 +32,10 @@ Los controles de presupuesto del chat se desactivan en ese modo porque usa cupos
 propios. El resultado muestra estado y ruta del registro local. Las conclusiones
 requieren revisión aunque las citas hayan pasado. [Alcance](../docs/AGENTE-LECTURA.md).
 
+El investigador puede corregir una vez un informe rechazado. La ventana muestra
+las correcciones usadas y el registro conserva los dos intentos y sus errores.
+La comprobación de citas se mantiene igual de estricta después de corregir.
+
 Boddy 1.0 es el nombre del asistente. El modelo base es Qwen2.5-Coder-7B-Instruct
 Q4_K_M, ejecutado por llama.cpp b12110 sobre Vulkan. El motor solo escucha en
 127.0.0.1:17861. No requiere cuenta ni clave de un proveedor. El chat envía texto

@@ -14,7 +14,7 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 | Ruta | Papel | Depende de |
 |---|---|---|
-| `crates/boddy-agent` | Investigador de lectura con nucleo, citas y diario local (implemented) | boddy-core, boddy-inference, boddy-reader, boddy-supergrafo |
+| `crates/boddy-agent` | Investigador con busqueda de componentes y una correccion de citas verificada (implemented) | boddy-core, boddy-inference, boddy-reader, boddy-supergrafo |
 | `crates/boddy-core` | Estados, cupos y evidencia (implemented) | boddy-contracts, boddy-mission, boddy-policy |
 | `crates/boddy-contracts` | Errores compartidos sin plataforma (implemented) |  |
 | `crates/boddy-mission` | Razon, objetivo y aceptacion (implemented) | boddy-contracts |
@@ -43,7 +43,7 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 ## Última instantánea
 
-Archivos indexados: 123. Relaciones léxicas: 13. Ciclos reportados:
+Archivos indexados: 128. Relaciones léxicas: 14. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantánea: generar este mapa agrega o modifica archivos y no produce
 una fotografía inmutable de sí mismo. Consultar de nuevo para el estado actual.

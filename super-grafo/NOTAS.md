@@ -1,7 +1,7 @@
 # Nodos de Boddy
 
 ## crates/boddy-agent
-Investigador de lectura con nucleo, citas y diario local. Estado: implemented. Dependencias: boddy-core, boddy-inference, boddy-reader, boddy-supergrafo.
+Investigador con busqueda de componentes y una correccion de citas verificada. Estado: implemented. Dependencias: boddy-core, boddy-inference, boddy-reader, boddy-supergrafo.
 
 ## crates/boddy-core
 Estados, cupos y evidencia. Estado: implemented. Dependencias: boddy-contracts, boddy-mission, boddy-policy.

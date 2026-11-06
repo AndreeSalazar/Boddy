@@ -5,7 +5,7 @@
     {
       "id": "boddy-agent",
       "path": "crates/boddy-agent",
-      "purpose": "Investigador de lectura con nucleo, citas y diario local",
+      "purpose": "Investigador con busqueda de componentes y una correccion de citas verificada",
       "status": "implemented",
       "no_std": false,
       "dependencies": [

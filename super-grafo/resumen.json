@@ -1,7 +1,7 @@
 {
-  "analisis_ms": 5,
-  "archivos_indexados": 123,
-  "archivos_leidos": 20,
+  "analisis_ms": 6,
+  "archivos_indexados": 128,
+  "archivos_leidos": 21,
   "cabeceras_exportadas": null,
   "carpeta": "\\\\?\\C:\\Users\\Salazar\\Documents\\Boddy",
   "ciclos": {
@@ -10,7 +10,7 @@
     "total": 0
   },
   "compile_commands": null,
-  "dependencias": 13,
+  "dependencias": 14,
   "diagnosticos_gcc": 0,
   "diagnosticos_marcados": {
     "archivos": 0,
@@ -32,7 +32,7 @@
   },
   "siguiente": "fallos, ciclos o senales para ver lo peor; camino/peso/archivo para bajar a un archivo",
   "sospechas": {
-    "Elegancia": 16,
+    "Elegancia": 19,
     "Rendimiento": 0,
     "Seguridad": 0,
     "a_proposito": 0

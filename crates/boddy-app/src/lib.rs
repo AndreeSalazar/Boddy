@@ -87,7 +87,14 @@ pub fn run(args: &[String]) -> Result<(), String> {
             let request: serde_json::Value =
                 serde_json::from_str(&input).map_err(|e| e.to_string())?;
             let objective = request["objective"].as_str().ok_or("Falta objetivo")?;
-            let mut response = boddy_agent::investigate(root(), objective)?;
+            let repairs = match request.get("repair_attempts") {
+                None => 1,
+                Some(v) => v
+                    .as_u64()
+                    .filter(|v| *v <= 1)
+                    .ok_or("repair_attempts debe ser 0 o 1")? as u8,
+            };
+            let mut response = boddy_agent::investigate_with_options(root(), objective, repairs)?;
             response["usage"] = serde_json::json!({"prompt_tokens":response["task"]["usage"]["prompt_tokens"],"completion_tokens":response["task"]["usage"]["completion_tokens"],"prompt_tokens_details":{"cached_tokens":response["task"]["usage"]["cached_tokens"]}});
             response["elapsed_ms"] = serde_json::json!(started.elapsed().as_millis());
             response["gpu"] = boddy_telemetry::snapshot();

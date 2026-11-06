@@ -29,6 +29,10 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   y lecturas decididas por el modelo dentro de un flujo acotado. Hasta tres fuentes;
   informe con líneas/citas comprobadas y SHA256 estable. Registro en data/tasks,
   excluido de Git. Revisión semántica pendiente incluso cuando termina Completed.
+- El investigador resuelve nombres de componentes, usa anclas de cita preparadas
+  por el host y permite una corrección. Guarda todos los intentos y rechazos.
+  Se excluyen cabeceras de función como evidencia de comportamiento y se detecta
+  un caso léxico acotado de permisos afirmados contra inicializadores false.
 - Ventana con Conversar, Programar, Mi PC y Evidencia. Explorador acotado de
   fuentes (incluye window como texto), fragmentos y apertura manual en editor.
   Acciones fijas para Explorer, SUPER GRAFO y Administrador de tareas, con log local.
@@ -36,7 +40,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 24 pruebas aprobadas.
+- cargo test --workspace --offline: 31 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
 - Comprobación del evento del botón de la ventana con generación real: respondió
@@ -50,6 +54,10 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   La investigación desde Programar también mostró una cita incorrecta del modelo:
   quedó Stopped y visible como no aprobada. Las aperturas externas se verificaron
   como planes de argumentos, sin automatizar esas aplicaciones durante las pruebas.
+- Evaluación de lectura v1: línea base 1/3; la ronda final del protocolo de anclas,
+  alias de componentes y revisión obtuvo 3/3 en citas y fuente esperada. El filtro
+  false rechazó una contradicción visible y el modelo la retiró. No se puntuó la
+  corrección semántica completa; casos conocidos y solo tres objetivos.
 - VRAM total observada tras cargar y generar: aproximadamente 5,5–5,6 GiB,
   incluyendo el uso previo del escritorio. No es consumo aislado del proceso,
   una medición del pico ni un benchmark de calidad o velocidad general.
