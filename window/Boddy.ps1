@@ -1,4 +1,4 @@
-param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [switch]$LabSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
+param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [switch]$WorkbenchSmokeTest, [switch]$LabSmokeTest, [switch]$AttentionSmokeTest, [string]$PreviewPath, [string]$EngineStatus)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -271,7 +271,28 @@ $form.Add_FormClosed({ $timer.Stop(); $timer.Dispose(); if ($script:active) { if
 . (Join-Path $PSScriptRoot 'components\Workbench.ps1')
 . (Join-Path $PSScriptRoot 'components\Laboratory.ps1')
 . (Join-Path $PSScriptRoot 'components\ModelSelector.ps1')
-if ($LabSmokeTest) {
+. (Join-Path $PSScriptRoot 'components\Attention.ps1')
+if($AttentionSmokeTest){
+    $form.Opacity=0;$form.Show();[Windows.Forms.Application]::DoEvents()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
+    $tabs.SelectedTab=$attentionPage;$attentionTrain.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(180)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
+    if(-not $script:wbLastResult.checkpoint_roundtrip -or $script:wbLastResult.model -ne 'Boddy Attention 0.1'){throw ('Fallo Attention: '+$wbMessage.Text)}
+    if($script:wbLastResult.loss.train_after -ge $script:wbLastResult.loss.train_before){throw 'No bajo la perdida Attention.'}
+    $parent=$script:wbLastResult.id;$attentionSteps.SelectedItem='100';$attentionTrain.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(180)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
+    if($script:wbLastResult.parent_id -ne $parent -or $script:wbLastResult.completed_steps -ne 400){throw 'No continuo Attention.'}
+    $unicodePrefix=([char]0x00bf)+'Qu'+([char]0x00e9)+' tal? '+[char]::ConvertFromUtf32(0x1f9e0)
+    $attentionPrefix.Text=$unicodePrefix;$attentionGenerate.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(30)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents();Start-Sleep -Milliseconds 25}
+    if(-not $script:wbLastResult.content.StartsWith($unicodePrefix) -or $script:history.Count -ne 0){throw 'Fallo texto Unicode Attention.'}
+    'Attention: entrenamiento 300, continuacion a 400 y generacion Unicode desde ventana.'
+    $form.Close();$form.Dispose()
+} elseif ($LabSmokeTest) {
     $form.Opacity=0; $form.Show()
     $tabs.SelectedTab=$labPage
     [Windows.Forms.Application]::DoEvents()
@@ -316,7 +337,7 @@ if ($LabSmokeTest) {
     [Windows.Forms.Application]::DoEvents()
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
-    if($tabs.TabPages.Count -ne 5){throw 'Faltan espacios de trabajo.'}
+    if($tabs.TabPages.Count -ne 6){throw 'Faltan espacios de trabajo.'}
     if($gpuStats.Bottom -gt $chatPage.ClientSize.Height -or $inputPanel.Bottom -gt $chatPage.ClientSize.Height){throw 'Controles de chat fuera del area visible.'}
     $tabs.SelectedTab=$programPage
     $reloadSources.PerformClick()
@@ -343,7 +364,7 @@ if ($LabSmokeTest) {
     $deadline=[DateTime]::UtcNow.AddSeconds(20)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
     if(-not $script:wbLastResult.gpu){throw 'No se recibio el estado de recursos.'}
-    'Workbench: cinco pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
+    'Workbench: seis pestanas, '+$wbFiles.Items.Count+' fuentes y '+$wbTasks.Items.Count+' registros.'
     $form.Close(); $form.Dispose()
 } elseif ($ResearchSmokeTest) {
     $form.Opacity=0

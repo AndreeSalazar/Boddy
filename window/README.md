@@ -1,6 +1,6 @@
 # Boddy 1.0 — chat local
 
-La ventana ofrece Conversar, Programar, Mi PC, Evidencia y Laboratorio. Programar muestra
+La ventana ofrece Conversar, Programar, Mi PC, Evidencia, Laboratorio y Atencion. Programar muestra
 fuentes y fragmentos y permite investigar la selección. Mi PC abre herramientas
 registradas por acción manual; Evidencia recupera las tareas guardadas.
 [Controles y alcance](../docs/ESCRITORIO.md).
@@ -67,3 +67,9 @@ Los nuevos checkpoints usan JSON pequeño y pesos binarios compartidos cuando
 son idénticos. Laboratorio muestra tamaños de disco; los modelos antiguos siguen
 cargando. Para copiar una versión nueva hay que incluir también su blob de pesos.
 [Arquitectura, comprobaciones y límites](../docs/MODELO-PROPIO.md).
+
+**Atencion** contiene el experimento Boddy Attention 0.1, separado del chat y
+Tiny. Usa bytes UTF-8, embeddings y una cabeza causal. Permite crear pesos desde
+cero, continuar una versión guardada, consultar métricas y generar desde un
+prefijo Unicode. Entrena por WGPU y genera por CPU. Aún no demuestra lenguaje
+útil ni programación. [Detalles y evidencia](../docs/ATTENTION.md).

@@ -10,6 +10,10 @@ checkpoints reanudables: JSON compacto y pesos binarios propios con SHA256.
 Los pesos idénticos se comparten entre versiones. Hay selector Qwen/Tiny.
 Tiny es un experimento educativo de caracteres. [Cómo entrenarlo](docs/MODELO-PROPIO.md).
 
+**Atencion** añade [Boddy Attention 0.1](docs/ATTENTION.md): decoder propio con
+bytes UTF-8, embeddings y atención causal. Entrena por WGPU y genera con la
+referencia CPU. Es experimental y aún no demuestra lenguaje útil.
+
 ## Abrir el chat
 
 Doble clic en `window/Boddy.vbs`, o:
@@ -32,9 +36,9 @@ Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargad
 
 ## Arquitectura
 
-Diecisiete crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+Dieciocho crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
 inferencia local, telemetría, lector, agente, escritorio, aplicación, CLI, lanzador
-gráfico, red neuronal de referencia, adaptador WGPU y laboratorio.
+gráfico, red neuronal de referencia, Transformer, adaptador WGPU y laboratorio.
 Las primeras cuatro permanecen no_std.
 El host usa serde_json; GPU y ventana no entran en el núcleo.
 

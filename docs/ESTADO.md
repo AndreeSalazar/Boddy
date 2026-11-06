@@ -7,7 +7,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 - Chat Windows sencillo: historial reciente, Enter para enviar, Shift+Enter para
   nueva línea, nuevo chat y cancelación de la espera.
-- Diecisiete crates con dependencias acíclicas. Contratos, misión, política y controlador
+- Dieciocho crates con dependencias acíclicas. Contratos, misión, política y controlador
   siguen siendo no_std; host, inferencia y ventana permanecen separados.
 - Adaptador Rust boddy-inference a un motor local externo, solo 127.0.0.1:17861.
 - Qwen2.5-Coder-7B-Instruct Q4_K_M, 4683073536 bytes. SHA256 verificado contra
@@ -19,7 +19,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 - Autenticación local interna generada automáticamente; no es una clave de proveedor.
   Los pesos, motor, credencial y logs están en carpetas ignoradas por Git.
 - Catálogo de veinte referencias documentales; todavía son metadatos, sin corpus.
-- SUPER GRAFO: mapa, notas, posiciones y 25 nodos con estados explícitos.
+- SUPER GRAFO: mapa, notas, posiciones y 26 nodos con estados explícitos.
 - Contadores visibles de entrada, salida, caché y acumulados, velocidad, recorte
   e instantánea de VRAM del dispositivo al responder. Conteo previo por tokenizer
   del motor, con eliminación de pares antiguos para respetar el presupuesto.
@@ -33,7 +33,7 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   por el host y permite una corrección. Guarda todos los intentos y rechazos.
   Se excluyen cabeceras de función como evidencia de comportamiento y se detecta
   un caso léxico acotado de permisos afirmados contra inicializadores false.
-- Ventana con Conversar, Programar, Mi PC, Evidencia y Laboratorio. Explorador acotado de
+- Ventana con Conversar, Programar, Mi PC, Evidencia, Laboratorio y Atencion. Explorador acotado de
   fuentes (incluye window como texto), fragmentos y apertura manual en editor.
   Acciones fijas para Explorer, SUPER GRAFO y Administrador de tareas, con log local.
   Vista de tareas guardadas y consulta manual de GPU, independiente del modelo.
@@ -51,13 +51,26 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   reutilización de archivos idénticos entre versiones. Mantiene carga v1/v2.
   Ventana muestra bytes JSON, pesos y escritura nueva. No elimina versiones
   previas; el autoaprendizaje general sigue pendiente.
+- Boddy Attention 0.1: decoder propio de un bloque, embeddings 16D, una cabeza
+  causal, RMSNorm y FFN tanh 16/32/16. 10.544 parámetros aleatorios; UTF-8 por
+  bytes, contexto 16 bytes. Entrena por intérprete escalar WGPU y genera por CPU.
+  Panel separado para crear, continuar, consultar y generar; formato independiente
+  de Tiny. No importa pesos Qwen y todavía repite espacios en la muestra inicial.
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 40 pruebas aprobadas.
+- cargo test --workspace --offline: 45 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
 - cargo check -p boddy-neural --target wasm32-unknown-unknown --offline: aprobado.
+- cargo check -p boddy-transformer --target wasm32-unknown-unknown --offline: aprobado.
+- Attention real en RTX 3060: 300 pasos, pérdida de entrenamiento 5,5408 -> 3,9268
+  y validación 5,5679 -> 4,1217. Error máximo de gradientes GPU/CPU 4,77e-7.
+  200 pasos frente a 100 + 100 produjeron los mismos pesos y muestreador; padre
+  intacto y prefijo Unicode conservado. JSON inicial 508 bytes, pesos 42.176 bytes;
+  buffers GPU declarados 1.081.976 bytes, sin incluir driver o pico real.
+  Pasó entrenamiento 300, continuación a 400 y generación Unicode desde ventana.
+  No es evidencia de chat útil o precisión de respuestas. Ver docs/ATTENTION.md.
 - Entrenamiento real Tiny en RTX 3060 por WGPU/Vulkan: 300 pasos redujeron pérdida
   de entrenamiento 4,5659 -> 2,5693 y validación 4,5703 -> 2,5811. Desde el botón
   de ventana, 1.000 pasos: 1,8081 y 2,1641. Error máximo absoluto de gradientes
@@ -105,7 +118,7 @@ Boddy 1.0 nombra la aplicación. Su laboratorio Boddy Tiny sí entrena desde cer
 el chat sigue usando Qwen por llama.cpp/Vulkan. Tiny no sustituye al asistente,
 reanuda entrenamientos y permite elegir checkpoints para continuar texto ASCII,
 pero no aprende conversaciones. Falta inferencia propia
-de un asistente general, corpus documental, embeddings, ejecución Python,
+de un asistente general, corpus documental, recuperación semántica, ejecución Python,
 sandbox del SO y sesiones completas reanudables. Ver MODELO-PROPIO.md.
 Existe un primer investigador de lectura, sin planes abiertos ni ejecución.
 El chat genera texto: la casilla de mapa aporta cifras del proyecto
