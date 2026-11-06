@@ -142,6 +142,7 @@ function Reset-Request {
     $responseBudget.Enabled = -not $research.Checked
     $useGraph.Enabled = -not $research.Checked
     $send.Text = 'Enviar'
+    if(Get-Command Update-ModelControls -ErrorAction SilentlyContinue){Update-ModelControls}
     $prompt.Focus() | Out-Null
 }
 $send.Add_Click({
@@ -155,10 +156,15 @@ $send.Add_Click({
     }
     $text = $prompt.Text.Trim()
     if (-not $text) { return }
-    $script:requestMode = if ($research.Checked) { 'investigar' } else { 'chat' }
+    $tiny=$chatModels.SelectedItem.id -ne 'qwen-local'
+    if($script:wbProcess -and $script:wbCommand -eq 'entrenar') { $status.Text='Espera a que termine el entrenamiento GPU.'; return }
+    $script:requestMode = if ($tiny) { 'modelo' } elseif ($research.Checked) { 'investigar' } else { 'chat' }
     try {
         if (-not (Test-Path -LiteralPath $binary)) { throw 'Ejecuta primero window/Start-Boddy.ps1.' }
-        if ($research.Checked) {
+        if ($tiny) {
+            if($text.Length -gt 256 -or [int]$responseBudget.SelectedItem -gt 256){throw 'Tiny admite un prefijo ASCII y salida de hasta 256 caracteres.'}
+            $payload=@{action='generate';id=$chatModels.SelectedItem.id;prefix=$text;max_tokens=[int]$responseBudget.SelectedItem} | ConvertTo-Json -Compress
+        } elseif ($research.Checked) {
             if ($text.Length -gt 800) { throw 'El objetivo de lectura admite hasta 800 caracteres.' }
             $payload = @{objective=$text} | ConvertTo-Json -Compress
         } else {
@@ -197,6 +203,7 @@ $send.Add_Click({
         $responseBudget.Enabled = $false
         $useGraph.Enabled = $false
         $research.Enabled = $false
+        $chatModels.Enabled=$false; $chatReload.Enabled=$false
         $send.Text = 'Cancelar'
         $status.Text = if ($research.Checked) { 'Boddy esta investigando el proyecto (solo lectura)...' } else { 'Boddy esta pensando...' }
         $timer.Start()
@@ -220,8 +227,9 @@ $timer.Add_Tick({
             $script:history.Clear()
             foreach ($message in $reply.context_messages) { $script:history.Add(@{role=[string]$message.role; content=[string]$message.content}) }
             $script:history.Add(@{role='assistant';content=$script:lastReply})
-            } else { $script:lastTaskState=[string]$reply.task.state; $script:lastReply += "`nRegistro: " + $reply.journal_path }
-            Add-ChatText 'Boddy' $script:lastReply
+            } elseif ($script:requestMode -eq 'investigar') { $script:lastTaskState=[string]$reply.task.state; $script:lastReply += "`nRegistro: " + $reply.journal_path }
+            $speaker=if($script:requestMode -eq 'modelo'){'Boddy Tiny | continuacion experimental'}else{'Boddy'}
+            Add-ChatText $speaker $script:lastReply
             if ($null -ne $reply.usage.prompt_tokens -and $null -ne $reply.usage.completion_tokens) {
                 $inputTokens = [long]$reply.usage.prompt_tokens
                 $outputTokens = [long]$reply.usage.completion_tokens
@@ -242,6 +250,11 @@ $timer.Add_Tick({
                 $status.Text = 'Tarea: {0} | Modelo: {1}/4 | Herramientas: {2}/6 | Correcciones: {3}/1' -f $reply.task.state,$reply.task.model_calls,$reply.task.tool_calls,$reply.task.repairs_used
                 $tokenStats.Text = "Investigacion: entrada $inputTokens, salida $outputTokens, cache $cachedTokens | {0:N1} s`nAcumulado de esta ventana: entrada {1}, salida {2}, cache {3}" -f ([double]$reply.elapsed_ms/1000),$script:totalInput,$script:totalOutput,$script:totalCached
             }
+            if($script:requestMode -eq 'modelo'){
+                $status.Text='Tiny: '+$reply.id+' | Continuacion de caracteres; no es respuesta a instrucciones'
+                $tokenStats.Text='Contexto utilizado: '+$reply.context_tokens+' caracteres | Generados: '+$reply.completion_tokens+' | Sin cache ni historial'
+                $gpuStats.Text='Generacion: CPU de referencia. El entrenamiento Tiny usa WGPU.'
+            }
         } catch {
             if ($script:requestMode -eq 'chat' -and $script:history.Count -and $script:history[$script:history.Count-1].role -eq 'user') { $script:history.RemoveAt($script:history.Count-1) }
             Add-ChatText 'Sistema' $_.Exception.Message
@@ -257,21 +270,52 @@ $newChat.Add_Click({ $script:history.Clear(); $script:totalInput=0L; $script:tot
 $form.Add_FormClosed({ $timer.Stop(); $timer.Dispose(); if ($script:active) { if (-not $script:active.HasExited) { $script:active.Kill() }; $script:active.Dispose() } })
 . (Join-Path $PSScriptRoot 'components\Workbench.ps1')
 . (Join-Path $PSScriptRoot 'components\Laboratory.ps1')
+. (Join-Path $PSScriptRoot 'components\ModelSelector.ps1')
 if ($LabSmokeTest) {
     $form.Opacity=0; $form.Show()
     $tabs.SelectedTab=$labPage
     [Windows.Forms.Application]::DoEvents()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
     $labSteps.SelectedItem='1000'; $labTrain.PerformClick()
     $deadline=[DateTime]::UtcNow.AddSeconds(190)
     while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
-    if($labOutput.Text -notmatch 'Checkpoint recargado: True' -or $labOutput.Text -notmatch 'NVIDIA GeForce RTX 3060') {throw ('Fallo laboratorio: '+$wbMessage.Text+' | '+$labOutput.Text)}
+    if(-not $script:wbLastResult.checkpoint_roundtrip -or $labOutput.Text -notmatch 'NVIDIA GeForce RTX 3060') {throw ('Fallo laboratorio: '+$wbMessage.Text+' | '+$labOutput.Text)}
     if($script:wbLastResult.loss.train_after -ge $script:wbLastResult.loss.train_before){throw 'No bajo la perdida de entrenamiento.'}
     if($script:history.Count -ne 0){throw 'El laboratorio altero el chat.'}
-    'Laboratorio GPU desde ventana: '+$script:wbLastResult.id
+    $trainedId=$script:wbLastResult.id
+    $labRefresh.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    for($i=0;$i -lt $labModels.Items.Count;$i++){if($labModels.Items[$i].id -eq $trainedId){$labModels.SelectedIndex=$i;break}}
+    if($labTrain.Text -ne 'Continuar en GPU'){throw 'No se puede seleccionar modelo para continuar.'}
+    $labSteps.SelectedItem='300';$labTrain.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(190)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if($script:wbLastResult.parent_id -ne $trainedId -or $script:wbLastResult.completed_steps -ne 1300){throw ('No continuo desde el modelo seleccionado: '+$wbMessage.Text)}
+    $tabs.SelectedTab=$chatPage
+    for($i=0;$i -lt $chatModels.Items.Count;$i++){if($chatModels.Items[$i].id -eq $trainedId){$chatModels.SelectedIndex=$i;break}}
+    if($research.Enabled -or $contextBudget.Enabled){throw 'Tiny ofrecio herramientas o contexto Qwen.'}
+    $prompt.Text='boddy ';$responseBudget.SelectedItem='64';$send.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:active -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if($script:requestMode -ne 'modelo' -or $script:history.Count -ne 0 -or $transcript.Text -notmatch 'continuacion experimental'){throw ('Fallo generacion con Tiny: '+$transcript.Text)}
+    $chatModels.SelectedIndex=0
+    if(-not $research.Enabled -or -not $contextBudget.Enabled){throw 'No se restauraron controles Qwen.'}
+    $script:history.Add(@{role='user';content='Prueba local de conservacion de historial'})
+    $script:history.Add(@{role='assistant';content='Registro sintetico sin llamar a Qwen'})
+    $chatReload.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
+    if($script:history.Count -ne 2){throw 'Actualizar modelos borro el historial Qwen.'}
+    $script:history.Clear()
+    'Laboratorio: entrenamiento, continuacion 1300 pasos, selector y generacion Tiny comprobados. '+$trainedId
     $form.Close(); $form.Dispose()
 } elseif ($WorkbenchSmokeTest) {
     $form.Opacity=0; $form.Show()
     [Windows.Forms.Application]::DoEvents()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
     if($tabs.TabPages.Count -ne 5){throw 'Faltan espacios de trabajo.'}
     if($gpuStats.Bottom -gt $chatPage.ClientSize.Height -or $inputPanel.Bottom -gt $chatPage.ClientSize.Height){throw 'Controles de chat fuera del area visible.'}
     $tabs.SelectedTab=$programPage
@@ -304,6 +348,8 @@ if ($LabSmokeTest) {
 } elseif ($ResearchSmokeTest) {
     $form.Opacity=0
     $form.Show()
+    $deadline=[DateTime]::UtcNow.AddSeconds(20)
+    while($script:wbProcess -and [DateTime]::UtcNow -lt $deadline){[Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25}
     $tabs.SelectedTab=$programPage
     $reloadSources.PerformClick()
     $deadline=[DateTime]::UtcNow.AddSeconds(20)

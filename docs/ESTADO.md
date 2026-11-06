@@ -41,10 +41,16 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   capa tanh de 32 unidades y 96 salidas ASCII. Inicialización aleatoria; sin pesos
   Qwen ni profesor externo. Corpus educativo propio versionado, SGD por WGPU y
   referencia CPU no_std. Laboratorio muestra métricas y guarda checkpoints.
+- Selector Qwen/Tiny en Conversar y biblioteca de versiones en Laboratorio.
+  Continuación de entrenamiento con estado de muestreo, pasos y padre; modelos
+  antiguos conservan solo pesos y se identifican como tales. Generación Tiny
+  CPU sin historial, herramientas ni investigación. Lista de modelos acotada y
+  validación de pesos/arquitectura antes de cargar. Control de frases no entrenadas
+  informa pérdida y acierto del siguiente carácter; sin aprobación automática.
 
 ## Verificado en esta entrega
 
-- cargo test --workspace --offline: 36 pruebas aprobadas.
+- cargo test --workspace --offline: 38 pruebas aprobadas.
 - cargo clippy --workspace --all-targets --offline -- -D warnings: aprobado.
 - cargo check -p boddy-core --target wasm32-unknown-unknown --offline: aprobado.
 - cargo check -p boddy-neural --target wasm32-unknown-unknown --offline: aprobado.
@@ -54,6 +60,12 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
   CPU/GPU 7,45e-9; pérdida 4,77e-7; SGD 7,45e-9. Muestra restaurada reproducible.
   239.904 bytes de buffers declarados; no es VRAM total ni pico. Datos y
   validación pequeños/relacionados: no demuestran capacidad de asistente.
+- Continuación real en RTX 3060: 600 pasos frente a 300 + 300 reanudados dieron
+  pesos iguales, mismo muestreador y padre intacto. Control no entrenado: acierto
+  del siguiente carácter 24,6 % -> 28,9 % en la segunda etapa. Evidencia en
+  evals/tiny-continuation-v1-rtx3060.json. Prueba nativa de ventana: crear 1.000
+  pasos, continuar hasta 1.300, seleccionar Tiny para generación y volver a Qwen;
+  actualizar versiones conserva el historial. No es inspección visual del diseño.
 - Comprobación del evento del botón de la ventana con generación real: respondió
   «¡Hola!» a la petición de saludo en español.
 - Dos turnos por el cliente Rust: respondió «Entendido.» y recuperó correctamente
@@ -81,7 +93,8 @@ Hardware observado: RTX 3060, 12288 MiB, controlador NVIDIA 610.74; RAM comunica
 
 Boddy 1.0 nombra la aplicación. Su laboratorio Boddy Tiny sí entrena desde cero;
 el chat sigue usando Qwen por llama.cpp/Vulkan. Tiny no sustituye al asistente,
-no reanuda entrenamientos y no aprende conversaciones. Falta inferencia propia
+reanuda entrenamientos y permite elegir checkpoints para continuar texto ASCII,
+pero no aprende conversaciones. Falta inferencia propia
 de un asistente general, corpus documental, embeddings, ejecución Python,
 sandbox del SO y sesiones completas reanudables. Ver MODELO-PROPIO.md.
 Existe un primer investigador de lectura, sin planes abiertos ni ejecución.

@@ -57,6 +57,10 @@ Descarga unos 4,7 GB de pesos más el motor y verifica SHA256 según
 `models.lock.json`. Se conservan fuera de Git. Los pesos no se entrenaron en este
 proyecto. El laboratorio independiente entrena Boddy Tiny desde cero mediante
 WGPU: elegir pasos y pulsar Entrenar en GPU. Muestra pérdida, tokens procesados,
-buffers, GPU y muestra de texto; guarda pesos en data/lab. Cada ejecución empieza
-desde cero. Puede abrirse directamente con Boddy.ps1 sin iniciar el servidor Qwen.
+buffers, GPU y muestra de texto; guarda pesos en data/lab. Elegir una version
+guardada permite continuar y comparar sin sobrescribir la anterior. Conversar
+incluye selector Qwen/Tiny: Tiny solo continua caracteres ASCII de manera
+experimental, sin historial ni herramientas. Actualizar recarga las versiones;
+cambiar modelo reinicia historial y contadores. Puede abrirse directamente con
+Boddy.ps1 sin iniciar el servidor Qwen.
 [Arquitectura, comprobaciones y límites](../docs/MODELO-PROPIO.md).

@@ -4,8 +4,8 @@ $script:wbCallback = $null
 $script:wbLastResult = $null
 $wbTimer = New-Object Windows.Forms.Timer
 $wbTimer.Interval = 80
-function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [ValidateSet('pc','entrenar')][string]$Command='pc') {
-    if ($script:wbProcess) { $wbMessage.Text='Hay una accion de escritorio en curso.'; return }
+function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [ValidateSet('pc','entrenar','modelo')][string]$Command='pc') {
+    if ($script:wbProcess) { $wbMessage.Text='Hay una accion en curso; espera un momento.'; return }
     try {
         $info = New-Object Diagnostics.ProcessStartInfo
         $info.FileName = $binary
@@ -28,6 +28,7 @@ function Invoke-WorkbenchCommand([hashtable]$Request, [scriptblock]$OnDone, [Val
         $script:wbProcess.StandardInput.Close()
         $script:wbCallback = $OnDone
         $script:wbStarted = [DateTime]::UtcNow
+        $script:wbCommand = $Command
         $script:wbTimeout = if ($Command -eq 'entrenar') { 180 } else { 15 }
         $wbMessage.Text='Consultando: ' + $Request.action
         $wbTimer.Start()
@@ -41,6 +42,7 @@ $wbTimer.Add_Tick({
     if (([DateTime]::UtcNow-$script:wbStarted).TotalSeconds -gt $script:wbTimeout) {
         if (-not $script:wbProcess.HasExited) { $script:wbProcess.Kill() }
         $wbMessage.Text='La accion excedio su tiempo de espera.'
+        if ($script:wbCommand -eq 'entrenar') { $labState.Text='Entrenamiento interrumpido por tiempo de espera.' }
         $script:wbProcess.Dispose(); $script:wbProcess=$null; $wbTimer.Stop(); return
     }
     if ($script:wbProcess.HasExited -and $script:wbOut.IsCompleted -and $script:wbErr.IsCompleted) {
@@ -50,7 +52,7 @@ $wbTimer.Add_Tick({
             $script:wbLastResult=$script:wbOut.Result | ConvertFrom-Json
             $wbMessage.Text='Accion finalizada.'
             & $script:wbCallback $script:wbLastResult
-        } catch { $wbMessage.Text=$_.Exception.Message }
+        } catch { $wbMessage.Text=$_.Exception.Message; if ($script:wbCommand -eq 'entrenar') { $labState.Text='No se completo el entrenamiento. Ver mensaje inferior.' } }
         finally { $script:wbProcess.Dispose(); $script:wbProcess=$null }
     }
 })
@@ -84,7 +86,7 @@ foreach ($control in $oldControls) {
 $chatPage.ResumeLayout()
 $form.Controls.Add($tabs)
 $wbMessage=New-Object Windows.Forms.Label
-$wbMessage.Text='Acciones manuales del dueño | Proyecto: Boddy'
+$wbMessage.Text='Acciones manuales del propietario | Proyecto: Boddy'
 $wbMessage.ForeColor=[Drawing.Color]::Silver
 $wbMessage.Dock='Bottom'; $wbMessage.Height=28
 $form.Controls.Add($wbMessage)
