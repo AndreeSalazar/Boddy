@@ -1,0 +1,16 @@
+[package]
+name = "boddy-agent"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+boddy-core = { path = "../boddy-core" }
+boddy-inference = { path = "../boddy-inference" }
+boddy-reader = { path = "../boddy-reader" }
+boddy-supergrafo = { path = "../boddy-supergrafo" }
+serde_json = "1"

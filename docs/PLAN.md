@@ -4,6 +4,10 @@ Actualización Boddy 1.0: existe un adaptador de chat a un motor externo local
 (llama.cpp/Vulkan) y una interfaz Windows. No sustituye la entrega de inferencia
 propia WGPU ni el ejecutor aislado. Ver `window/README.md` y `docs/ESTADO.md`.
 
+6 de noviembre: disponible el primer investigador de lectura con núcleo, selección
+de fuentes, citas verificadas y registro de tarea. Es un subconjunto de la entrega
+4; planes abiertos, reanudación y ejecución siguen pendientes. Ver AGENTE-LECTURA.md.
+
 Cada entrega exige comportamiento observable. La casilla de una capacidad solo
 se completa con evidencia pertinente; una demo determinista no cuenta como IA.
 

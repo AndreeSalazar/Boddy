@@ -13,6 +13,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -STA -File .\window\Start-Bodd
 ```
 
 Enter envía, Shift+Enter agrega una línea. Nuevo chat borra el historial en memoria.
+Activa **Investigar proyecto (lectura)** para un objetivo como «Explica cómo
+budget.rs limita los tokens». Boddy buscará fuentes, leerá fragmentos y entregará
+un informe con citas comprobadas y ruta del registro local.
 El chat no tiene herramientas para leer tus archivos o ejecutar programas.
 La respuesta se muestra al finalizar; el historial reciente se recorta con límites.
 
@@ -23,8 +26,9 @@ Git. `models.lock.json` fija formato, origen y hashes. El motor permanece cargad
 
 ## Arquitectura
 
-Once crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
-inferencia local, telemetría, aplicación, CLI y lanzador gráfico. Las primeras cuatro permanecen no_std.
+Trece crates: contratos, misión, permisos, controlador, catálogo, SUPER GRAFO,
+inferencia local, telemetría, lector, agente, aplicación, CLI y lanzador gráfico.
+Las primeras cuatro permanecen no_std.
 El host usa serde_json; GPU y ventana no entran en el núcleo.
 
 Esta versión usa Vulkan mediante un proceso externo. El backend propio WGPU,
@@ -36,6 +40,7 @@ sin clave ni pago a un proveedor por token.
 - [Propósito](docs/PROPOSITO.md), [investigación](docs/INVESTIGACION.md) y [plan](docs/PLAN.md).
 - [Estado y comprobaciones](docs/ESTADO.md).
 - [Tokens, GPU y presupuestos](docs/RECURSOS.md).
+- [Agente de lectura con citas verificadas](docs/AGENTE-LECTURA.md).
 - [Mapa](super-grafo/MAPA.md) y `super-grafo/nodos.json`.
 
 ## Comprobar y mantener

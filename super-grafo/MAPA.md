@@ -14,14 +14,16 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 | Ruta | Papel | Depende de |
 |---|---|---|
-| `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo, boddy-telemetry |
-| `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
+| `crates/boddy-agent` | Investigador de lectura con nucleo, citas y diario local (implemented) | boddy-core, boddy-inference, boddy-reader, boddy-supergrafo |
 | `crates/boddy-core` | Estados, cupos y evidencia (implemented) | boddy-contracts, boddy-mission, boddy-policy |
 | `crates/boddy-contracts` | Errores compartidos sin plataforma (implemented) |  |
 | `crates/boddy-mission` | Razon, objetivo y aceptacion (implemented) | boddy-contracts |
 | `crates/boddy-policy` | Capacidades explicitas (implemented) |  |
 | `crates/boddy-inference` | Chat con motor local por loopback, sin herramientas (implemented) |  |
+| `crates/boddy-reader` | Lectura de fuentes acotada y evidencia con SHA256 (implemented) |  |
 | `crates/boddy-supergrafo` | Consultas externas acotadas (implemented) |  |
+| `crates/boddy-app` | Casos de uso de la aplicacion (implemented) | boddy-agent, boddy-catalog, boddy-core, boddy-inference, boddy-supergrafo, boddy-telemetry |
+| `crates/boddy-catalog` | Catalogo documental local (implemented) |  |
 | `crates/boddy-telemetry` | Muestra de VRAM y uso de GPU, independiente del modelo (implemented) |  |
 | `crates/boddy-cli` | Entrada de terminal (implemented) | boddy-app |
 | `window` | Lanzador grafico Windows sin consola (implemented) | boddy-cli |
@@ -40,7 +42,7 @@ de la herramienta `guardar`: el ejecutable disponible aún no la implementa.
 
 ## Última instantánea
 
-Archivos indexados: 103. Relaciones léxicas: 9. Ciclos reportados:
+Archivos indexados: 115. Relaciones léxicas: 12. Ciclos reportados:
 0. Fuente exacta de estas cifras: `super-grafo/resumen.json`.
 Son una instantánea: generar este mapa agrega o modifica archivos y no produce
 una fotografía inmutable de sí mismo. Consultar de nuevo para el estado actual.

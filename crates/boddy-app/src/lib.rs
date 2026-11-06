@@ -46,6 +46,26 @@ fn demo() -> Result<(), String> {
 
 pub fn run(args: &[String]) -> Result<(), String> {
     match args {
+        [command] if command == "investigar" => {
+            let started = std::time::Instant::now();
+            let mut input = String::new();
+            io::stdin()
+                .take(4097)
+                .read_to_string(&mut input)
+                .map_err(|e| e.to_string())?;
+            if input.len() > 4096 {
+                return Err("Peticion de investigacion demasiado grande".into());
+            }
+            let request: serde_json::Value =
+                serde_json::from_str(&input).map_err(|e| e.to_string())?;
+            let objective = request["objective"].as_str().ok_or("Falta objetivo")?;
+            let mut response = boddy_agent::investigate(root(), objective)?;
+            response["usage"] = serde_json::json!({"prompt_tokens":response["task"]["usage"]["prompt_tokens"],"completion_tokens":response["task"]["usage"]["completion_tokens"],"prompt_tokens_details":{"cached_tokens":response["task"]["usage"]["cached_tokens"]}});
+            response["elapsed_ms"] = serde_json::json!(started.elapsed().as_millis());
+            response["gpu"] = boddy_telemetry::snapshot();
+            println!("{response}");
+            Ok(())
+        }
         [command] if command == "chat" => {
             let mut input = String::new();
             io::stdin()

@@ -16,6 +16,8 @@ Las crates actuales comparten proceso y no constituyen sandboxes independientes.
 | boddy-cli | Entrada/salida de terminal | app |
 | boddy-inference | Cliente del modelo local, sin herramientas | serde_json; motor externo por loopback |
 | boddy-telemetry | Muestra de VRAM y uso del dispositivo | serde_json; nvidia-smi externo |
+| boddy-reader | Fuentes acotadas, rutas y SHA256 | serde_json, sha2; disco del host |
+| boddy-agent | Investigación de lectura y registro de tareas | core, inference, reader, supergrafo |
 | window | Cuadro de comandos Windows | CLI por proceso |
 | gpu/wgpu | Backend GPU pendiente | Contrato futuro con host |
 

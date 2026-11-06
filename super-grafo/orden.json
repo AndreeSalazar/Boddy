@@ -80,6 +80,14 @@
     "crates/boddy-telemetry": [
       0,
       725
+    ],
+    "crates/boddy-agent": [
+      1020,
+      145
+    ],
+    "crates/boddy-reader": [
+      0,
+      870
     ]
   },
   "desplegadas": [

@@ -3,28 +3,18 @@
   "source": "Cargo metadata + fronteras planificadas explicitas",
   "nodes": [
     {
-      "id": "boddy-app",
-      "path": "crates/boddy-app",
-      "purpose": "Casos de uso de la aplicacion",
+      "id": "boddy-agent",
+      "path": "crates/boddy-agent",
+      "purpose": "Investigador de lectura con nucleo, citas y diario local",
       "status": "implemented",
       "no_std": false,
       "dependencies": [
-        "boddy-catalog",
         "boddy-core",
         "boddy-inference",
-        "boddy-supergrafo",
-        "boddy-telemetry"
+        "boddy-reader",
+        "boddy-supergrafo"
       ],
       "layer": 3
-    },
-    {
-      "id": "boddy-catalog",
-      "path": "crates/boddy-catalog",
-      "purpose": "Catalogo documental local",
-      "status": "implemented",
-      "no_std": false,
-      "dependencies": [],
-      "layer": 0
     },
     {
       "id": "boddy-core",
@@ -78,9 +68,43 @@
       "layer": 0
     },
     {
+      "id": "boddy-reader",
+      "path": "crates/boddy-reader",
+      "purpose": "Lectura de fuentes acotada y evidencia con SHA256",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
       "id": "boddy-supergrafo",
       "path": "crates/boddy-supergrafo",
       "purpose": "Consultas externas acotadas",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [],
+      "layer": 0
+    },
+    {
+      "id": "boddy-app",
+      "path": "crates/boddy-app",
+      "purpose": "Casos de uso de la aplicacion",
+      "status": "implemented",
+      "no_std": false,
+      "dependencies": [
+        "boddy-agent",
+        "boddy-catalog",
+        "boddy-core",
+        "boddy-inference",
+        "boddy-supergrafo",
+        "boddy-telemetry"
+      ],
+      "layer": 4
+    },
+    {
+      "id": "boddy-catalog",
+      "path": "crates/boddy-catalog",
+      "purpose": "Catalogo documental local",
       "status": "implemented",
       "no_std": false,
       "dependencies": [],
@@ -104,7 +128,7 @@
       "dependencies": [
         "boddy-app"
       ],
-      "layer": 4
+      "layer": 5
     },
     {
       "id": "boddy-window",
@@ -115,7 +139,7 @@
       "dependencies": [
         "boddy-cli"
       ],
-      "layer": 5
+      "layer": 6
     },
     {
       "id": "inference",

@@ -13,7 +13,9 @@ const descriptions = {
  'boddy-cli':'Entrada de terminal',
  'boddy-inference':'Chat con motor local por loopback, sin herramientas',
  'boddy-window':'Lanzador grafico Windows sin consola',
- 'boddy-telemetry':'Muestra de VRAM y uso de GPU, independiente del modelo'
+ 'boddy-telemetry':'Muestra de VRAM y uso de GPU, independiente del modelo',
+ 'boddy-reader':'Lectura de fuentes acotada y evidencia con SHA256',
+ 'boddy-agent':'Investigador de lectura con nucleo, citas y diario local'
 };
 const result = cp.spawnSync('cargo', ['metadata','--offline','--no-deps','--format-version','1'], {cwd:root,encoding:'utf8'});
 if(result.status !== 0) throw Error(result.stderr);

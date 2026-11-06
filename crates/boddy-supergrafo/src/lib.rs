@@ -39,6 +39,18 @@ pub fn query(root: &Path, name: &str) -> Result<Vec<u8>, String> {
     if !matches!(name, "resumen" | "fallos" | "ciclos") {
         return Err("Consulta permitida: resumen, fallos o ciclos".into());
     }
+    invoke(root, name, None)
+}
+
+pub fn search(root: &Path, text: &str) -> Result<Vec<u8>, String> {
+    if text.trim().is_empty() || text.chars().count() > 64 || text.chars().any(char::is_control) {
+        return Err("Busqueda de grafo invalida".into());
+    }
+    let args = serde_json::json!({"texto":text,"limite":16}).to_string();
+    invoke(root, "buscar", Some(&args))
+}
+
+fn invoke(root: &Path, name: &str, args: Option<&str>) -> Result<Vec<u8>, String> {
     let binary = match std::env::var_os("BODDY_SG_BIN") {
         Some(path) => path.into(),
         None => root
@@ -51,10 +63,12 @@ pub fn query(root: &Path, name: &str) -> Result<Vec<u8>, String> {
             "No se encontró SUPER GRAFO. Define BODDY_SG_BIN con la ruta del ejecutable".into(),
         );
     }
-    let mut child = Command::new(binary)
-        .arg("--consulta")
-        .arg(name)
-        .arg(root)
+    let mut command = Command::new(binary);
+    command.arg("--consulta").arg(name).arg(root);
+    if let Some(args) = args {
+        command.arg(args);
+    }
+    let mut child = command
         .current_dir(root)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())

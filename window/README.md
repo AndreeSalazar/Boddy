@@ -21,10 +21,17 @@ El historial enviado se recorta por tokens reales en el host y se sincroniza con
 la ventana. Los turnos antiguos siguen visibles pero pueden salir del contexto.
 Estos controles no modifican la reserva GPU del servidor. [Medidas y límites](../docs/RECURSOS.md).
 
+Activa **Investigar proyecto (lectura)** para dar un objetivo sobre Boddy.
+El modelo propone búsquedas y fuentes; el host lee fragmentos y comprueba citas.
+Los controles de presupuesto del chat se desactivan en ese modo porque usa cupos
+propios. El resultado muestra estado y ruta del registro local. Las conclusiones
+requieren revisión aunque las citas hayan pasado. [Alcance](../docs/AGENTE-LECTURA.md).
+
 Boddy 1.0 es el nombre del asistente. El modelo base es Qwen2.5-Coder-7B-Instruct
 Q4_K_M, ejecutado por llama.cpp b12110 sobre Vulkan. El motor solo escucha en
 127.0.0.1:17861. No requiere cuenta ni clave de un proveedor. El chat envía texto
-al motor local; no dispone de herramientas para leer archivos o ejecutar código.
+al motor local. El modo investigación ofrece lecturas acotadas del proyecto a
+través del host; no dispone de ejecución de código.
 
 Esta primera interfaz muestra la respuesta completa al terminar. Cancelar cierra
 el cliente; la liberación inmediata del trabajo del servidor es de mejor esfuerzo.

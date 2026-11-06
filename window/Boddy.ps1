@@ -1,4 +1,4 @@
-param([switch]$SmokeTest, [string]$PreviewPath)
+param([switch]$SmokeTest, [switch]$ResearchSmokeTest, [string]$PreviewPath)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -11,6 +11,8 @@ $script:lastReply = ''
 $script:totalInput = 0L
 $script:totalOutput = 0L
 $script:totalCached = 0L
+$script:requestMode = 'chat'
+$script:lastTaskState = ''
 $form = New-Object Windows.Forms.Form
 $form.Text = 'Boddy 1.0'
 $form.ClientSize = New-Object Drawing.Size(900, 800)
@@ -96,7 +98,10 @@ $hint = New-Object Windows.Forms.Label
 $hint.Text = 'Tokens: el host recorta turnos antiguos para respetar el presupuesto. El mapa aporta solo cifras.'
 $hint.ForeColor = [Drawing.Color]::Silver
 $hint.Font = New-Object Drawing.Font('Segoe UI', 9)
-$hint.SetBounds(32, 152, 830, 24)
+$hint.SetBounds(32, 152, 565, 30)
+$research = New-Object Windows.Forms.CheckBox
+$research.Text = 'Investigar proyecto (lectura)'
+$research.SetBounds(600, 148, 270, 30)
 $tokenStats = New-Object Windows.Forms.Label
 $tokenStats.Text = 'Tokens: envia un mensaje para medir entrada, salida y cache.'
 $tokenStats.ForeColor = [Drawing.ColorTranslator]::FromHtml('#80DDC7')
@@ -109,7 +114,13 @@ $gpuStats.ForeColor = [Drawing.Color]::Silver
 $gpuStats.Font = New-Object Drawing.Font('Segoe UI', 9)
 $gpuStats.SetBounds(32, 760, 835, 24)
 $gpuStats.Anchor = 'Bottom,Left,Right'
-$form.Controls.AddRange(@($contextLabel,$contextBudget,$responseLabel,$responseBudget,$useGraph,$hint,$tokenStats,$gpuStats))
+$form.Controls.AddRange(@($contextLabel,$contextBudget,$responseLabel,$responseBudget,$useGraph,$hint,$tokenStats,$gpuStats,$research))
+$research.Add_CheckedChanged({
+    $contextBudget.Enabled = -not $research.Checked
+    $responseBudget.Enabled = -not $research.Checked
+    $useGraph.Enabled = -not $research.Checked
+    $hint.Text = if ($research.Checked) { 'Lectura de Boddy: hasta 3 archivos y 3 llamadas al modelo; objetivo de hasta 800 caracteres.' } else { 'Tokens: recorte por presupuesto. El mapa aporta solo cifras.' }
+})
 $timer = New-Object Windows.Forms.Timer
 $timer.Interval = 80
 function Add-ChatText([string]$role, [string]$text) {
@@ -125,16 +136,17 @@ function Reset-Request {
     if ($script:active) { $script:active.Dispose(); $script:active = $null }
     $prompt.Enabled = $true
     $newChat.Enabled = $true
-    $contextBudget.Enabled = $true
-    $responseBudget.Enabled = $true
-    $useGraph.Enabled = $true
+    $research.Enabled = $true
+    $contextBudget.Enabled = -not $research.Checked
+    $responseBudget.Enabled = -not $research.Checked
+    $useGraph.Enabled = -not $research.Checked
     $send.Text = 'Enviar'
     $prompt.Focus() | Out-Null
 }
 $send.Add_Click({
     if ($script:active) {
         if (-not $script:active.HasExited) { $script:active.Kill() }
-        if ($script:history.Count) { $script:history.RemoveAt($script:history.Count - 1) }
+        if ($script:requestMode -eq 'chat' -and $script:history.Count) { $script:history.RemoveAt($script:history.Count - 1) }
         Add-ChatText 'Boddy' 'Respuesta cancelada.'
         Reset-Request
         $status.Text = 'Cancelado. Puedes continuar.'
@@ -142,17 +154,23 @@ $send.Add_Click({
     }
     $text = $prompt.Text.Trim()
     if (-not $text) { return }
+    $script:requestMode = if ($research.Checked) { 'investigar' } else { 'chat' }
     try {
         if (-not (Test-Path -LiteralPath $binary)) { throw 'Ejecuta primero window/Start-Boddy.ps1.' }
+        if ($research.Checked) {
+            if ($text.Length -gt 800) { throw 'El objetivo de lectura admite hasta 800 caracteres.' }
+            $payload = @{objective=$text} | ConvertTo-Json -Compress
+        } else {
         # Limites de transporte adicionales; el host calcula el presupuesto real en tokens.
         if ($script:history.Count -ge 24 -or (($script:history | ForEach-Object { $_.content.Length } | Measure-Object -Sum).Sum + $text.Length) -gt 16000) {
             throw 'El historial supera el limite de transporte. Inicia un nuevo chat o acorta el mensaje.'
         }
         $script:history.Add(@{role='user';content=$text})
         $payload = @{messages=@($script:history.ToArray()); context_tokens=[int]$contextBudget.SelectedItem; max_tokens=[int]$responseBudget.SelectedItem; use_graph=$useGraph.Checked} | ConvertTo-Json -Depth 8 -Compress
+        }
         $info = New-Object Diagnostics.ProcessStartInfo
         $info.FileName = $binary
-        $info.Arguments = 'chat'
+        $info.Arguments = $script:requestMode
         $info.WorkingDirectory = $projectRoot
         $info.UseShellExecute = $false
         $info.CreateNoWindow = $true
@@ -177,27 +195,31 @@ $send.Add_Click({
         $contextBudget.Enabled = $false
         $responseBudget.Enabled = $false
         $useGraph.Enabled = $false
+        $research.Enabled = $false
         $send.Text = 'Cancelar'
-        $status.Text = 'Boddy esta pensando...'
+        $status.Text = if ($research.Checked) { 'Boddy esta investigando el proyecto (solo lectura)...' } else { 'Boddy esta pensando...' }
         $timer.Start()
     } catch {
-        if ($script:history.Count -and $script:history[$script:history.Count-1].role -eq 'user') { $script:history.RemoveAt($script:history.Count-1) }
+        if ($script:requestMode -eq 'chat' -and $script:history.Count -and $script:history[$script:history.Count-1].role -eq 'user') { $script:history.RemoveAt($script:history.Count-1) }
         Add-ChatText 'Sistema' $_.Exception.Message
         Reset-Request
     }
 })
 $timer.Add_Tick({
     if (-not $script:active) { return }
-    if (([DateTime]::UtcNow - $script:started).TotalSeconds -gt 130) { $send.PerformClick(); return }
+    $timeout = if ($script:requestMode -eq 'investigar') { 420 } else { 130 }
+    if (([DateTime]::UtcNow - $script:started).TotalSeconds -gt $timeout) { $send.PerformClick(); return }
     if ($script:active.HasExited -and $script:stdout.IsCompleted -and $script:stderr.IsCompleted) {
         try {
             if ($script:active.ExitCode -ne 0) { throw $script:stderr.Result }
             $reply = $script:stdout.Result | ConvertFrom-Json
             if (-not $reply.content) { throw 'El motor no devolvio texto.' }
             $script:lastReply = [string]$reply.content
+            if ($script:requestMode -eq 'chat') {
             $script:history.Clear()
             foreach ($message in $reply.context_messages) { $script:history.Add(@{role=[string]$message.role; content=[string]$message.content}) }
             $script:history.Add(@{role='assistant';content=$script:lastReply})
+            } else { $script:lastTaskState=[string]$reply.task.state; $script:lastReply += "`nRegistro: " + $reply.journal_path }
             Add-ChatText 'Boddy' $script:lastReply
             if ($null -ne $reply.usage.prompt_tokens -and $null -ne $reply.usage.completion_tokens) {
                 $inputTokens = [long]$reply.usage.prompt_tokens
@@ -215,8 +237,12 @@ $timer.Add_Tick({
             } else { $gpuStats.Text = 'GPU: lectura no disponible. No se supone un consumo de cero.' }
             $status.Text = 'Contexto {0}/{1} tokens | Limite configurado del motor: {2} | Mapa: {3}' -f $contextDisplay,$reply.budget.context_tokens,$reply.budget.server_capacity,$reply.graph_context_used
             if ($reply.finish_reason -eq 'length') { $status.Text += ' | Respuesta cortada por limite' }
+            if ($script:requestMode -eq 'investigar') {
+                $status.Text = 'Tarea: {0} | Modelo: {1} llamadas | Herramientas: {2}/6 | Revision semantica pendiente' -f $reply.task.state,$reply.task.model_calls,$reply.task.tool_calls
+                $tokenStats.Text = "Investigacion: entrada $inputTokens, salida $outputTokens, cache $cachedTokens | {0:N1} s`nAcumulado de esta ventana: entrada {1}, salida {2}, cache {3}" -f ([double]$reply.elapsed_ms/1000),$script:totalInput,$script:totalOutput,$script:totalCached
+            }
         } catch {
-            if ($script:history.Count -and $script:history[$script:history.Count-1].role -eq 'user') { $script:history.RemoveAt($script:history.Count-1) }
+            if ($script:requestMode -eq 'chat' -and $script:history.Count -and $script:history[$script:history.Count-1].role -eq 'user') { $script:history.RemoveAt($script:history.Count-1) }
             Add-ChatText 'Sistema' $_.Exception.Message
             $status.Text = 'No se pudo obtener una respuesta. Comprueba el motor local.'
         }
@@ -228,7 +254,19 @@ $prompt.Add_KeyDown({
 })
 $newChat.Add_Click({ $script:history.Clear(); $script:totalInput=0L; $script:totalOutput=0L; $script:totalCached=0L; $tokenStats.Text='Nuevo chat: acumulados reiniciados.'; $transcript.Clear(); Add-ChatText 'Boddy' 'Nuevo chat. Que quieres construir?'; $prompt.Focus() })
 $form.Add_FormClosed({ $timer.Stop(); $timer.Dispose(); if ($script:active) { if (-not $script:active.HasExited) { $script:active.Kill() }; $script:active.Dispose() } })
-if ($SmokeTest) {
+if ($ResearchSmokeTest) {
+    $form.Opacity=0
+    $form.Show()
+    $research.Checked=$true
+    $prompt.Text='Explica como budget.rs limita el contexto de tokens de Boddy.'
+    $send.PerformClick()
+    $deadline=[DateTime]::UtcNow.AddSeconds(430)
+    while ($script:active -and [DateTime]::UtcNow -lt $deadline) { [Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 25 }
+    if ($script:lastTaskState -ne 'Completed' -or $script:lastReply -notmatch '\[S[1-3] ') { throw ('Investigacion no completada: '+$transcript.Text) }
+    if ($script:history.Count -ne 0) { throw 'La investigacion altero el historial del chat.' }
+    'Investigacion en ventana: '+$status.Text
+    $form.Close(); $form.Dispose()
+} elseif ($SmokeTest) {
     $form.Opacity = 0
     $form.Show()
     $prompt.Text = 'Saluda en espanol en una sola frase.'
